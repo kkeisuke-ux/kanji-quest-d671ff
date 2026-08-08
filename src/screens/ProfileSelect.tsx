@@ -1,5 +1,6 @@
 // プロフィール選択（起動画面）。最大5人、データは完全分離（仕様 §29）。
 import { useState } from 'react'
+import { setStrictnessRuntime } from '../config/judgeRuntime'
 import { GRADE_LABELS, gradeLabelOf } from '../data/curriculum'
 import { useAsyncData } from '../state/hooks'
 import { bumpData, navigate, selectProfile } from '../state/store'
@@ -20,6 +21,7 @@ export function ProfileSelect() {
   const pick = async (p: Profile) => {
     p.lastActiveAt = Date.now()
     await saveProfile(p)
+    setStrictnessRuntime(p.judgeStrictness)
     selectProfile(p.id)
     navigate({ name: 'home' })
   }

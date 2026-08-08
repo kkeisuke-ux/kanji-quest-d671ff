@@ -36,6 +36,8 @@ export interface AppState {
   profileId: string | null
   /** データ更新の通知カウンタ（useAsyncDataの再取得トリガ） */
   dataVersion: number
+  /** 音設定変更の通知カウンタ（SoundButtonの再描画用） */
+  soundVersion: number
   toasts: ToastItem[]
   pendingEvolution: PendingEvolution | null
 }
@@ -44,6 +46,7 @@ let state: AppState = {
   route: { name: 'profiles' },
   profileId: null,
   dataVersion: 0,
+  soundVersion: 0,
   toasts: [],
   pendingEvolution: null,
 }
@@ -85,6 +88,10 @@ export function selectProfile(profileId: string | null) {
 /** DB書き込み後に呼ぶと、useAsyncDataを使う画面が再取得する */
 export function bumpData() {
   setState({ dataVersion: state.dataVersion + 1 })
+}
+
+export function bumpSound() {
+  setState({ soundVersion: state.soundVersion + 1 })
 }
 
 let toastSeq = 0

@@ -128,6 +128,16 @@ export function applyCharTransform(pts: Pt[], t: CharTransform): Pt[] {
   return pts.map((p) => ({ x: (p.x - t.cx) / t.scale + 0.5, y: (p.y - t.cy) / t.scale + 0.5 }))
 }
 
+/** 配列のシャッフル（Fisher–Yates、非破壊） */
+export function shuffled<T>(arr: T[]): T[] {
+  const out = [...arr]
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[out[i], out[j]] = [out[j], out[i]]
+  }
+  return out
+}
+
 /** 再現性のある乱数（自己テスト・合成データ用） */
 export function mulberry32(seed: number): () => number {
   let a = seed >>> 0

@@ -5,8 +5,9 @@ import { evolutionInfo } from '../game/logic'
 import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
-import { dueReviewChars, getProfile, listOwned, listProgress, listUnknown } from '../storage/repo'
+import { dueReviewChars, getProfile, listOwned, listProgress, listTestResults, listUnknown } from '../storage/repo'
 import { Button, Card, CoinBadge, ExpBar, LoadingView, StarBadge } from '../ui/components'
+import { SoundButton } from '../ui/SoundButton'
 
 export function Home() {
   const profileId = useAppState((s) => s.profileId)
@@ -14,11 +15,12 @@ export function Home() {
     if (!profileId) return null
     const profile = await getProfile(profileId)
     if (!profile) return null
-    const [due, unknown, progressList, owned] = await Promise.all([
+    const [due, unknown, progressList, owned, results] = await Promise.all([
       dueReviewChars(profileId),
       listUnknown(profileId),
       listProgress(profileId),
       listOwned(profileId),
+      listTestResults(profileId),
     ])
     const buddy = profile.buddyId != null ? (owned.find((o) => o.id === profile.buddyId) ?? null) : null
     const mastered = progressList.filter((p) => p.masteredAt != null).length
@@ -34,11 +36,15 @@ export function Home() {
       }
     }
     const totalPlayable = cur.terms.flatMap((t) => t.stages).flatMap((s) => s.kanji).length
-    return { profile, due, unknown, mastered, buddy, nextStage, fallback, totalPlayable }
+    const allStages = cur.terms.flatMap((t) => t.stages)
+    const clearedStages = allStages.filter((s) =>
+      results.some((r) => r.kind === 'stage' && r.targetId === s.id && r.total > 0 && r.correct === r.total)
+    ).length
+    return { profile, due, unknown, mastered, buddy, nextStage, fallback, totalPlayable, clearedStages, totalStages: allStages.length }
   }, [profileId])
 
   if (!data) return <LoadingView />
-  const { profile, due, unknown, mastered, buddy, nextStage, fallback, totalPlayable } = data
+  const { profile, due, unknown, mastered, buddy, nextStage, fallback, totalPlayable, clearedStages, totalStages } = data
   const buddySpecies = buddy ? getSpecies(buddy.speciesId) : null
   const tease = buddy ? evolutionInfo(buddy).tease : false
 
@@ -52,6 +58,7 @@ export function Home() {
           <span>{profile.name}</span>
         </button>
         <div className="home-badges">
+          <SoundButton />
           <CoinBadge coins={profile.coins} />
           <StarBadge stars={profile.stars} />
           <button className="btn btn-ghost btn-sm" onClick={() => navigate({ name: 'settings' })}>
@@ -105,7 +112,7 @@ export function Home() {
           </div>
           <div className="progress-line">
             <span>
-              マスターした漢字　{mastered} / {totalPlayable}字
+              マスターした漢字　{mastered} / {totalPlayable}字　　★100てんクリア　{clearedStages} / {totalStages}ステージ
             </span>
             <div className="masterbar">
               <div className="masterbar-fill" style={{ width: `${totalPlayable > 0 ? (mastered / totalPlayable) * 100 : 0}%` }} />

@@ -18,6 +18,8 @@ export interface Profile {
   buddyId: number | null
   gachaCount: number
   gachaMissStreak: number
+  /** 判定のきびしさ 1(とてもあまい)〜5(とてもきびしい)。未設定は3(ふつう) */
+  judgeStrictness?: number
   createdAt: number
   lastActiveAt: number
 }
@@ -81,6 +83,8 @@ export interface TestItemRecord {
   orderError: boolean
   directionError: boolean
   score: number
+  /** 正解までに書き直した回数（認識ミス調整の分析用） */
+  retries?: number
 }
 
 export interface TestResultRecord {
@@ -104,6 +108,15 @@ export interface TestSessionRecord {
   currentIndex: number
   items: TestItemRecord[]
   startedAt: number
+  updatedAt: number
+}
+
+/** ステージれんしゅうの途中保存（途中でやめても続きから再開できる） */
+export interface PracticeSessionRecord {
+  profileId: string
+  stageId: string
+  kanjiIdx: number
+  round: number
   updatedAt: number
 }
 

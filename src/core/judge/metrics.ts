@@ -59,6 +59,10 @@ export interface StrokeFeatures {
 }
 
 export function strokeFeatures(pts: Pt[]): StrokeFeatures {
+  if (pts.length === 0) {
+    const z = { x: 0, y: 0 }
+    return { pts, len: 0, start: z, end: z, centroid: z, angle: 0 }
+  }
   return {
     pts,
     len: polylineLength(pts),

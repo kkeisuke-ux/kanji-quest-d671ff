@@ -23,7 +23,8 @@ if (!fs.existsSync(DIST)) {
   process.exit(1)
 }
 
-const files = walk(DIST).filter((f) => f !== 'sw.js')
+// sourcemapはオフラインキャッシュに含めない（開発者ツールを開いた時だけネット経由で取得）
+const files = walk(DIST).filter((f) => f !== 'sw.js' && !f.endsWith('.map'))
 const hash = crypto.createHash('md5')
 for (const f of files.sort()) hash.update(f).update(fs.readFileSync(path.join(DIST, f)))
 const version = hash.digest('hex').slice(0, 10)

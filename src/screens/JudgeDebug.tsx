@@ -10,8 +10,8 @@ import type { InkStroke } from '../core/ink/types'
 import { evaluateKanji, type KanjiEvaluation } from '../core/judge/evaluate'
 import { runSelfTest, type SelfTestSummary } from '../core/judge/selftest'
 import { getRefKanji, listRefKanji } from '../core/refdata'
-import { getJudgeConfig, getJudgeOverrides, saveJudgeOverrides } from '../config/judgeRuntime'
-import { DEFAULT_JUDGE_CONFIG } from '../config/judgeConfig'
+import { getEffectiveJudgeConfig, getJudgeConfig, getJudgeOverrides, getStrictnessRuntime, saveJudgeOverrides } from '../config/judgeRuntime'
+import { DEFAULT_JUDGE_CONFIG, STRICTNESS_LABELS } from '../config/judgeConfig'
 import { WritingPad } from '../learn/WritingPad'
 import { saveSample } from '../learn/sampleUtil'
 import { useAsyncData } from '../state/hooks'
@@ -77,7 +77,7 @@ export function JudgeDebug() {
 
   const reJudge = () => {
     if (!lastStrokes) return
-    setEvalResult(evaluateKanji(char, strokesToPts(lastStrokes), lastBox, getJudgeConfig()))
+    setEvalResult(evaluateKanji(char, strokesToPts(lastStrokes), lastBox, getEffectiveJudgeConfig()))
   }
 
   const label = async (humanLabel: 'correct' | 'incorrect') => {
@@ -274,7 +274,10 @@ export function JudgeDebug() {
               初期値に戻す
             </Button>
           </div>
-          <p className="tile-sub">全設定は src/config/judgeConfig.ts。ここでの保存は端末に上書き保存されます。</p>
+          <p className="tile-sub">
+            全設定は src/config/judgeConfig.ts。ここでの保存は端末に上書き保存されます。実際の判定にはさらに、設定画面の「はんていのきびしさ」（現在:
+            {STRICTNESS_LABELS[getStrictnessRuntime() - 1]}）の係数が掛かります。
+          </p>
         </Card>
 
         <Card>

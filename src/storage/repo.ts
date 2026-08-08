@@ -19,6 +19,7 @@ import type {
   GachaHistoryRecord,
   KanjiProgress,
   OwnedCharacterRecord,
+  PracticeSessionRecord,
   Profile,
   SettingsRecord,
   StrokeSampleRecord,
@@ -299,6 +300,19 @@ export function listTestResults(profileId: string): Promise<TestResultRecord[]> 
 
 export function getTestSession(profileId: string, testKey: string): Promise<TestSessionRecord | undefined> {
   return dbGet<TestSessionRecord>('testSessions', [profileId, testKey])
+}
+
+// ---------------- れんしゅうの途中保存 ----------------
+export function getPracticeSession(profileId: string, stageId: string): Promise<PracticeSessionRecord | undefined> {
+  return dbGet<PracticeSessionRecord>('practiceSessions', [profileId, stageId])
+}
+
+export async function savePracticeSession(rec: PracticeSessionRecord): Promise<void> {
+  await dbPut('practiceSessions', rec)
+}
+
+export async function deletePracticeSession(profileId: string, stageId: string): Promise<void> {
+  await dbDelete('practiceSessions', [profileId, stageId])
 }
 
 export async function saveTestSession(rec: TestSessionRecord): Promise<void> {

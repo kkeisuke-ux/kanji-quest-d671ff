@@ -1,14 +1,18 @@
-// 設定: バックアップ・診断・デバッグ・入力設定・ライセンス（仕様 §4, §32, §35）。
+// 設定: 判定のきびしさ・音・バックアップ・診断・デバッグ・入力設定・ライセンス。
 import { useRef, useState } from 'react'
 import { getAppFlags, setAllowTouchInk } from '../config/appFlags'
+import { DEFAULT_STRICTNESS, STRICTNESS_LABELS } from '../config/judgeConfig'
+import { setStrictnessRuntime } from '../config/judgeRuntime'
+import { setBgm, setSe } from '../sound/sound'
 import { useAsyncData } from '../state/hooks'
-import { navigate, showToast, useAppState } from '../state/store'
+import { bumpData, navigate, showToast, useAppState } from '../state/store'
 import { downloadBackup, importAllData } from '../storage/backup'
-import { getProfile } from '../storage/repo'
+import { getProfile, saveProfile } from '../storage/repo'
 import { Button, Card, LoadingView, Modal, TopBar } from '../ui/components'
 
 export function Settings() {
   const profileId = useAppState((s) => s.profileId)
+  useAppState((s) => s.soundVersion)
   const { data: profile } = useAsyncData(async () => (profileId ? ((await getProfile(profileId)) ?? null) : null), [profileId])
   const fileRef = useRef<HTMLInputElement | null>(null)
   const [pendingImport, setPendingImport] = useState<string | null>(null)
@@ -16,6 +20,16 @@ export function Settings() {
   const flags = getAppFlags()
 
   if (!profile) return <LoadingView />
+
+  const strictness = profile.judgeStrictness ?? DEFAULT_STRICTNESS
+
+  const changeStrictness = async (level: number) => {
+    profile.judgeStrictness = level
+    await saveProfile(profile)
+    setStrictnessRuntime(level)
+    bumpData()
+    showToast(`はんていを「${STRICTNESS_LABELS[level - 1]}」に かえたよ`)
+  }
 
   const onFile = async (f: File | null) => {
     if (!f) return
@@ -47,6 +61,37 @@ export function Settings() {
           <Button variant="secondary" onClick={() => navigate({ name: 'profiles' })}>
             プロフィールを きりかえる
           </Button>
+        </Card>
+
+        <Card>
+          <h3>はんていの きびしさ（{profile.name}用）</h3>
+          <p className="tile-sub">
+            ○×の判定がきびしすぎる／あますぎると感じたら、ここで調整してください。「あまい」でも別の漢字や画数ちがいは不正解になります。
+          </p>
+          <div className="grade-picker">
+            {STRICTNESS_LABELS.map((label, i) => (
+              <button
+                key={label}
+                className={`grade-btn ${strictness === i + 1 ? 'grade-btn-on' : ''}`}
+                onClick={() => void changeStrictness(i + 1)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </Card>
+
+        <Card>
+          <h3>音</h3>
+          <label className="check-row">
+            <input type="checkbox" checked={flags.seOn} onChange={(e) => void setSe(e.target.checked)} />
+            <span>こうかおん（ピンポン・ファンファーレ）</span>
+          </label>
+          <label className="check-row">
+            <input type="checkbox" checked={flags.bgmOn} onChange={(e) => void setBgm(e.target.checked)} />
+            <span>BGM</span>
+          </label>
+          <p className="tile-sub">各画面の右上のスピーカーボタンでも、まとめてオン/オフできます。</p>
         </Card>
 
         <Card>

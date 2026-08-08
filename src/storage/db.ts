@@ -1,6 +1,6 @@
 // IndexedDBの薄いPromiseラッパ。外部ライブラリ非依存。
 const DB_NAME = 'kanji-quest'
-const DB_VERSION = 1
+const DB_VERSION = 2
 
 export const STORE_NAMES = [
   'profiles',
@@ -8,6 +8,7 @@ export const STORE_NAMES = [
   'strokeSamples',
   'testResults',
   'testSessions',
+  'practiceSessions',
   'unknownKanji',
   'coinHistory',
   'ownedCharacters',
@@ -40,6 +41,8 @@ export function getDb(): Promise<IDBDatabase> {
       if (!tests.indexNames.contains('byProfile')) tests.createIndex('byProfile', 'profileId')
       const sessions = mk('testSessions', { keyPath: ['profileId', 'testKey'] })
       if (!sessions.indexNames.contains('byProfile')) sessions.createIndex('byProfile', 'profileId')
+      const practice = mk('practiceSessions', { keyPath: ['profileId', 'stageId'] })
+      if (!practice.indexNames.contains('byProfile')) practice.createIndex('byProfile', 'profileId')
       const unknown = mk('unknownKanji', { keyPath: ['profileId', 'char'] })
       if (!unknown.indexNames.contains('byProfile')) unknown.createIndex('byProfile', 'profileId')
       const coins = mk('coinHistory', { keyPath: 'id', autoIncrement: true })

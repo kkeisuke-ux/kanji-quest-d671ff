@@ -4,8 +4,9 @@ import { hasQuestions } from '../data/questions'
 import { hasRefKanji } from '../core/refdata'
 import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
-import { getProfile, getTestSession, listProgress, listUnknown } from '../storage/repo'
+import { getProfile, getTestSession, listProgress, listTestResults, listUnknown } from '../storage/repo'
 import { Button, Card, KanjiChip, LoadingView, TopBar, type KanjiChipState } from '../ui/components'
+import { SoundButton } from '../ui/SoundButton'
 
 export function StageMap() {
   const profileId = useAppState((s) => s.profileId)
@@ -13,7 +14,11 @@ export function StageMap() {
     if (!profileId) return null
     const profile = await getProfile(profileId)
     if (!profile) return null
-    const [progressList, unknown] = await Promise.all([listProgress(profileId), listUnknown(profileId)])
+    const [progressList, unknown, results] = await Promise.all([
+      listProgress(profileId),
+      listUnknown(profileId),
+      listTestResults(profileId),
+    ])
     const { cur, fallback } = getCurriculumForGrade(profile.grade)
     const sessions: Record<string, boolean> = {}
     for (const term of cur.terms) {
@@ -21,18 +26,31 @@ export function StageMap() {
       const s = await getTestSession(profileId, `term:${term.id}`)
       sessions[term.id] = s != null && s.currentIndex > 0
     }
+    const stagePerfect = new Map<string, number>()
+    const termBest = new Map<string, { correct: number; total: number }>()
+    for (const r of results) {
+      if (r.kind === 'stage' && r.total > 0 && r.correct === r.total) {
+        stagePerfect.set(r.targetId, (stagePerfect.get(r.targetId) ?? 0) + 1)
+      }
+      if (r.kind === 'term') {
+        const best = termBest.get(r.targetId)
+        if (!best || r.correct > best.correct) termBest.set(r.targetId, { correct: r.correct, total: r.total })
+      }
+    }
     return {
       profile,
       cur,
       fallback,
       sessions,
+      stagePerfect,
+      termBest,
       progressMap: new Map(progressList.map((p) => [p.char, p])),
       unknownSet: new Set(unknown.map((u) => u.char)),
     }
   }, [profileId])
 
   if (!data) return <LoadingView />
-  const { cur, fallback, progressMap, unknownSet, sessions } = data
+  const { cur, fallback, progressMap, unknownSet, sessions, stagePerfect, termBest } = data
 
   const chipState = (char: string): KanjiChipState => {
     if (unknownSet.has(char)) return 'unknown'
@@ -45,7 +63,7 @@ export function StageMap() {
 
   return (
     <div className="screen">
-      <TopBar title={`れんしゅうマップ（${cur.gradeLabel}）`} back={{ name: 'home' }} />
+      <TopBar title={`れんしゅうマップ（${cur.gradeLabel}）`} back={{ name: 'home' }} right={<SoundButton />} />
       {fallback && <p className="map-note">いまは 小1の漢字で れんしゅうできるよ（ほかの学年は じゅんびちゅう）</p>}
       <div className="map-scroll">
         {cur.terms.map((term) => {
@@ -63,11 +81,15 @@ export function StageMap() {
                         const p = progressMap.get(k)
                         return p?.practicedAt != null
                       })
+                      const perfect = stagePerfect.get(stage.id) ?? 0
                       return (
                         <Card key={stage.id} className="stage-card">
                           <div className="stage-head">
                             <span className="stage-label">{stage.label}</span>
-                            {practicedAll && <span className="stage-done">れんしゅうずみ</span>}
+                            <span className="row gap-sm">
+                              {perfect > 0 && <span className="stage-clear">★クリア　100てん{perfect}かい</span>}
+                              {perfect === 0 && practicedAll && <span className="stage-done">れんしゅうずみ</span>}
+                            </span>
                           </div>
                           <div className="stage-chips">
                             {stage.kanji.map((k) => (
@@ -89,7 +111,12 @@ export function StageMap() {
                       <div className="stage-head">
                         <span className="stage-label">{termLabel(term.index)}の 大きなテスト</span>
                       </div>
-                      <p className="stage-test-desc">{kanji.length}問 れんぞく！ とちゅうで やめても つづきから できるよ</p>
+                      <p className="stage-test-desc">れんしゅうした漢字ぜんぶに ちょうせん！ とちゅうで やめても つづきから できるよ</p>
+                      {termBest.get(term.id) && (
+                        <p className="stage-resume">
+                          さいこうきろく: {termBest.get(term.id)!.correct}/{termBest.get(term.id)!.total}問
+                        </p>
+                      )}
                       {sessions[term.id] && <p className="stage-resume">とちゅうの きろくあり</p>}
                       <Button variant="accent" onClick={() => navigate({ name: 'termTest', termId: term.id })} disabled={kanji.length === 0}>
                         ちょうせんする

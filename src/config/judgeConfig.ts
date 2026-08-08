@@ -80,15 +80,16 @@ export const DEFAULT_JUDGE_CONFIG: JudgeConfig = {
     length: 0.25,
     centroid: 0.6,
   },
-  strokePassCost: 0.42,
+  // 既定値は「ふつう」（実機フィードバックにより2026-08-08に大幅緩和。旧: 0.42/0.30）
+  strokePassCost: 0.55,
   shortStrokeSlack: 1.0,
   shortStrokeLenRef: 0.35,
-  charAvgPassCost: 0.3,
+  charAvgPassCost: 0.39,
   reverseMargin: 0.04,
   aspectLogTolerance: 1.25,
   trace: {
-    passCost: 0.6,
-    startRadius: 0.32,
+    passCost: 0.78,
+    startRadius: 0.4,
   },
   scoring: {
     orderStrictInTests: false,
@@ -97,6 +98,39 @@ export const DEFAULT_JUDGE_CONFIG: JudgeConfig = {
   samples: {
     keepMax: 400,
   },
+}
+
+// ============================================================
+// 判定のきびしさ（ユーザーがプロフィールごとに設定。仕様追加 2026-08-08）
+// 合格コストしきい値に係数を掛ける。1=とてもあまい 〜 5=とてもきびしい。
+// 注意: 「とてもあまい」でも別の漢字は不正解になる（自己テストX参照。
+// 誤字拒否コストの下限 avg≒0.73 に対し L1でも上限0.57で余裕がある）。
+// ============================================================
+export const STRICTNESS_FACTORS: Record<number, number> = {
+  1: 1.45,
+  2: 1.2,
+  3: 1.0,
+  4: 0.76,
+  5: 0.62,
+}
+
+export const STRICTNESS_LABELS = ['とてもあまい', 'あまい', 'ふつう', 'きびしい', 'とてもきびしい']
+
+export const DEFAULT_STRICTNESS = 3
+
+export function applyStrictness(cfg: JudgeConfig, level: number): JudgeConfig {
+  const lv = Math.min(5, Math.max(1, Math.round(level || DEFAULT_STRICTNESS)))
+  const f = STRICTNESS_FACTORS[lv] ?? 1
+  if (f === 1) return cfg
+  return {
+    ...cfg,
+    strokePassCost: cfg.strokePassCost * f,
+    charAvgPassCost: cfg.charAvgPassCost * f,
+    trace: {
+      passCost: cfg.trace.passCost * f,
+      startRadius: Math.min(0.5, cfg.trace.startRadius * f),
+    },
+  }
 }
 
 export type JudgeConfigPatch = {

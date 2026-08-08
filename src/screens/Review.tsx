@@ -16,9 +16,12 @@ import { saveSample } from '../learn/sampleUtil'
 import { useAsyncData } from '../state/hooks'
 import { bumpData, navigate, showToast, useAppState } from '../state/store'
 import { applyOutcome, dueReviewChars, getProgress, listUnknown, recordRecentVariant } from '../storage/repo'
+import { playCorrect, playWrong } from '../sound/sound'
 import { Button, LoadingView, TopBar } from '../ui/components'
 import { queueEvolutionFromEvents } from '../ui/EvolutionModal'
+import { JudgeMark } from '../ui/JudgeMark'
 import { KanjiSvg } from '../ui/KanjiSvg'
+import { SoundButton } from '../ui/SoundButton'
 
 export function Review({ mode, chars: charsParam }: { mode: 'due' | 'unknown'; chars?: string[] }) {
   const profileId = useAppState((s) => s.profileId)
@@ -90,6 +93,8 @@ export function Review({ mode, chars: charsParam }: { mode: 'due' | 'unknown'; c
     setEvalResult(ev)
     await saveSample(profileId, char, ev, strokes, size, 'review')
     const outcome = ev.correctForTest ? 'correct' : 'wrong'
+    if (outcome === 'correct') playCorrect()
+    else playWrong()
     await applyOutcome(profileId, char, outcome, {
       context: 'review',
       orderError: ev.shapeOk && !ev.orderOk,
@@ -124,7 +129,7 @@ export function Review({ mode, chars: charsParam }: { mode: 'due' | 'unknown'; c
 
   return (
     <div className="screen">
-      <TopBar title={`${title}　${index + 1} / ${list.length}`} back={{ name: 'home' }} />
+      <TopBar title={`${title}　${index + 1} / ${list.length}`} back={{ name: 'home' }} right={<SoundButton />} />
       {mode === 'unknown' && <div className="step-banner">まちがえても だいじょうぶ。テストで せいかいしたら リストから そつぎょう！</div>}
       {phase === 'relearn' && char ? (
         <div className="split">
@@ -173,12 +178,15 @@ export function Review({ mode, chars: charsParam }: { mode: 'due' | 'unknown'; c
                 onEvaluated={onEvaluated}
                 disabled={evalResult != null}
                 overlay={
-                  evalResult && !evalResult.shapeOk ? (
-                    <KanjiSvg char={char} full color="#e0645f" opacity={0.5} className="ghost-overlay" />
-                  ) : evalResult ? (
-                    <div className={`judge-flash flash-${evalResult.correctForTest ? 'correct' : 'wrong'}`}>
-                      {evalResult.verdict === 'perfect' ? '◎' : evalResult.correctForTest ? '○' : '×'}
-                    </div>
+                  evalResult ? (
+                    evalResult.correctForTest ? (
+                      <JudgeMark kind="correct" />
+                    ) : (
+                      <>
+                        <KanjiSvg char={char} full color="#e0645f" opacity={0.4} className="ghost-overlay" />
+                        <JudgeMark kind="wrong" />
+                      </>
+                    )
                   ) : null
                 }
               />

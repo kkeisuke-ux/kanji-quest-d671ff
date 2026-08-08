@@ -1,16 +1,30 @@
-// 書き順なぞり練習（仕様 §9）。
-// 次に書くstrokeを薄く表示し、始点の緑丸＋進行方向アニメーションで誘導する。
-// 正しくなぞれたら確定して次のstrokeへ。間違えたら短いヒントと再提示。
+// 書き順なぞり練習（仕様 §9 + 2026-08-08フィードバック反映）。
+// 3つのモード:
+//   guided : 確定画は濃く、いまの画は薄く＋始点●＋方向アニメ（1回目）
+//   numbers: 全画うすいグレー＋書き順の数字（2回目）
+//   gray   : 全画うすいグレーのみ（3回目）
+// いずれも1画ずつ正しい順で書く。判定は「きびしさ」設定を反映。
 import { useEffect, useRef, useState } from 'react'
 import { InkCanvas, type InkCanvasHandle } from '../core/ink/InkCanvas'
 import type { InkStroke } from '../core/ink/types'
 import { judgeTraceStroke } from '../core/judge/evaluate'
 import { getRefKanji, hasRefKanji } from '../core/refdata'
-import { getJudgeConfig } from '../config/judgeRuntime'
+import { getEffectiveJudgeConfig } from '../config/judgeRuntime'
 import { getAppFlags } from '../config/appFlags'
+import { playStrokePop, playWrong } from '../sound/sound'
 import { KanjiSvg } from '../ui/KanjiSvg'
 
-export function TraceStep({ char, onDone }: { char: string; onDone: () => void }) {
+export type TraceMode = 'guided' | 'numbers' | 'gray'
+
+export function TraceStep({
+  char,
+  mode = 'guided',
+  onDone,
+}: {
+  char: string
+  mode?: TraceMode
+  onDone: () => void
+}) {
   const [strokeIdx, setStrokeIdx] = useState(0)
   const [hint, setHint] = useState<string | null>(null)
   const [shake, setShake] = useState(false)
@@ -22,7 +36,7 @@ export function TraceStep({ char, onDone }: { char: string; onDone: () => void }
     setHint(null)
     doneRef.current = false
     inkRef.current?.clear()
-  }, [char])
+  }, [char, mode])
 
   const available = hasRefKanji(char)
   const ref = available ? getRefKanji(char) : null
@@ -33,7 +47,7 @@ export function TraceStep({ char, onDone }: { char: string; onDone: () => void }
     if (doneRef.current) return
     const ink = inkRef.current
     if (!ink) return
-    const res = judgeTraceStroke(char, strokeIdx, stroke.points, ink.getSize(), getJudgeConfig())
+    const res = judgeTraceStroke(char, strokeIdx, stroke.points, ink.getSize(), getEffectiveJudgeConfig())
     if (res.ok) {
       ink.clear()
       setHint(null)
@@ -42,15 +56,21 @@ export function TraceStep({ char, onDone }: { char: string; onDone: () => void }
         doneRef.current = true
         onDone()
       } else {
+        playStrokePop()
         setStrokeIdx(next)
       }
     } else {
+      playWrong()
       setHint(
         res.reversed
-          ? 'はんたいむきだよ。みどりの●から かこう'
+          ? mode === 'guided'
+            ? 'はんたいむきだよ。みどりの●から かこう'
+            : 'はんたいむきだよ。かきはじめの ばしょを かくにんしよう'
           : res.startTooFar
-            ? 'みどりの●の ところから かきはじめよう'
-            : 'うすい線に そって なぞってみよう'
+            ? mode === 'guided'
+              ? 'みどりの●の ところから かきはじめよう'
+              : `${strokeIdx + 1}画目の かきはじめの ばしょから かこう`
+            : 'せんに そって なぞってみよう'
       )
       setShake(true)
       window.setTimeout(() => {
@@ -60,6 +80,26 @@ export function TraceStep({ char, onDone }: { char: string; onDone: () => void }
     }
   }
 
+  const guide =
+    mode === 'guided' ? (
+      <KanjiSvg
+        char={char}
+        upTo={strokeIdx}
+        current={Math.min(strokeIdx, ref.strokeCount - 1)}
+        showRest
+        className="guide-svg"
+      />
+    ) : (
+      <KanjiSvg
+        char={char}
+        upTo={strokeIdx}
+        showRest
+        restColor="#ccd4e2"
+        numbers={mode === 'numbers'}
+        className="guide-svg"
+      />
+    )
+
   return (
     <div className={`trace-wrap ${shake ? 'shake' : ''}`}>
       <InkCanvas
@@ -68,15 +108,7 @@ export function TraceStep({ char, onDone }: { char: string; onDone: () => void }
         allowTouchInk={getAppFlags().allowTouchInk}
         onStrokeEnd={handleStroke}
         className="pad-box"
-        guide={
-          <KanjiSvg
-            char={char}
-            upTo={strokeIdx}
-            current={Math.min(strokeIdx, ref.strokeCount - 1)}
-            showRest
-            className="guide-svg"
-          />
-        }
+        guide={guide}
       />
       <div className="trace-status">
         <span className="trace-count">

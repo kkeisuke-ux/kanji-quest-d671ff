@@ -1,9 +1,13 @@
-// ステージテスト（5問）と学期相当の大型テスト（仕様 §13, §16）。
+// ステージテスト（5問）と学期相当の大型テスト。
+// 大型テストは「その期で れんしゅうずみの全漢字」を対象にする（2026-08-08変更）。
 import { findStage, findTerm, termKanji, termLabel } from '../data/curriculum'
 import { hasQuestions } from '../data/questions'
 import { hasRefKanji } from '../core/refdata'
 import { TestRunner } from '../learn/TestRunner'
-import { TopBar } from '../ui/components'
+import { useAsyncData } from '../state/hooks'
+import { navigate, useAppState } from '../state/store'
+import { listProgress } from '../storage/repo'
+import { Button, LoadingView, TopBar } from '../ui/components'
 
 export function StageTestScreen({ stageId }: { stageId: string }) {
   const found = findStage(stageId)
@@ -27,7 +31,15 @@ export function StageTestScreen({ stageId }: { stageId: string }) {
 }
 
 export function TermTestScreen({ termId }: { termId: string }) {
+  const profileId = useAppState((s) => s.profileId)
   const found = findTerm(termId)
+  const { data: chars } = useAsyncData(async () => {
+    if (!found || !profileId) return null
+    const progress = await listProgress(profileId)
+    const practiced = new Set(progress.filter((p) => p.practicedAt != null).map((p) => p.char))
+    return termKanji(found.term).filter((c) => hasRefKanji(c) && hasQuestions(c) && practiced.has(c))
+  }, [profileId, termId])
+
   if (!found) {
     return (
       <div className="screen">
@@ -35,8 +47,21 @@ export function TermTestScreen({ termId }: { termId: string }) {
       </div>
     )
   }
-  // 大型テストは分割せず、期の全漢字を連続で出題する（仕様 §16）
-  const chars = termKanji(found.term).filter((c) => hasRefKanji(c) && hasQuestions(c))
+  if (!chars) return <LoadingView />
+  if (chars.length === 0) {
+    return (
+      <div className="screen">
+        <TopBar title={`${termLabel(found.term.index)}の 大きなテスト`} back={{ name: 'stages' }} />
+        <div className="center-panel">
+          <div className="card result-main">
+            <p className="result-score">まだ れんしゅうした漢字が ないよ</p>
+            <p className="tile-sub">ステージで れんしゅうしてから ちょうせんしよう！</p>
+            <Button onClick={() => navigate({ name: 'stages' })}>マップへ</Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
   return (
     <TestRunner
       kind="term"

@@ -5,7 +5,7 @@ import { InkCanvas, strokesToPts, type InkCanvasHandle } from '../core/ink/InkCa
 import type { InkStroke } from '../core/ink/types'
 import { evaluateKanji, type KanjiEvaluation } from '../core/judge/evaluate'
 import { getRefKanji, hasRefKanji } from '../core/refdata'
-import { getJudgeConfig } from '../config/judgeRuntime'
+import { getEffectiveJudgeConfig } from '../config/judgeRuntime'
 import { getAppFlags } from '../config/appFlags'
 import { Button } from '../ui/components'
 
@@ -27,7 +27,7 @@ export function WritingPad({ char, resetKey, onEvaluated, disabled = false, over
   const [judged, setJudged] = useState(false)
   const judgedRef = useRef(false)
   const timerRef = useRef<number | null>(null)
-  const cfg = getJudgeConfig()
+  const cfg = getEffectiveJudgeConfig()
   const refCount = hasRefKanji(char) ? getRefKanji(char).strokeCount : 0
 
   const cancelTimer = () => {
