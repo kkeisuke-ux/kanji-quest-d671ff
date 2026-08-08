@@ -97,6 +97,7 @@ export async function deleteProfileDeep(profileId: string): Promise<void> {
     'strokeSamples',
     'testResults',
     'testSessions',
+    'practiceSessions',
     'unknownKanji',
     'coinHistory',
     'ownedCharacters',
