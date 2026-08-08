@@ -24,6 +24,7 @@ import {
   getProfile,
   getProgress,
   getTestSession,
+  listTestResults,
   masteredCount,
   recordRecentVariant,
   saveTestSession,
@@ -169,6 +170,11 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   const finish = async (finalItems: TestItemRecord[]) => {
     const correct = finalItems.filter((i) => i.result === 'correct').length
     const perfect = finalItems.length > 0 && correct === finalItems.length
+    // まとめテストの「何回目か」は、今回の結果を保存する前に数える（第16回: 2回目からは半分）
+    const pastTermRuns =
+      kind === 'term'
+        ? (await listTestResults(profile.id)).filter((r) => r.kind === 'term' && r.targetId === targetId).length
+        : 0
     await addTestResult({
       profileId: profile.id,
       kind,
@@ -185,9 +191,23 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
         : `${profile.name}が ${title}に ちょうせんしました（${correct}/${finalItems.length}問正解）`
       await addActivity(profile.id, profile.name, 'termTest', msg)
     }
-    // コインは「100点をとったら」だけ（2026-08-08 リバランス）
-    if (perfect) {
-      const perfectBonus = kind === 'term' ? GAME_CONFIG.coins.termTestPerfectBonus : GAME_CONFIG.coins.stageTestPerfectBonus
+    // コイン（第16回改定）:
+    // - まとめテスト: 長いので点数に関わらず完走ボーナス。ミスが少ないほど多く、100点は大きい。
+    //   同じテストの2回目以降は半分。
+    // - ５もんテスト: 100点のときだけボーナス（従来どおり）。
+    if (kind === 'term') {
+      const T = GAME_CONFIG.termTest
+      const misses = finalItems.length - correct
+      const base = misses === 0 ? T.perfect : misses === 1 ? T.miss1 : misses === 2 ? T.miss2 : T.finish
+      const half = pastTermRuns >= 1
+      const amount = Math.max(1, half ? Math.floor(base * T.repeatFactor) : base)
+      const label =
+        (misses === 0 ? '100点ボーナス' : misses <= 2 ? `ミス${misses}こだけ ボーナス` : 'さいごまで がんばった ボーナス') +
+        (half ? '（2回目からは はんぶん）' : '')
+      await awardCoinsFor(profile.id, amount, label)
+      setResultCoins({ amount, breakdown: [{ label, value: amount }] })
+    } else if (perfect) {
+      const perfectBonus = GAME_CONFIG.coins.stageTestPerfectBonus
       await awardCoinsFor(profile.id, perfectBonus, '100点ボーナス')
       setResultCoins({ amount: perfectBonus })
     } else {

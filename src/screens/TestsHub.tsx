@@ -66,7 +66,8 @@ export function TestsHub() {
       <div className="map-scroll">
         <GradeSelector ownGrade={data.ownGrade} />
         <p className="tile-sub map-note">
-          もんだいは まいかい ランダムに でるよ。100点を とると スペシャルボーナス +{GAME_CONFIG.coins.termTestPerfectBonus}コイン！
+          もんだいは まいかい ランダムに でるよ。さいごまで やりきると +{GAME_CONFIG.termTest.finish}コイン、100点なら +
+          {GAME_CONFIG.termTest.perfect}コイン！（おなじテストの2回目からは はんぶん）
         </p>
         {data.entries.map((e) => (
           <Card key={e.termId} className={`termtest-card ${e.perfectCount > 0 ? 'termtest-card-perfect' : ''}`}>

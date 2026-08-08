@@ -95,14 +95,17 @@ export function Settings() {
         </Card>
 
         <Card>
-          <h3>バックアップ</h3>
+          <h3>バックアップ・べつの端末への ひっこし</h3>
           <p className="tile-sub">
-            データはこのiPadの中だけに保存されています。故障やSafariのデータ削除に備えて、ときどき書き出してください（全プロフィール分をまとめて書き出します）。
+            データはこの端末の中だけに保存されています（外部のサーバーには置かない設計です）。故障やSafariのデータ削除に備えて、ときどき書き出してください（全プロフィール分をまとめて書き出します）。
+          </p>
+          <p className="tile-sub">
+            <b>べつのiPadへデータを移すには:</b> ①この画面で「ファイルに書き出す」→ ②できたファイルをAirDropやメールで新しい端末に送る → ③新しい端末でこのアプリを開き、この画面の「ファイルを読み込む」で選ぶ。これだけで全員分がそのまま移ります。
           </p>
           <div className="row gap wrap">
-            <Button onClick={() => void downloadBackup()}>バックアップを書き出す</Button>
+            <Button onClick={() => void downloadBackup()}>ファイルに書き出す</Button>
             <Button variant="secondary" onClick={() => fileRef.current?.click()}>
-              バックアップを読み込む
+              ファイルを読み込む
             </Button>
             <input
               ref={fileRef}
@@ -152,7 +155,7 @@ export function Settings() {
             <a href="https://www.edrdg.org/" target="_blank" rel="noreferrer">
               EDRDG
             </a>
-            の辞書ファイルを同グループのライセンス＝CC BY-SA 4.0 に基づき使用）。ふりがな分割: JmdictFurigana プロジェクト。
+            の辞書ファイルを同グループのライセンス＝CC BY-SA 4.0 に基づき使用）。例文: Tanaka Corpus（EDRDG管理の対訳例文集）。ふりがな分割: JmdictFurigana プロジェクト。
             中学の漢字はKANJIDIC2の頻度情報に基づく独自編成です（公式の学年別配当はありません）。
           </p>
         </Card>
