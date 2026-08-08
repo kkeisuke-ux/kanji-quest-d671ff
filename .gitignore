@@ -2,3 +2,4 @@ node_modules/
 dist/
 scripts/kanjivg-cache/
 *.log
+scripts/cache/
