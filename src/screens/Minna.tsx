@@ -3,7 +3,7 @@
 // - どのステージまで完全クリアか（5問テスト100点＝クリア）
 // - 各学期テストの最高点
 // 順位付けはしない（仕様 §30）。
-import { getCurriculumForGrade, gradeLabelOf, termKanji, termLabel } from '../data/curriculum'
+import { getCurriculumForGrade, gradeLabelOf, termDisplayLabel, termKanji } from '../data/curriculum'
 import { hasQuestions } from '../data/questions'
 import { hasRefKanji } from '../core/refdata'
 import { useAsyncData } from '../state/hooks'
@@ -51,7 +51,7 @@ export function Minna() {
         const terms = cur.terms
           .filter((t) => t.stages.length > 0)
           .map((t) => ({
-            label: termLabel(t.index),
+            label: termDisplayLabel(cur, t.index),
             best: termBest.get(t.id) ?? null,
             perfectCount: termPerfect.get(t.id) ?? 0,
             stages: t.stages.map((s) => {

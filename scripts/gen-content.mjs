@@ -76,15 +76,29 @@ const gradeKanji = {
   8: joyoRest.slice(third, third * 2),
   9: joyoRest.slice(third * 2),
 }
-// ---------- 2.5 マスター級（エキストラ）テーマ漢字（第15回） ----------
-// さかなへんの漢字（表外）＋ことわざ・四字熟語ゆかりの字。
+// ---------- 2.5 マスター級（エキストラ）テーマ漢字（第15回、第19回で大幅拡充） ----------
+// さかな・海のいきものの漢字（表外）＋ことわざ・四字熟語ゆかりの字。
 // ことわざ・四字熟語の字は常用漢字と重複するが、ステージ構成上の重複のみで
-// 進捗は字単位（共通）のため問題ない。問題文は questions.ts の手書きバンクが担う。
+// 進捗は字単位（共通）のため問題ない。問題文は questions.ts の手書きバンク
+// （MASTER_BANK・全問意味つき）が担い、マスター級の字は自動生成しない。
 const MASTER_STAGES = [
   { id: 'g10s1', label: 'さかな①', kanji: [...'鮭鮪鯖鯛鰯'] },
   { id: 'g10s2', label: 'さかな②', kanji: [...'鰻鮎鯉鰹鱈'] },
+  { id: 'g10s5', label: 'さかな③', kanji: [...'鮫鰤鱒鮒鯵'] },
+  { id: 'g10s6', label: 'さかな④', kanji: [...'鮃鰈鱸鰆鰊'] },
+  { id: 'g10s7', label: 'うみのいきもの', kanji: [...'蛸蟹蝦鯱鰐'] },
   { id: 'g10s3', label: 'ことわざ', kanji: [...'兎蛙鳶狸亀'] },
-  { id: 'g10s4', label: 'よじじゅくご', kanji: [...'石心転差老'] },
+  { id: 'g10s4', label: 'よじじゅくご①', kanji: [...'石心転差老'] },
+  { id: 'g10s8', label: 'よじじゅくご②', kanji: [...'伝色期業弱'] },
+  { id: 'g10s9', label: 'よじじゅくご③', kanji: [...'進器機賛異'] },
+  { id: 'g10s10', label: 'よじじゅくご④', kanji: [...'故疑髪光命'] },
+  { id: 'g10s11', label: 'よじじゅくご⑤', kanji: [...'変刀優始断'] },
+  { id: 'g10s12', label: 'よじじゅくご⑥', kanji: [...'公創材油回'] },
+  { id: 'g10s13', label: 'よじじゅくご⑦', kanji: [...'奇投乱秋花'] },
+  { id: 'g10s14', label: 'よじじゅくご⑧', kanji: [...'承喜針晴遇'] },
+  { id: 'g10s15', label: 'よじじゅくご⑨', kanji: [...'奔雷骨夢朗'] },
+  { id: 'g10s16', label: 'よじじゅくご⑩', kanji: [...'整尾品博未'] },
+  { id: 'g10s17', label: 'よじじゅくご⑪', kanji: [...'挙質胆周完'] },
 ]
 gradeKanji[10] = MASTER_STAGES.flatMap((s) => s.kanji)
 for (const g of Object.keys(gradeKanji)) console.log(`  学年${g}: ${gradeKanji[g].length}字`)
@@ -439,8 +453,13 @@ let fallbackOnly = 0
 let sentenceCount = 0
 let wordOnlyCount = 0
 for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
-  // マスター級は全常用漢字＋マスター字を「見せてよい字」とする（すべてルビ付きのため）
-  const allowed = g === 10 ? new Set([...cumulative.get(9), ...gradeKanji[10]]) : cumulative.get(g)
+  // マスター級の字は自動生成しない（第19回: 意味説明なしの問題を出さないため。
+  // 手書きバンク MASTER_BANK（全問意味つき）だけを使う。常用と重複する字は通常学年で生成済み）
+  if (g === 10) {
+    for (const ch of gradeKanji[10]) questionedChars.add(ch)
+    continue
+  }
+  const allowed = cumulative.get(g)
   // 低学年ほど「短くて漢字が少ない語」を優先（第11回: 読み・語の難しさがやる気を奪う対策）
   const maxKanjiCount = g <= 2 ? 2 : g <= 4 ? 3 : 99
   const maxKanaLen = g <= 2 ? 7 : g <= 4 ? 9 : 99
@@ -582,19 +601,23 @@ for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
   let terms = []
   let termLabels
   if (g === 10) {
-    // マスター級: テーマ別の固定ステージ（第15回）
+    // マスター級: テーマ別の固定ステージ（第15回、第19回で拡充）
     stages = MASTER_STAGES.map((s) => ({
       id: s.id,
       label: s.label,
       kanji: s.kanji.filter((c) => strokesMap.has(c)),
     })).filter((s) => s.kanji.length > 0)
     const ids = stages.map((s) => s.id)
+    const fishIds = ['g10s1', 'g10s2', 'g10s5', 'g10s6', 'g10s7']
+    const kotowazaIds = ['g10s3']
+    const yojiIds = ['g10s4', 'g10s8', 'g10s9', 'g10s10', 'g10s11', 'g10s12', 'g10s13', 'g10s14', 'g10s15', 'g10s16', 'g10s17']
     terms = [
-      { id: 'g10t1', index: 0, stageIds: ids.filter((id) => id === 'g10s1' || id === 'g10s2') },
-      { id: 'g10t2', index: 1, stageIds: ids.filter((id) => id === 'g10s3' || id === 'g10s4') },
-      { id: 'g10t3', index: 2, stageIds: ids },
+      { id: 'g10t1', index: 0, stageIds: ids.filter((id) => fishIds.includes(id)) },
+      { id: 'g10t2', index: 1, stageIds: ids.filter((id) => kotowazaIds.includes(id)) },
+      { id: 'g10t3', index: 2, stageIds: ids.filter((id) => yojiIds.includes(id)) },
+      { id: 'g10t4', index: 3, stageIds: ids },
     ]
-    termLabels = ['さかな', 'ことわざ・四字じゅくご', 'そうまとめ']
+    termLabels = ['さかな・うみのいきもの', 'ことわざ', 'よじじゅくご', 'そうまとめ']
     curriculum.push({ grade: g, kanji: all, stages, terms, termLabels })
     continue
   }

@@ -115,7 +115,17 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     setTries(0)
     void (async () => {
       const progress = await getProgress(profile.id, char)
-      const picked = await questionProvider.pick(char, progress.recentVariantIds)
+      // マスター級（g10〜）のテストでは、意味説明つきの手書き問題を優先して出す（第19回）
+      let picked: Question | null = null
+      if (targetId.startsWith('g10')) {
+        const withMeaning = (await questionProvider.getVariants(char)).filter((v) => v.meaning != null)
+        if (withMeaning.length > 0) {
+          const fresh = withMeaning.filter((v) => !progress.recentVariantIds.includes(v.id))
+          const pool = fresh.length > 0 ? fresh : withMeaning
+          picked = pool[Math.floor(Math.random() * pool.length)]
+        }
+      }
+      if (!picked) picked = await questionProvider.pick(char, progress.recentVariantIds)
       if (!alive) return
       setQuestion(picked)
       if (picked) await recordRecentVariant(profile.id, char, picked.id)
