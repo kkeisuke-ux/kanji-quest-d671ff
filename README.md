@@ -28,9 +28,20 @@ PCではマウスでも書ける（開発用に pointerType 'mouse' を許可し
 2. iPadのSafariで `http://<PCのIPアドレス>:4173/` を開く
 3. 共有ボタン →「ホーム画面に追加」でアプリのように起動できる（横向き推奨）
 
-**Service Worker（完全オフライン化）についての注意**: Service WorkerはHTTPSまたはlocalhostでのみ有効。LAN上の `http://192.168.x.x` ではSWが登録されず、オフラインキャッシュだけが無効になる（**アプリ機能とIndexedDB保存はすべて動作する**）。完全なオフラインPWAにしたい場合は次のいずれかを推奨:
-- GitHub Pages / Cloudflare Pages 等の静的ホスティングに dist/ を置く（HTTPSになる。データは端末内のみで外部送信はない）
-- mkcert等でローカルHTTPSを立てる（iPadへのCA証明書インストールが必要）
+**Service Worker（完全オフライン化）についての注意**: Service WorkerはHTTPSまたはlocalhostでのみ有効。LAN上の `http://192.168.x.x` ではSWが登録されず、オフラインキャッシュだけが無効になる（**アプリ機能とIndexedDB保存はすべて動作する**）。完全なオフラインPWAにするには下記のGitHub Pages公開を使う。
+
+### URLで公開する（GitHub Pages・推奨）
+
+初回も更新も同じコマンド1つ:
+
+```bash
+npm run deploy   # = node scripts/deploy-pages.mjs
+```
+
+リポジトリ作成（public）→ main push → ビルド → gh-pagesへdist配置 → Pages有効化 → 公開URL確認まで自動で行う。
+公開URL: `https://<GitHubアカウント名>.github.io/kanji-quest/`
+HTTPSなのでService Workerが有効になり、iPadで「ホーム画面に追加」すれば完全なオフラインPWAとして動く。
+アプリはサーバーにデータを送らない（学習データは各端末のIndexedDBのみ）。コードとKanjiVG由来データ（CC BY-SA 3.0）が公開リポジトリに置かれる。
 
 ### バックアップ
 
