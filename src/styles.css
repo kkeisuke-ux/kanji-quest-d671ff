@@ -1549,6 +1549,16 @@ body {
   display: flex;
   gap: 7px;
   flex-wrap: wrap;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.debug-grade-select {
+  font-family: inherit;
+  font-size: 15px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 2px solid var(--line);
 }
 
 .debug-main {

@@ -8,6 +8,7 @@ import { GAME_CONFIG } from '../config/gameConfig'
 import type { KanjiEvaluation } from '../core/judge/evaluate'
 import type { InkStroke } from '../core/ink/types'
 import { hasRefKanji } from '../core/refdata'
+import { findStageOfChar } from '../data/curriculum'
 import { awardCoinsFor } from '../game/logic'
 import { BuddyCorner } from '../learn/BuddyCorner'
 import { TraceStep, type TraceMode } from '../learn/TraceStep'
@@ -112,7 +113,34 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
     setPhase('practice')
   }
 
+  // 復習した漢字が入っているテストへすぐ行けるボタン（2026-08-08 第7回）
+  const testJumpButton = (forChar: string, big = false) => {
+    const hit = findStageOfChar(forChar)
+    if (!hit) return null
+    if (source === 'stage') {
+      return (
+        <Button
+          size={big ? 'lg' : 'sm'}
+          variant={big ? 'accent' : 'secondary'}
+          onClick={() => navigate({ name: 'stageTest', stageId: hit.stage.id })}
+        >
+          「{forChar}」が でる ５もんテストを うける
+        </Button>
+      )
+    }
+    return (
+      <Button
+        size={big ? 'lg' : 'sm'}
+        variant={big ? 'accent' : 'secondary'}
+        onClick={() => navigate({ name: 'termTest', termId: hit.term.id })}
+      >
+        「{forChar}」が でる まとめテストを うける
+      </Button>
+    )
+  }
+
   if (phase === 'allDone') {
+    const lastChar = list[list.length - 1]
     return (
       <div className="screen">
         <TopBar title={title} back={{ name: 'unknownList' }} />
@@ -125,10 +153,11 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
                 <KanjiChip key={k} char={k} state="practiced" />
               ))}
             </div>
-            <p className="tile-sub">テストで せいかいすると リストから きえるよ</p>
+            <p className="tile-sub">テストで せいかいすると リストから きえるよ。さっそく ちょうせんしてみよう！</p>
             <div className="result-actions">
-              <Button size="lg" variant="accent" onClick={() => navigate({ name: 'unknownList' })}>
-                つぎへ！
+              {testJumpButton(lastChar, true)}
+              <Button size="sm" variant="ghost" onClick={() => navigate({ name: 'unknownList' })}>
+                リストに もどる
               </Button>
             </div>
           </div>
@@ -149,6 +178,7 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
               <Button size="lg" variant="accent" onClick={gotoNextChar}>
                 つぎの漢字「{nextChar}」を ふくしゅうする（あと{list.length - index - 1}字）
               </Button>
+              {testJumpButton(char)}
               <Button size="sm" variant="ghost" onClick={() => navigate({ name: 'unknownList' })}>
                 きょうは ここまで
               </Button>

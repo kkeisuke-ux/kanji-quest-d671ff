@@ -1,7 +1,7 @@
 // プロフィール選択（起動画面）。最大5人、データは完全分離（仕様 §29）。
 import { useState } from 'react'
 import { setStrictnessRuntime } from '../config/judgeRuntime'
-import { GRADE_LABELS, gradeLabelOf } from '../data/curriculum'
+import { GRADE_OPTIONS, gradeLabelOf } from '../data/curriculum'
 import { useAsyncData } from '../state/hooks'
 import { bumpData, navigate, selectProfile } from '../state/store'
 import { MAX_PROFILES, createProfile, deleteProfileDeep, listProfiles, saveProfile } from '../storage/repo'
@@ -56,13 +56,13 @@ export function ProfileSelect() {
 
   const gradePicker = (
     <div className="grade-picker">
-      {GRADE_LABELS.map((label, i) => (
+      {GRADE_OPTIONS.map((opt) => (
         <button
-          key={label}
-          className={`grade-btn ${grade === i + 1 ? 'grade-btn-on' : ''}`}
-          onClick={() => setGrade(i + 1)}
+          key={opt.value}
+          className={`grade-btn ${grade === opt.value ? 'grade-btn-on' : ''}`}
+          onClick={() => setGrade(opt.value)}
         >
-          {label}
+          {opt.label}
         </button>
       ))}
     </div>

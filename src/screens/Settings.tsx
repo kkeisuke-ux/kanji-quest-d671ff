@@ -148,7 +148,12 @@ export function Settings() {
             <a href="https://kanjivg.tagaini.net" target="_blank" rel="noreferrer">
               kanjivg.tagaini.net
             </a>
-            ）を Creative Commons Attribution-Share Alike 3.0 ライセンスに基づき使用しています。
+            ）を CC BY-SA 3.0 に基づき使用。学年配当・読み: KANJIDIC2、穴埋め問題の単語: JMdict（いずれも
+            <a href="https://www.edrdg.org/" target="_blank" rel="noreferrer">
+              EDRDG
+            </a>
+            の辞書ファイルを同グループのライセンス＝CC BY-SA 4.0 に基づき使用）。ふりがな分割: JmdictFurigana プロジェクト。
+            中学の漢字はKANJIDIC2の頻度情報に基づく独自編成です（公式の学年別配当はありません）。
           </p>
         </Card>
       </div>

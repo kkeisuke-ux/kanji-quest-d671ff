@@ -74,7 +74,7 @@ export function Home() {
   const recommend = targetStage
     ? targetStage.practiced
       ? {
-          text: `${gradeName}　${targetStage.stage.label}の ５もんテストで 100点を めざそう！`,
+          text: `${gradeName}　${targetStage.stage.label}「${targetStage.stage.kanji.join('')}」の ５もんテストで 100点を めざそう！`,
           route: { name: 'stageTest', stageId: targetStage.stage.id } as const,
         }
       : {

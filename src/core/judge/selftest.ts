@@ -89,9 +89,17 @@ function toPx(strokes109: Pt[][]): Pt[][] {
   return strokes109.map((s) => s.map((p) => ({ x: p.x * k, y: p.y * k })))
 }
 
+/** 既定は全収録漢字から等間隔サンプル40字（全2,000字超を毎回回すと重いため） */
+function defaultSample(): string[] {
+  const all = listRefKanji()
+  if (all.length <= 40) return all
+  const step = Math.floor(all.length / 40)
+  return Array.from({ length: 40 }, (_, i) => all[i * step])
+}
+
 export function runSelfTest(patch?: JudgeConfigPatch, seed = 20260808, chars?: string[]): SelfTestSummary {
   const cfg = mergeJudgeConfig(DEFAULT_JUDGE_CONFIG, patch)
-  const list = chars ?? listRefKanji()
+  const list = chars ?? defaultSample()
   const results: SelfTestCaseResult[] = []
 
   for (const char of list) {

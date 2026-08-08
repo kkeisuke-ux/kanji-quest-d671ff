@@ -184,9 +184,17 @@ export class LocalQuestionBankProvider implements QuestionProvider {
   }
 }
 
-export const questionProvider: QuestionProvider = new LocalQuestionBankProvider()
+// 自動生成問題（頻出単語の穴埋め。scripts/gen-content.mjs 参照）と手書き問題を併用。
+// 手書き（QUESTION_BANK）が先＝小1検証用20字は上質な手書き問題も出る。
+import genQuestionsJson from './gen/questions.gen.json'
 
-const CHARS_WITH_QUESTIONS = new Set(QUESTION_BANK.map((v) => v.char))
+const GENERATED_BANK = genQuestionsJson as Question[]
+
+export const FULL_BANK: Question[] = [...QUESTION_BANK, ...GENERATED_BANK]
+
+export const questionProvider: QuestionProvider = new LocalQuestionBankProvider(FULL_BANK)
+
+const CHARS_WITH_QUESTIONS = new Set(FULL_BANK.map((v) => v.char))
 
 export function hasQuestions(char: string): boolean {
   return CHARS_WITH_QUESTIONS.has(char)

@@ -3,8 +3,10 @@
 // - 「本当は正解/不正解」の人間ラベル保存（しきい値調整用）
 // - しきい値の編集と保存
 // - 検証ケースA〜Fの自己テスト実行
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Pt } from '../core/geometry'
+import { GRADE_OPTIONS, getCurriculumForGrade } from '../data/curriculum'
+import { hasRefKanji } from '../core/refdata'
 import { strokesToPts, type InkCanvasHandle } from '../core/ink/InkCanvas'
 import type { InkStroke } from '../core/ink/types'
 import { evaluateKanji, type KanjiEvaluation } from '../core/judge/evaluate'
@@ -50,8 +52,12 @@ function DebugOverlay({ ev, strokes, boxSize }: { ev: KanjiEvaluation; strokes: 
 
 export function JudgeDebug() {
   const profileId = useAppState((s) => s.profileId)
-  const chars = listRefKanji()
-  const [char, setChar] = useState(chars[0] ?? '一')
+  const [debugGrade, setDebugGrade] = useState(1)
+  const chars = useMemo(
+    () => getCurriculumForGrade(debugGrade).cur.allKanji.filter((c) => hasRefKanji(c)),
+    [debugGrade]
+  )
+  const [char, setChar] = useState('一')
   const [attempt, setAttempt] = useState(0)
   const [evalResult, setEvalResult] = useState<KanjiEvaluation | null>(null)
   const [lastStrokes, setLastStrokes] = useState<InkStroke[] | null>(null)
@@ -150,6 +156,16 @@ export function JudgeDebug() {
       <TopBar title="判定デバッグ" back={{ name: 'settings' }} />
       <div className="map-scroll debug-scroll">
         <Card>
+          <div className="row gap-sm" style={{ marginBottom: 8 }}>
+            <span className="tile-sub">学年:</span>
+            <select className="debug-grade-select" value={debugGrade} onChange={(e) => setDebugGrade(Number(e.target.value))}>
+              {GRADE_OPTIONS.filter((o) => o.value >= 1).map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}（{getCurriculumForGrade(o.value).cur.allKanji.length}字）
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="debug-chars">
             {chars.map((c) => (
               <button
@@ -281,7 +297,7 @@ export function JudgeDebug() {
         </Card>
 
         <Card>
-          <h3>エンジン自己テスト（検証ケースA〜F × 全{chars.length}字）</h3>
+          <h3>エンジン自己テスト（検証ケースA〜F+X × 全収録からサンプル40字）</h3>
           <p className="tile-sub">
             A:正しく書く→正解 / B:書き順いれかえ→形OK+順序検出 / C:逆方向→形OK+方向検出 / D:1画不足→不正解 / E:1画過多→不正解 /
             F:雑に書く→正解。G(手のひら)・H(指)は「Apple Pencil診断」画面で実機確認。
