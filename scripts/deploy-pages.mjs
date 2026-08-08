@@ -14,7 +14,8 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dirname, '..')
 const DIST = path.join(ROOT, 'dist')
-const REPO = 'kanji-quest'
+// ランダム接尾辞付き = URLを知っている人しか辿り着けない（検索よけは robots.txt + noindex メタで対応）
+const REPO = 'kanji-quest-d671ff'
 
 function run(cmd, args, opts = {}) {
   const res = spawnSync(cmd, args, { encoding: 'utf8', shell: false, ...opts })
@@ -45,7 +46,7 @@ if (!hasRemote) {
   const exists = run('gh', ['repo', 'view', `${OWNER}/${REPO}`], { cwd: ROOT }).code === 0
   if (!exists) {
     console.log('リポジトリを作成してpushします…')
-    must('gh repo create', run('gh', ['repo', 'create', REPO, '--public', '--source=.', '--push', '--description', 'iPad + Apple Pencil向け 手書き漢字学習PWA（かんじクエスト）'], { cwd: ROOT }))
+    must('gh repo create', run('gh', ['repo', 'create', REPO, '--public', '--source=.', '--push'], { cwd: ROOT }))
   } else {
     must('git remote add', run('git', ['remote', 'add', 'origin', `https://github.com/${OWNER}/${REPO}.git`], { cwd: ROOT }))
     must('git push main', run('git', ['push', '-u', 'origin', 'main'], { cwd: ROOT }))
