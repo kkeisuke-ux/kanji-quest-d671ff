@@ -23,20 +23,53 @@ export async function exportAllData(): Promise<string> {
   return JSON.stringify(backup)
 }
 
-export async function downloadBackup(): Promise<void> {
-  const json = await exportAllData()
+function backupFileName(): string {
   const stamp = new Date()
   const pad = (n: number) => String(n).padStart(2, '0')
-  const name = `kanji-quest-backup-${stamp.getFullYear()}${pad(stamp.getMonth() + 1)}${pad(stamp.getDate())}-${pad(stamp.getHours())}${pad(stamp.getMinutes())}.json`
+  return `kanji-quest-backup-${stamp.getFullYear()}${pad(stamp.getMonth() + 1)}${pad(stamp.getDate())}-${pad(stamp.getHours())}${pad(stamp.getMinutes())}.json`
+}
+
+export async function downloadBackup(): Promise<void> {
+  const json = await exportAllData()
   const blob = new Blob([json], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = name
+  a.download = backupFileName()
   document.body.appendChild(a)
   a.click()
   a.remove()
   setTimeout(() => URL.revokeObjectURL(url), 10_000)
+}
+
+/** この端末が共有シート（AirDrop等）でのファイル共有に対応しているか */
+export function canShareBackup(): boolean {
+  try {
+    return (
+      typeof navigator.share === 'function' &&
+      typeof navigator.canShare === 'function' &&
+      navigator.canShare({ files: [new File(['x'], 'x.json', { type: 'application/json' })] })
+    )
+  } catch {
+    return false
+  }
+}
+
+/**
+ * 共有シート（iPadならAirDropが出る）でバックアップを送る（第16回: iPad間ひっこし用）。
+ * 送信成功・ユーザーキャンセルは true、非対応・失敗は false（呼び出し側でファイル書き出しへ誘導）。
+ */
+export async function shareBackup(): Promise<boolean> {
+  if (!canShareBackup()) return false
+  const json = await exportAllData()
+  const file = new File([json], backupFileName(), { type: 'application/json' })
+  if (!navigator.canShare({ files: [file] })) return false
+  try {
+    await navigator.share({ files: [file], title: 'かんじクエストのデータ' })
+    return true
+  } catch (e) {
+    return (e as DOMException)?.name === 'AbortError'
+  }
 }
 
 export interface ImportSummary {
