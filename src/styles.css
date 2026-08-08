@@ -927,6 +927,27 @@ body {
   font-weight: 700;
 }
 
+/* 全部書く問題（四字熟語）: いま書く空欄をハイライト（第20回） */
+.q-box-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(242, 166, 60, 0.35);
+  animation: q-box-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes q-box-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(242, 166, 60, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(242, 166, 60, 0.15);
+  }
+}
+
+.yoji-note b {
+  color: var(--accent-dark);
+}
+
 .dot-green {
   color: #43a047;
 }

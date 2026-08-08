@@ -9,7 +9,7 @@ import { GAME_CONFIG } from '../config/gameConfig'
 import { shuffled } from '../core/geometry'
 import type { KanjiEvaluation } from '../core/judge/evaluate'
 import type { InkStroke } from '../core/ink/types'
-import { questionProvider, type Question } from '../data/questions'
+import { questionProvider, questionWriteChars, type Question } from '../data/questions'
 import { awardCoinsFor, awardStarsFor, checkMilestones } from '../game/logic'
 import { playCorrect, playFinish, playPerfect, playWrong } from '../sound/sound'
 import { useProfile } from '../state/hooks'
@@ -60,6 +60,9 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   const [wrongEval, setWrongEval] = useState<KanjiEvaluation | null>(null)
   const [tries, setTries] = useState(0)
   const [mark, setMark] = useState<'correct' | null>(null)
+  // 「全部書く」問題（四字熟語）の、いま書いている空欄番号（第20回）
+  const [blankIdx, setBlankIdx] = useState(0)
+  const [revealChar, setRevealChar] = useState<string | null>(null)
   const [revealMark, setRevealMark] = useState(false)
   const [resultCoins, setResultCoins] = useState<{ amount: number; breakdown?: CoinBreakdownItem[] } | null>(null)
   const [resultStars, setResultStars] = useState(0)
@@ -113,6 +116,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     setQuestion(null)
     setWrongEval(null)
     setTries(0)
+    setBlankIdx(0)
     void (async () => {
       const progress = await getProgress(profile.id, char)
       // マスター級（g10〜）のテストでは、意味説明つきの手書き問題を優先して出す（第19回）
@@ -125,7 +129,15 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
           picked = pool[Math.floor(Math.random() * pool.length)]
         }
       }
-      if (!picked) picked = await questionProvider.pick(char, progress.recentVariantIds)
+      if (!picked) {
+        // 通常学年のテストには「全部書く」問題（四字熟語）は出さない（第20回）
+        const vs = await questionProvider.getVariants(char)
+        const singles = vs.filter((v) => questionWriteChars(v).length === 1)
+        const basePool = singles.length > 0 ? singles : vs
+        const fresh = basePool.filter((v) => !progress.recentVariantIds.includes(v.id))
+        const pool = fresh.length > 0 ? fresh : basePool
+        picked = pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : null
+      }
       if (!alive) return
       setQuestion(picked)
       if (picked) await recordRecentVariant(profile.id, char, picked.id)
@@ -275,7 +287,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       setMark('correct')
       playCorrect()
       happyBuddy()
-      await saveSample(profile.id, char, ev, strokes, boxSize, 'test')
+      await saveSample(profile.id, currentWriteChar, ev, strokes, boxSize, 'test')
       await applyOutcome(profile.id, char, 'correct', {
         context: 'test',
         orderError: item.orderError,
@@ -284,8 +296,8 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       })
       const removed = await clearUnknown(profile.id, char, kind)
       if (removed) showToast(`「${char}」が わからないリストから きえたよ！`)
-      // 1文字せいかいごとに+1コイン（上部チップに短い獲得アクションが出る。第15回）
-      await awardCoinsFor(profile.id, GAME_CONFIG.coins.testPerKanji, `テスト「${char}」`)
+      // 1文字せいかいごとに+1コイン（全部書く問題は書いた字数ぶん。第15・20回）
+      await awardCoinsFor(profile.id, GAME_CONFIG.coins.testPerKanji * writeChars.length, `テスト「${char}」`)
       await persistSession(chars, index + 1, newItems)
       bumpData()
       window.setTimeout(() => {
@@ -299,14 +311,30 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     }
   }
 
+  // この問題で書く字のならび（四字熟語=4字、ふつうは1字）
+  const writeChars = question ? questionWriteChars(question) : [chars[index]]
+  const currentWriteChar = writeChars[Math.min(blankIdx, writeChars.length - 1)] ?? chars[index]
+
   const handleEvaluated = (ev: KanjiEvaluation, strokes: InkStroke[], boxSize: number) => {
     if (mark || phase !== 'running') return
     if (ev.correctForTest) {
-      void finalizeCorrect(ev, strokes, boxSize)
+      if (blankIdx < writeChars.length - 1) {
+        // 全部書く問題の途中の字が正解 → ○を短く見せて次の空欄へ
+        void saveSample(profile.id, currentWriteChar, ev, strokes, boxSize, 'test')
+        playCorrect()
+        setMark('correct')
+        window.setTimeout(() => {
+          setMark(null)
+          setWrongEval(null)
+          setBlankIdx((i) => i + 1)
+        }, 650)
+      } else {
+        void finalizeCorrect(ev, strokes, boxSize)
+      }
     } else {
       // 不正解: 記録はまだ確定せず、理由を見せて書き直しできるようにする
       playWrong()
-      void saveSample(profile.id, chars[index], ev, strokes, boxSize, 'test')
+      void saveSample(profile.id, currentWriteChar, ev, strokes, boxSize, 'test')
       setWrongEval(ev)
       setTries((t) => t + 1)
     }
@@ -332,6 +360,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       await persistSession(chars, index + 1, newItems)
       bumpData()
       setWrongEval(null)
+      setRevealChar(currentWriteChar) // 全部書く問題では「いま書けなかった字」をなぞる
       setPhase('reveal') // 答えを見て、なぞってから次へ
     } finally {
       busyRef.current = false
@@ -488,7 +517,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   }
 
   if (phase === 'reveal') {
-    const char = chars[index]
+    const char = revealChar ?? chars[index]
     return (
       <div className="screen">
         <TopBar title={`${title}　${index + 1} / ${chars.length}`} back={backRoute} />
@@ -523,9 +552,18 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       <div className="split">
         <div className="split-left">
           {question ? (
-            <QuestionPrompt question={question} answered={mark === 'correct'} />
+            <QuestionPrompt
+              question={question}
+              answered={mark === 'correct' && blankIdx >= writeChars.length - 1}
+              filled={blankIdx}
+            />
           ) : (
             <LoadingView label="もんだいを よういちゅう…" />
+          )}
+          {writeChars.length > 1 && (
+            <p className="test-note yoji-note">
+              四字熟語を <b>ぜんぶ</b> 書こう！　いま {Math.min(blankIdx + 1, writeChars.length)}文字目 / {writeChars.length}文字
+            </p>
           )}
           {!wrongEval && (
             <p className="test-note">
@@ -553,8 +591,8 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
         </div>
         <div className="split-right">
           <WritingPad
-            char={chars[index]}
-            resetKey={`${targetId}-${index}-${tries}`}
+            char={currentWriteChar}
+            resetKey={`${targetId}-${index}-${blankIdx}-${tries}`}
             onEvaluated={handleEvaluated}
             disabled={mark != null}
             overlay={mark === 'correct' ? <JudgeMark kind="correct" /> : null}

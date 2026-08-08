@@ -56,7 +56,7 @@ export function UsageExamples({ char, max = 3 }: { char: string; max?: number })
                 )
               ) : (
                 <ruby key={i} className="usage-ruby usage-target">
-                  {q.char}
+                  {p.blank!.char ?? q.char}
                   <rt>{p.blank!.reading}</rt>
                 </ruby>
               )
