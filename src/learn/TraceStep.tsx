@@ -22,11 +22,13 @@ export function TraceStep({
   mode = 'guided',
   onDone,
   overlay,
+  disabled = false,
 }: {
   char: string
   mode?: TraceMode
   onDone: () => void
   overlay?: React.ReactNode
+  disabled?: boolean
 }) {
   const [strokeIdx, setStrokeIdx] = useState(0)
   const [hint, setHint] = useState<string | null>(null)
@@ -75,11 +77,10 @@ export function TraceStep({
               : `${strokeIdx + 1}画目の かきはじめの ばしょから かこう`
             : 'せんに そって なぞってみよう'
       )
+      // 速書き対応: すぐ消してすぐ書き直せるようにする（遅延消去は書きかけの画を巻き込むため廃止）
+      ink.clear()
       setShake(true)
-      window.setTimeout(() => {
-        ink.clear()
-        setShake(false)
-      }, 420)
+      window.setTimeout(() => setShake(false), 380)
     }
   }
 
@@ -108,6 +109,7 @@ export function TraceStep({
       <InkCanvas
         inkRef={inkRef}
         showGrid
+        disabled={disabled}
         allowTouchInk={getAppFlags().allowTouchInk}
         onStrokeEnd={handleStroke}
         className="pad-box"

@@ -12,13 +12,15 @@ import { findStageOfChar } from '../data/curriculum'
 import { awardCoinsFor } from '../game/logic'
 import { BuddyCorner } from '../learn/BuddyCorner'
 import { TraceStep, type TraceMode } from '../learn/TraceStep'
+import { UsageExamples } from '../learn/UsageExamples'
 import { WritingPad } from '../learn/WritingPad'
 import { saveSample } from '../learn/sampleUtil'
 import { playCoins, playCorrect, playWrong } from '../sound/sound'
 import { useAsyncData } from '../state/hooks'
 import { bumpData, navigate, showToast, useAppState } from '../state/store'
-import { listUnknown, markUnknownReviewed } from '../storage/repo'
+import { clearUnknown, listUnknown, markUnknownReviewed } from '../storage/repo'
 import { Button, KanjiChip, LoadingView, TopBar } from '../ui/components'
+import { CoinReward } from '../ui/CoinReward'
 import { JudgeMark } from '../ui/JudgeMark'
 import { KanjiSvg } from '../ui/KanjiSvg'
 
@@ -68,9 +70,11 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
 
   const completeChar = async () => {
     await markUnknownReviewed(profileId, char)
+    // ふくしゅうを やりきったら リストから消す（第12回: テスト正解を待たずに解除）
+    await clearUnknown(profileId, char, source)
     await awardCoinsFor(profileId, GAME_CONFIG.coins.reviewPerCorrect, `ふくしゅう「${char}」`)
     playCoins()
-    showToast(`「${char}」ふくしゅうかんりょう！ +${GAME_CONFIG.coins.reviewPerCorrect}コイン`)
+    showToast(`「${char}」ふくしゅうかんりょう！`)
     bumpData()
     setPhase(index + 1 >= list.length ? 'allDone' : 'charDone')
   }
@@ -91,7 +95,7 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
     window.setTimeout(() => {
       setTraceMark(false)
       nextRound()
-    }, 950)
+    }, 750)
   }
 
   const onWriteEvaluated = async (ev: KanjiEvaluation, strokes: InkStroke[], size: number) => {
@@ -153,7 +157,8 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
                 <KanjiChip key={k} char={k} state="practiced" />
               ))}
             </div>
-            <p className="tile-sub">テストで せいかいすると リストから きえるよ。さっそく ちょうせんしてみよう！</p>
+            <CoinReward amount={GAME_CONFIG.coins.reviewPerCorrect} />
+            <p className="tile-sub">ふくしゅうした漢字は リストから きえたよ！ こんどは テストで 100点に ちょうせんしよう！</p>
             <div className="result-actions">
               {testJumpButton(lastChar, true)}
               <Button size="sm" variant="ghost" onClick={() => navigate({ name: 'unknownList' })}>
@@ -174,6 +179,8 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
         <div className="center-panel">
           <div className="card result-main">
             <div className="result-score">「{char}」の ふくしゅう おわり！</div>
+            <p className="tile-sub">「{char}」は リストから きえたよ！</p>
+            <CoinReward amount={GAME_CONFIG.coins.reviewPerCorrect} />
             <div className="result-actions">
               <Button size="lg" variant="accent" onClick={gotoNextChar}>
                 つぎの漢字「{nextChar}」を ふくしゅうする（あと{list.length - index - 1}字）
@@ -208,6 +215,7 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
           <div className="model-note card">
             <p>{isWrite ? 'おもいだして かいてみよう。' : 'ガイドに そって なぞろう。'}</p>
           </div>
+          <UsageExamples char={char} />
           {evalResult && !evalResult.correctForTest && (
             <div className="feedback fb-wrong">
               <div className="feedback-icon">×</div>
@@ -259,6 +267,7 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
               char={char}
               mode={roundKind as TraceMode}
               onDone={onTraceDone}
+              disabled={traceMark}
               overlay={traceMark ? <JudgeMark kind="correct" /> : null}
             />
           )}

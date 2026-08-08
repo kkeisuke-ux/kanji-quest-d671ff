@@ -112,7 +112,7 @@ src/
     remoteQuestions.ts RemoteQuestionPackProviderの骨組み（将来拡張・安全制約明記）
     species.ts        仲間16系列38形態（完全オリジナル）
   game/
-    logic.ts          ガチャ・EXP・レベル・進化・スター・マイルストーン
+    logic.ts          ガチャ・スター育成（レベル=姿）・報酬付与・マイルストーン
     sprites.tsx       パラメトリックSVGスプライト（後から画像に差し替え可能）
   storage/
     db.ts / models.ts / repo.ts / backup.ts   IndexedDB（12ストア）

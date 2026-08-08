@@ -280,10 +280,6 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     }
   }
 
-  const retryWrite = () => {
-    setWrongEval(null)
-  }
-
   const handleUnknown = async () => {
     if (busyRef.current || mark) return
     busyRef.current = true
@@ -318,7 +314,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       setRevealMark(false)
       setPhase('running')
       advance(itemsRef.current)
-    }, 950)
+    }, 750)
   }
 
   const restartTest = async () => {
@@ -480,6 +476,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
               char={char}
               mode="numbers"
               onDone={revealDone}
+              disabled={revealMark}
               overlay={revealMark ? <JudgeMark kind="correct" /> : null}
             />
           </div>
@@ -511,8 +508,9 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
                   <li key={i}>{m}</li>
                 ))}
               </ul>
+              {/* ×でもパッドはすぐ書ける状態に戻っている（第12回: 正解するまで何度でも書き直せる） */}
+              <p className="feedback-retry-note">そのまま もういちど かいて だいじょうぶだよ！</p>
               <div className="row gap">
-                <Button onClick={retryWrite}>もういちど かく</Button>
                 <Button variant="secondary" onClick={() => void handleUnknown()}>
                   こたえを みる
                 </Button>
@@ -526,8 +524,8 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
             char={chars[index]}
             resetKey={`${targetId}-${index}-${tries}`}
             onEvaluated={handleEvaluated}
-            disabled={mark != null || wrongEval != null}
-            overlay={mark === 'correct' ? <JudgeMark kind="correct" /> : wrongEval ? <JudgeMark kind="wrong" /> : null}
+            disabled={mark != null}
+            overlay={mark === 'correct' ? <JudgeMark kind="correct" /> : null}
             extraFooter={
               <Button variant="secondary" size="sm" onClick={() => void handleUnknown()} disabled={mark != null}>
                 こたえを みる

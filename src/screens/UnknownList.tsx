@@ -1,16 +1,11 @@
 // わからなかった漢字リスト（2026-08-08 第6回で出どころ別に分離）。
 // - ５もんテストで わからなかった漢字 / まとめテストで わからなかった漢字
-// - ふくしゅうずみ／まだ が分かる
-// - リストから消えるのは、その出どころのテストで正解したときだけ
+// - ふくしゅうを やりきる、またはその出どころのテストで正解すると消える（第12回で変更）
 import type { UnknownKanjiRecord } from '../storage/models'
 import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
 import { listUnknown, type UnknownSource } from '../storage/repo'
 import { Button, Card, LoadingView, TopBar } from '../ui/components'
-
-function isReviewed(u: UnknownKanjiRecord): boolean {
-  return u.lastReviewedAt != null && u.lastReviewedAt >= u.lastFailedAt
-}
 
 function Section({
   title,
@@ -45,9 +40,6 @@ function Section({
           {items.map((u) => (
             <div key={u.char} className="unknown-card card">
               <span className="unknown-char">{u.char}</span>
-              <span className={`unknown-reviewed ${isReviewed(u) ? 'is-reviewed' : ''}`}>
-                {isReviewed(u) ? 'ふくしゅうずみ' : 'まだ ふくしゅうしていない'}
-              </span>
               <Button size="sm" variant="secondary" onClick={() => navigate({ name: 'review', source, chars: [u.char] })}>
                 この字を ふくしゅう
               </Button>
@@ -75,13 +67,13 @@ export function UnknownList() {
       <div className="map-scroll">
         <Section
           title="５もんテストで わからなかった漢字"
-          clearHint="つぎに ５もんテストで せいかいすると、ここから きえるよ"
+          clearHint="ふくしゅうすると ここから きえるよ（５もんテストで せいかいしても きえるよ）"
           source="stage"
           items={data.stage}
         />
         <Section
           title="まとめテストで わからなかった漢字"
-          clearHint="つぎに まとめテストで せいかいすると、ここから きえるよ"
+          clearHint="ふくしゅうすると ここから きえるよ（まとめテストで せいかいしても きえるよ）"
           source="term"
           items={data.term}
         />

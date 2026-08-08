@@ -11,12 +11,12 @@ import { GAME_CONFIG } from '../config/gameConfig'
 import type { KanjiEvaluation } from '../core/judge/evaluate'
 import type { InkStroke } from '../core/ink/types'
 import { findStage } from '../data/curriculum'
-import { awardCoinsFor } from '../game/logic'
+import { awardCoinsFor, awardStarsFor } from '../game/logic'
 import { BuddyCorner, type BuddyMood } from '../learn/BuddyCorner'
 import { TraceStep, type TraceMode } from '../learn/TraceStep'
 import { WritingPad } from '../learn/WritingPad'
 import { saveSample } from '../learn/sampleUtil'
-import { playCoins, playCorrect, playPerfect, playWrong } from '../sound/sound'
+import { playCorrect, playPerfect, playWrong } from '../sound/sound'
 import { useProfile } from '../state/hooks'
 import { bumpData, navigate, showToast } from '../state/store'
 import {
@@ -28,8 +28,10 @@ import {
   saveProgress,
 } from '../storage/repo'
 import { Button, KanjiChip, LoadingView, TopBar } from '../ui/components'
-import { CoinReward } from '../ui/CoinReward'
+import { CoinReward, StarReward } from '../ui/CoinReward'
+import { UsageExamples } from '../learn/UsageExamples'
 import { JudgeMark } from '../ui/JudgeMark'
+import { StarSplash } from '../ui/StarSplash'
 import { KanjiSvg } from '../ui/KanjiSvg'
 import { StrictnessButton } from '../ui/StrictnessButton'
 
@@ -62,6 +64,7 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
   const [attempt, setAttempt] = useState(0)
   const [evalResult, setEvalResult] = useState<KanjiEvaluation | null>(null)
   const [stageDone, setStageDone] = useState(false)
+  const [kanjiSplash, setKanjiSplash] = useState(false)
   const [traceMark, setTraceMark] = useState(false)
   const [buddyMood, setBuddyMood] = useState<BuddyMood>('idle')
   const busyRef = useRef(false)
@@ -142,11 +145,12 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
     const progress = await getProgress(profile.id, char)
     progress.practicedAt = Date.now()
     await saveProgress(progress)
-    // 1文字れんしゅうかんりょう → +10コイン（画面アクションで分かるように音＋トースト）
+    // 1文字れんしゅうかんりょう → コイン＋スター（スターは大きな獲得演出で見せる。第11回）
     await awardCoinsFor(profile.id, GAME_CONFIG.coins.practicePerKanji, `れんしゅう「${char}」`)
-    playCoins()
-    showToast(`「${char}」かんりょう！ +${GAME_CONFIG.coins.practicePerKanji}コイン`)
+    await awardStarsFor(profile.id, GAME_CONFIG.starRewards.practiceKanji)
     if (kanjiIdx + 1 >= stage.kanji.length) {
+      // ステージ5文字コンプリートのボーナススター
+      await awardStarsFor(profile.id, GAME_CONFIG.starRewards.practiceStage)
       await deletePracticeSession(profile.id, stageId)
       await addActivity(profile.id, profile.name, 'stageClear', `${profile.name}が ${stage.label}の れんしゅうを おえました`)
       bumpData()
@@ -155,10 +159,16 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
     } else {
       await persist(kanjiIdx + 1, 0)
       bumpData()
-      setKanjiIdx((i) => i + 1)
-      setRound(0)
-      resetForNext()
+      setKanjiSplash(true)
     }
+  }
+
+  // スプラッシュの「つぎのかんじへ」で次の文字へ進む
+  const nextKanji = () => {
+    setKanjiSplash(false)
+    setKanjiIdx((i) => i + 1)
+    setRound(0)
+    resetForNext()
   }
 
   const completeRound = async () => {
@@ -191,12 +201,13 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
       await saveProgress(progress)
       bumpData()
     } finally {
+      // ○表示は短め（750ms）にしてテンポよく次へ（2026-08-08 第10回: 認識・反応の速さ改善）
       window.setTimeout(() => {
         setTraceMark(false)
         void completeRound().finally(() => {
           busyRef.current = false
         })
-      }, 950)
+      }, 750)
     }
   }
 
@@ -237,6 +248,10 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
                 <KanjiChip key={k} char={k} state="practiced" />
               ))}
             </div>
+            <StarReward
+              amount={GAME_CONFIG.starRewards.practiceKanji + GAME_CONFIG.starRewards.practiceStage}
+              note={`ステージ ぜんぶ クリア ボーナス！（かんじ1つごとに ⭐${GAME_CONFIG.starRewards.practiceKanji}も もらったよ）`}
+            />
             <CoinReward amount={stage.kanji.length * GAME_CONFIG.coins.practicePerKanji} />
             <div className="result-actions">
               <Button size="lg" variant="accent" onClick={() => navigate({ name: 'stageTest', stageId })}>
@@ -293,6 +308,7 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
               </p>
             ))}
           </div>
+          <UsageExamples char={char} />
           {evalResult && !evalResult.correctForTest && (
             <div className={`feedback fb-${evalResult.verdict}`}>
               <div className="feedback-icon">×</div>
@@ -353,11 +369,21 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
               char={char}
               mode={traceMode}
               onDone={() => void onTraceDone()}
+              disabled={traceMark}
               overlay={traceMark ? <JudgeMark kind="correct" /> : null}
             />
           )}
         </div>
       </div>
+      {kanjiSplash && (
+        <StarSplash
+          char={char}
+          stars={GAME_CONFIG.starRewards.practiceKanji}
+          coins={GAME_CONFIG.coins.practicePerKanji}
+          remain={stage.kanji.length - (kanjiIdx + 1)}
+          onNext={nextKanji}
+        />
+      )}
     </div>
   )
 }

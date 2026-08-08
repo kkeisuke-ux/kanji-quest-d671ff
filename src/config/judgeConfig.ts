@@ -95,7 +95,8 @@ export const DEFAULT_JUDGE_CONFIG: JudgeConfig = {
     // 2026-08-08変更: 書き順・書く方向が違う場合は○にしない（正しく書けるまでリトライ）。
     // 字形のきびしさとは独立（字形はSTRICTNESSで調整、書き順は常に判定）。
     orderStrictInTests: true,
-    autoJudgeDelayMs: 700,
+    // 画数が揃ってから自動判定までの待ち。短いほど反応が速い（2026-08-08 700→450に短縮）
+    autoJudgeDelayMs: 450,
   },
   samples: {
     keepMax: 400,

@@ -127,14 +127,22 @@ const words = new Map() // word -> {reading, score}
     if (keb.includes('々')) continue
     const reb = e.match(/<reb>(.*?)<\/reb>/)?.[1]
     if (!reb) continue
+    // 「ふつうは かな書き」の語（強ち・一に等）は漢字書き取りの題材に不向きなので除外
+    if (e.includes('<misc>&uk;</misc>')) continue
     const pris = [...e.matchAll(/<(?:ke|re)_pri>(.*?)<\/(?:ke|re)_pri>/g)].map((m) => m[1])
-    let score = 0
+    // 子ども適合の優先度（第11回フィードバック）:
+    // ichi（日常基本語彙リスト由来）を新聞頻出語（news=大人向けに偏る）より大幅に優先する
+    let ichi = 0
+    let other = 0
     for (const p of pris) {
-      if (/^(news1|ichi1|spec1|gai1)$/.test(p)) score = Math.max(score, 3)
-      else if (/^(news2|spec2|ichi2)$/.test(p)) score = Math.max(score, 2)
-      else if (/^nf(\d\d)$/.test(p)) score = Math.max(score, Number(p.slice(2)) <= 24 ? 2 : 1)
+      if (p === 'ichi1') ichi = Math.max(ichi, 2)
+      else if (p === 'ichi2') ichi = Math.max(ichi, 1)
+      else if (/^(news1|spec1|gai1)$/.test(p)) other = Math.max(other, 3)
+      else if (/^(news2|spec2)$/.test(p)) other = Math.max(other, 2)
+      else if (/^nf(\d\d)$/.test(p)) other = Math.max(other, Number(p.slice(2)) <= 24 ? 2 : 1)
     }
-    if (score < 2) continue
+    if (ichi === 0 && other < 2) continue
+    const score = ichi * 5 + other
     const prev = words.get(keb)
     if (!prev || score > prev.score) words.set(keb, { reading: reb, score })
   }
@@ -152,17 +160,67 @@ console.log(`  ${furigana.size}件`)
 
 // ---------- 6. 漢字→単語候補 ----------
 console.log('問題候補を組み立て中…')
-const candidates = new Map() // char -> [{word, segs, segIdx, rt, score, len}]
+
+// その漢字の常用の音訓（KANJIDIC2）にある読みか？（第11回: 難読・特殊読みの語を後回しにする）
+// 連濁（かみ→がみ）と促音便（がく→がっ）は同じ読みとみなす。
+const DAKU = 'がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ'
+const SEION = 'かきくけこさしすせそたちつてとはひふへほはひふへほ'
+const dedaku = (s) => {
+  const i = DAKU.indexOf(s[0])
+  return i >= 0 ? SEION[i] + s.slice(1) : s
+}
+function readingFamiliar(ch, rt) {
+  const info = kanjiInfo.get(ch)
+  if (!info || !rt) return false
+  const variants = new Set([rt, dedaku(rt)])
+  const prefixes = new Set()
+  if (rt.endsWith('っ')) {
+    prefixes.add(rt.slice(0, -1))
+    prefixes.add(dedaku(rt).slice(0, -1))
+  }
+  const readings = []
+  for (const kun of info.kun) {
+    const clean = kun.replace(/-/g, '')
+    readings.push(clean.includes('.') ? clean.split('.')[0] : clean)
+  }
+  for (const on of info.on) readings.push(kataToHira(on.replace(/-/g, '')))
+  for (const r of readings) {
+    if (!r) continue
+    if (variants.has(r)) return true
+    for (const p of prefixes) if (p && r.startsWith(p)) return true
+  }
+  return false
+}
+
+const candidates = new Map() // char -> [{word, segs, segIdx, rt, score, len, kanaLen, kanjiCount, rOk}]
 for (const [word, { reading, score }] of words) {
   const segs = furigana.get(`${word}|${reading}`)
   if (!segs) continue
+  let kanjiCount = 0
+  let kanaLen = 0
+  for (const seg of segs) {
+    kanaLen += seg.rt ? seg.rt.length : seg.ruby.length
+    for (const k of seg.ruby) if (isKanji(k)) kanjiCount++
+  }
+  const hasKata = /[ァ-ヶ]/.test(word)
   for (let i = 0; i < segs.length; i++) {
     const seg = segs[i]
     if (!seg.rt || seg.ruby.length !== 1 || !isKanji(seg.ruby)) continue
     const ch = seg.ruby
     if (!strokesMap.has(ch)) continue
     if (!candidates.has(ch)) candidates.set(ch, [])
-    candidates.get(ch).push({ word, segs, segIdx: i, rt: seg.rt, score, len: word.length })
+    candidates.get(ch).push({
+      word,
+      segs,
+      segIdx: i,
+      rt: seg.rt,
+      score,
+      len: word.length,
+      kanaLen,
+      kanjiCount,
+      hasKata,
+      rOk: readingFamiliar(ch, seg.rt) ? 0 : 1,
+    })
   }
 }
 
@@ -183,9 +241,14 @@ const questions = []
 let fallbackOnly = 0
 for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
   const allowed = cumulative.get(g)
+  // 低学年ほど「短くて漢字が少ない語」を優先（第11回: 読み・語の難しさがやる気を奪う対策）
+  const maxKanjiCount = g <= 2 ? 2 : g <= 4 ? 3 : 99
+  const maxKanaLen = g <= 2 ? 7 : g <= 4 ? 9 : 99
   for (const ch of gradeKanji[g]) {
     const cands = (candidates.get(ch) ?? [])
       .filter((c) => {
+        // カタカナ混じり語（カリブ海等の固有名詞・外来語）は小4以下では出さない
+        if (g <= 4 && c.hasKata) return false
         for (let i = 0; i < c.segs.length; i++) {
           if (i === c.segIdx) continue
           for (const k of c.segs[i].ruby) {
@@ -203,19 +266,28 @@ for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
             if (isKanji(k)) maxOther = Math.max(maxOther, gradeOf.get(k) ?? 9)
           }
         }
-        return { ...c, maxOther }
+        // 学年オーバーの長さ・漢字数・カタカナ混じりは除外はせず後回し（候補が少ない字の救済）
+        const lenOver = c.kanjiCount > maxKanjiCount || c.kanaLen > maxKanaLen || c.hasKata ? 1 : 0
+        return { ...c, maxOther, lenOver }
       })
-      // やさしい語から: 他の漢字の学年が低い → 頻度が高い → 短い
-      .sort((a, b) => a.maxOther - b.maxOther || b.score - a.score || a.len - b.len)
+      // やさしい語から: 他の漢字の学年が低い → 常用の読み → 学年相応の長さ →
+      // 日常語スコアが高い → 短い
+      .sort(
+        (a, b) =>
+          a.maxOther - b.maxOther || a.rOk - b.rOk || a.lenOver - b.lenOver || b.score - a.score || a.len - b.len
+      )
     const picked = []
     const usedReadings = new Set()
     const usedWords = new Set()
-    // 読みの多様性を優先して5問
-    for (const pass of [0, 1]) {
+    // 読みの多様性を優先して5問。ただし常用外の読み(rOk)・学年オーバー(lenOver)の語は
+    // ふつうの語で埋まらなかった時の穴埋めにだけ使う（第11回: 難読語がやる気を奪う対策）
+    for (const pass of [0, 1, 2, 3]) {
       for (const c of cands) {
         if (picked.length >= 5) break
         if (usedWords.has(c.word)) continue
-        if (pass === 0 && usedReadings.has(c.rt)) continue
+        if (pass === 0 && (usedReadings.has(c.rt) || c.rOk || c.lenOver)) continue
+        if (pass === 1 && (c.rOk || c.lenOver)) continue
+        if (pass === 2 && c.rOk) continue
         picked.push(c)
         usedWords.add(c.word)
         usedReadings.add(c.rt)

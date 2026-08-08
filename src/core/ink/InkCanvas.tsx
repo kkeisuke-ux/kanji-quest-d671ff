@@ -155,11 +155,10 @@ export function InkCanvas(props: Props) {
     if (!inkRef) return
     inkRef.current = {
       clear() {
+        // 確定済みストロークのみ消す。書いている最中の画は殺さない
+        // （速書き時に「消去タイマー」が書きかけの画を破棄して反応しなくなる問題の対策）
         strokesRef.current = []
-        currentRef.current = null
-        activeIdRef.current = null
         diagRef.current.strokeCount = 0
-        diagRef.current.currentStrokePoints = 0
         redrawAll()
         cbRef.current.onInkChange?.([])
         flushDiag()
@@ -224,8 +223,11 @@ export function InkCanvas(props: Props) {
       flushDiag()
       return
     }
-    // すでに他のポインタで書いている最中は無視（2本目のペン・指を弾く）
-    if (activeIdRef.current !== null) return
+    // 前のストロークが開きっぱなし（速いペン運びでpointerupを取り逃した等）なら、
+    // ここで確定させてから新しい画を始める。以前は無視していたため、
+    // 一度でもupを逃すと以降のペン入力が全部効かなくなっていた（速書きで反応しない問題）。
+    // ※ touchは上で弾いているので、ここに来るのは実質1本のペン（またはdevのマウス）のみ。
+    if (activeIdRef.current !== null) finishStroke(false)
 
     activeIdRef.current = e.pointerId
     rectRef.current = canvasRef.current!.getBoundingClientRect()
@@ -323,6 +325,12 @@ export function InkCanvas(props: Props) {
     finishStroke(true)
   }
 
+  // キャプチャがブラウザ側の都合で奪われた場合の保険（通常のup後はactiveIdがnullなので何もしない）
+  const onLostCapture = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (e.pointerId !== activeIdRef.current) return
+    finishStroke(false)
+  }
+
   return (
     <div
       ref={wrapRef}
@@ -345,6 +353,7 @@ export function InkCanvas(props: Props) {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerCancel}
+        onLostPointerCapture={onLostCapture}
         style={{ position: 'relative', display: 'block', width: '100%', touchAction: 'none' }}
       />
       {overlay && <div className="ink-layer ink-layer-top">{overlay}</div>}
