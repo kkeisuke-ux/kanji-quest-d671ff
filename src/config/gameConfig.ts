@@ -15,8 +15,10 @@
 // - スターの主な入手は「れんしゅう・テスト」、コインは「ガチャ・スター買い足し」用
 export const GAME_CONFIG = {
   coins: {
-    /** 1文字のれんしゅう（5回コース）を完了 */
-    practicePerKanji: 2,
+    /** 1文字のれんしゅう（5回コース）を完了（第15回: 全モード1文字=1コインに統一） */
+    practicePerKanji: 1,
+    /** テスト（5問・まとめ共通）で1文字せいかい */
+    testPerKanji: 1,
     /** ５もんテストで100点 */
     stageTestPerfectBonus: 10,
     /** まとめテストで100点 */

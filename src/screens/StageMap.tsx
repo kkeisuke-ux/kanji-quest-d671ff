@@ -1,5 +1,5 @@
 // れんしゅうマップ: 学習済みの場所が視覚的に分かる（仕様 §1, §16）。
-import { getCurriculumForGrade, termLabel } from '../data/curriculum'
+import { getCurriculumForGrade, termDisplayLabel } from '../data/curriculum'
 import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
 import { getProfile, listProgress, listTestResults, listUnknown } from '../storage/repo'
@@ -59,7 +59,7 @@ export function StageMap() {
         {cur.terms.map((term) => {
           return (
             <section key={term.id} className="term-section">
-              <h2 className="term-title">{termLabel(term.index)}</h2>
+              <h2 className="term-title">{termDisplayLabel(cur, term.index)}</h2>
               {term.stages.length === 0 ? (
                 <Card className="stage-card stage-card-empty">じゅんびちゅう…</Card>
               ) : (

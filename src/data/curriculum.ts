@@ -25,6 +25,8 @@ export interface GradeCurriculum {
   terms: TermDef[]
   /** 配当漢字全体 */
   allKanji: string[]
+  /** 期の表示名の上書き（マスター級: さかな／ことわざ・四字じゅくご 等） */
+  termLabels?: string[]
   note?: string
 }
 
@@ -39,9 +41,11 @@ interface GenGrade {
   kanji: string[]
   stages: GenStage[]
   terms: { id: string; index: number; stageIds: string[] }[]
+  termLabels?: string[]
 }
 
 function gradeLabelLong(grade: number): string {
+  if (grade >= 10) return 'マスター'
   return grade <= 6 ? `小学${grade}年` : `中学${grade - 6}年`
 }
 
@@ -51,12 +55,18 @@ export const CURRICULUM: GradeCurriculum[] = (genCurriculum as GenGrade[]).map((
     grade: g.grade,
     gradeLabel: gradeLabelLong(g.grade),
     allKanji: g.kanji,
+    termLabels: g.termLabels,
     terms: g.terms.map((t) => ({
       id: t.id,
       index: t.index,
       stages: t.stageIds.map((id) => stageMap.get(id)).filter((s): s is GenStage => s != null),
     })),
-    note: g.grade >= 7 ? '中学の配当は頻度順の独自編成です（公式の学年別配当はありません）' : undefined,
+    note:
+      g.grade === 10
+        ? 'エキストラ: さかなの漢字・ことわざ・四字熟語（学校の配当外）'
+        : g.grade >= 7
+          ? '中学の配当は頻度順の独自編成です（公式の学年別配当はありません）'
+          : undefined,
   }
 })
 
@@ -74,6 +84,7 @@ export const GRADE_OPTIONS: { value: number; label: string }[] = [
   { value: 7, label: '中1' },
   { value: 8, label: '中2' },
   { value: 9, label: '中3' },
+  { value: 10, label: 'マスター' },
 ]
 
 export function gradeLabelOf(grade: number): string {
@@ -89,6 +100,11 @@ export function getCurriculumForGrade(grade: number): { cur: GradeCurriculum; fa
 
 export function termLabel(index: number): string {
   return GAME_CONFIG.termLabels[index] ?? `第${index + 1}期`
+}
+
+/** 期の表示名（学年ごとの上書きがあればそれを使う。マスター級=さかな 等） */
+export function termDisplayLabel(cur: GradeCurriculum, index: number): string {
+  return cur.termLabels?.[index] ?? termLabel(index)
 }
 
 export function termKanji(term: TermDef): string[] {
@@ -115,10 +131,10 @@ export function findTerm(termId: string): { term: TermDef; cur: GradeCurriculum 
   return null
 }
 
-/** まとめテストの表示名（例: 「1年1学期まとめテスト」「中1・1学期まとめテスト」） */
+/** まとめテストの表示名（例: 「1年1学期まとめテスト」「マスター・さかな まとめテスト」） */
 export function termTestTitle(cur: GradeCurriculum, termIndex: number): string {
   const gradePart = cur.grade >= 1 && cur.grade <= 6 ? `${cur.grade}年` : `${gradeLabelOf(cur.grade)}・`
-  return `${gradePart}${termLabel(termIndex)}まとめテスト`
+  return `${gradePart}${termDisplayLabel(cur, termIndex)}まとめテスト`
 }
 
 /** その漢字が属するステージを探す（配当は学年間で重複しない前提） */

@@ -254,6 +254,8 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       })
       const removed = await clearUnknown(profile.id, char, kind)
       if (removed) showToast(`「${char}」が わからないリストから きえたよ！`)
+      // 1文字せいかいごとに+1コイン（上部チップに短い獲得アクションが出る。第15回）
+      await awardCoinsFor(profile.id, GAME_CONFIG.coins.testPerKanji, `テスト「${char}」`)
       await persistSession(chars, index + 1, newItems)
       bumpData()
       window.setTimeout(() => {

@@ -61,6 +61,7 @@ export function UsageExamples({ char, max = 3 }: { char: string; max?: number })
                 </ruby>
               )
             )}
+            {q.meaning && <span className="usage-meaning">…{q.meaning}</span>}
           </li>
         ))}
       </ul>

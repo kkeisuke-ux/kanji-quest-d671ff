@@ -159,11 +159,12 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
             </div>
             <CoinReward amount={GAME_CONFIG.coins.reviewPerCorrect} />
             <p className="tile-sub">ふくしゅうした漢字は リストから きえたよ！ こんどは テストで 100点に ちょうせんしよう！</p>
+            {/* テストへのボタンは小さめ（第15回: 大きいと間違えて押しやすい） */}
             <div className="result-actions">
-              {testJumpButton(lastChar, true)}
-              <Button size="sm" variant="ghost" onClick={() => navigate({ name: 'unknownList' })}>
+              <Button size="lg" variant="accent" onClick={() => navigate({ name: 'unknownList' })}>
                 リストに もどる
               </Button>
+              {testJumpButton(lastChar)}
             </div>
           </div>
         </div>

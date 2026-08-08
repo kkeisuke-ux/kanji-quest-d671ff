@@ -1,5 +1,5 @@
 // 共通UIコンポーネント。
-import type { ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { navigate, useAppState, type Route } from '../state/store'
 import { getSpecies } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
@@ -21,9 +21,37 @@ export function StatusChips() {
       buddy: buddy && getSpecies(buddy.speciesId) ? { speciesId: buddy.speciesId, stage: buddy.stage, level: buddy.level } : null,
     }
   }, [profileId])
+
+  // コイン・スターが増えたら「+N」を短くポップさせる（第15回: 獲得が分かる短いアクション）
+  const prevRef = useRef<{ id: string; coins: number; stars: number } | null>(null)
+  const [pop, setPop] = useState<{ kind: 'coins' | 'stars'; amount: number; key: number } | null>(null)
+  const coins = data?.coins
+  const stars = data?.stars
+  useEffect(() => {
+    if (coins == null || stars == null || !profileId) return
+    const prev = prevRef.current
+    prevRef.current = { id: profileId, coins, stars }
+    if (!prev || prev.id !== profileId) return
+    const ds = stars - prev.stars
+    const dc = coins - prev.coins
+    if (ds > 0) setPop({ kind: 'stars', amount: ds, key: Date.now() })
+    else if (dc > 0) setPop({ kind: 'coins', amount: dc, key: Date.now() })
+  }, [coins, stars, profileId])
+  useEffect(() => {
+    if (!pop) return
+    const t = window.setTimeout(() => setPop(null), 1100)
+    return () => window.clearTimeout(t)
+  }, [pop])
+
   if (!data) return null
   return (
     <span className="status-chips">
+      {pop && (
+        <span key={pop.key} className={`chip-pop chip-pop-${pop.kind}`} aria-hidden>
+          +{pop.amount}
+          {pop.kind === 'stars' ? '⭐' : '🪙'}
+        </span>
+      )}
       <CoinBadge coins={data.coins} />
       <StarBadge stars={data.stars} />
       {data.buddy && (

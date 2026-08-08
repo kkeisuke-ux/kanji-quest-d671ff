@@ -76,6 +76,17 @@ const gradeKanji = {
   8: joyoRest.slice(third, third * 2),
   9: joyoRest.slice(third * 2),
 }
+// ---------- 2.5 マスター級（エキストラ）テーマ漢字（第15回） ----------
+// さかなへんの漢字（表外）＋ことわざ・四字熟語ゆかりの字。
+// ことわざ・四字熟語の字は常用漢字と重複するが、ステージ構成上の重複のみで
+// 進捗は字単位（共通）のため問題ない。問題文は questions.ts の手書きバンクが担う。
+const MASTER_STAGES = [
+  { id: 'g10s1', label: 'さかな①', kanji: [...'鮭鮪鯖鯛鰯'] },
+  { id: 'g10s2', label: 'さかな②', kanji: [...'鰻鮎鯉鰹鱈'] },
+  { id: 'g10s3', label: 'ことわざ', kanji: [...'兎蛙鳶狸亀'] },
+  { id: 'g10s4', label: 'よじじゅくご', kanji: [...'石心転差老'] },
+]
+gradeKanji[10] = MASTER_STAGES.flatMap((s) => s.kanji)
 for (const g of Object.keys(gradeKanji)) console.log(`  学年${g}: ${gradeKanji[g].length}字`)
 
 // ---------- 3. ストローク（KanjiVG） ----------
@@ -91,7 +102,7 @@ function extractStrokes(svg) {
 }
 const strokesMap = new Map()
 const missingStroke = []
-for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
+for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
   for (const ch of gradeKanji[g]) {
     const hex = ch.codePointAt(0).toString(16).padStart(5, '0')
     const file = path.join(kvDir, `${hex}.svg`)
@@ -251,7 +262,7 @@ const exIndex = new Map() // 語(基本形) -> [exSentencesのindex]
     if (tab < 0) continue
     const jp = lines[i].slice(3, tab)
     // 子ども向けに短めの文だけ。英数字・記号まじりは除外
-    if (jp.length < 4 || jp.length > 26) continue
+    if (jp.length < 4 || jp.length > 30) continue
     if (/[A-Za-zＡ-Ｚａ-ｚ0-9０-９%％&＆@＠]/.test(jp)) continue
     // 子どもに不適切な語（侮蔑・暴力・性的・自傷）を含む文は使わない
     if (/デブ|ブス|バカ|馬鹿|ばかやろ|アホ|クソ|くそっ|死ね|死んで|殺|死体|死刑|処刑|拷問|レイプ|強姦|セックス|エッチ|売春|愛人|不倫|浮気|童貞|処女|麻薬|覚醒剤|拳銃|銃で|爆弾|テロ|人質|誘拐|虐待|いじめ|遺体|地獄/.test(jp)) continue
@@ -423,15 +434,20 @@ for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) for (const ch of gradeKanji[g]) gra
 
 // ---------- 7. 問題生成 ----------
 const questions = []
+const questionedChars = new Set()
 let fallbackOnly = 0
 let sentenceCount = 0
 let wordOnlyCount = 0
-for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
-  const allowed = cumulative.get(g)
+for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+  // マスター級は全常用漢字＋マスター字を「見せてよい字」とする（すべてルビ付きのため）
+  const allowed = g === 10 ? new Set([...cumulative.get(9), ...gradeKanji[10]]) : cumulative.get(g)
   // 低学年ほど「短くて漢字が少ない語」を優先（第11回: 読み・語の難しさがやる気を奪う対策）
   const maxKanjiCount = g <= 2 ? 2 : g <= 4 ? 3 : 99
   const maxKanaLen = g <= 2 ? 7 : g <= 4 ? 9 : 99
   for (const ch of gradeKanji[g]) {
+    // マスター級に常用漢字が重複して入る場合、問題はすでに生成済み（ID衝突回避）
+    if (questionedChars.has(ch)) continue
+    questionedChars.add(ch)
     const cands = (candidates.get(ch) ?? [])
       .filter((c) => {
         // カタカナ混じり語（カリブ海等の固有名詞・外来語）は小4以下では出さない
@@ -455,13 +471,20 @@ for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
         }
         // 学年オーバーの長さ・漢字数・カタカナ混じりは除外はせず後回し（候補が少ない字の救済）
         const lenOver = c.kanjiCount > maxKanjiCount || c.kanaLen > maxKanaLen || c.hasKata ? 1 : 0
-        return { ...c, maxOther, lenOver }
+        // 例文コーパスに文がある語を優先（第15回: 文脈の中で書かせる問題を最大化）
+        const noSent = exIndex.has(c.word) ? 0 : 1
+        return { ...c, maxOther, lenOver, noSent }
       })
-      // やさしい語から: 他の漢字の学年が低い → 常用の読み → 学年相応の長さ →
-      // 日常語スコアが高い → 短い
+      // やさしい語から: 他の漢字の学年が低い → 常用の読み → 例文がある →
+      // 学年相応の長さ → 日常語スコアが高い → 短い
       .sort(
         (a, b) =>
-          a.maxOther - b.maxOther || a.rOk - b.rOk || a.lenOver - b.lenOver || b.score - a.score || a.len - b.len
+          a.maxOther - b.maxOther ||
+          a.rOk - b.rOk ||
+          a.noSent - b.noSent ||
+          a.lenOver - b.lenOver ||
+          b.score - a.score ||
+          a.len - b.len
       )
     const picked = []
     const usedReadings = new Set()
@@ -553,10 +576,28 @@ function chunk(arr, size) {
 }
 
 const curriculum = []
-for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
+for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
   const all = gradeKanji[g]
   let stages = []
   let terms = []
+  let termLabels
+  if (g === 10) {
+    // マスター級: テーマ別の固定ステージ（第15回）
+    stages = MASTER_STAGES.map((s) => ({
+      id: s.id,
+      label: s.label,
+      kanji: s.kanji.filter((c) => strokesMap.has(c)),
+    })).filter((s) => s.kanji.length > 0)
+    const ids = stages.map((s) => s.id)
+    terms = [
+      { id: 'g10t1', index: 0, stageIds: ids.filter((id) => id === 'g10s1' || id === 'g10s2') },
+      { id: 'g10t2', index: 1, stageIds: ids.filter((id) => id === 'g10s3' || id === 'g10s4') },
+      { id: 'g10t3', index: 2, stageIds: ids },
+    ]
+    termLabels = ['さかな', 'ことわざ・四字じゅくご', 'そうまとめ']
+    curriculum.push({ grade: g, kanji: all, stages, terms, termLabels })
+    continue
+  }
   if (g === 1) {
     const rest = all.filter((c) => !legacySet.has(c))
     const restChunks = chunk(rest, 5)
