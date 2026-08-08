@@ -324,12 +324,28 @@ export async function deleteTestSession(profileId: string, testKey: string): Pro
 }
 
 // ---------------- Characters ----------------
-export function listOwned(profileId: string): Promise<OwnedCharacterRecord[]> {
-  return dbIndexAll<OwnedCharacterRecord>('ownedCharacters', 'byProfile', profileId)
+// 旧EXP制→スター制への移行（starsFed未定義のレコードを読み込み時に変換）
+function migrateOwned(rec: OwnedCharacterRecord): boolean {
+  if (rec.starsFed != null) return false
+  const maxLevel = 6
+  rec.level = Math.min(maxLevel, Math.max(1, (rec.stage ?? 0) * 2 + 1))
+  rec.stage = Math.min(2, Math.floor((rec.level - 1) / 2))
+  rec.starsFed = 0
+  return true
 }
 
-export function getOwned(id: number): Promise<OwnedCharacterRecord | undefined> {
-  return dbGet<OwnedCharacterRecord>('ownedCharacters', id)
+export async function listOwned(profileId: string): Promise<OwnedCharacterRecord[]> {
+  const all = await dbIndexAll<OwnedCharacterRecord>('ownedCharacters', 'byProfile', profileId)
+  for (const rec of all) {
+    if (migrateOwned(rec)) await dbPut('ownedCharacters', rec)
+  }
+  return all
+}
+
+export async function getOwned(id: number): Promise<OwnedCharacterRecord | undefined> {
+  const rec = await dbGet<OwnedCharacterRecord>('ownedCharacters', id)
+  if (rec && migrateOwned(rec)) await dbPut('ownedCharacters', rec)
+  return rec
 }
 
 export async function addOwnedCharacter(rec: Omit<OwnedCharacterRecord, 'id'>): Promise<number> {

@@ -1,7 +1,18 @@
-// ゲームロジック: ガチャ・EXP・レベル・進化（仕様 §18〜§28）。
-// 数値はすべて gameConfig.ts で調整する。課金要素はない。
+// ゲームロジック（2026-08-08 第4回フィードバックで全面刷新）。
+// - 育成はシンプルに「スターをあげる」だけ。レベル=姿（上がるたびに見た目が変わる）
+// - 学習はコインだけを生む。コイン→スター→レベルアップの循環
+// - ガチャの重複は「おみやげスター」に変換
 import { GAME_CONFIG } from '../config/gameConfig'
-import { SPECIES, getSpecies, speciesByRarity, type Rarity } from '../data/species'
+import {
+  MAX_LEVEL,
+  SPECIES,
+  getSpecies,
+  nameForLevel,
+  speciesByRarity,
+  stageForLevel,
+  starsNeededFor,
+  type Rarity,
+} from '../data/species'
 import type { OwnedCharacterRecord, Profile } from '../storage/models'
 import {
   addActivity,
@@ -16,94 +27,85 @@ import {
   saveProfile,
 } from '../storage/repo'
 
-export interface ExpGrantEvents {
-  levelsGained: number
+export { MAX_LEVEL, stageForLevel, starsNeededFor }
+
+/** 旧EXP制データをスター制へ移行する（読み込み時に一度だけ） */
+export function normalizeOwned(rec: OwnedCharacterRecord): boolean {
+  if (rec.starsFed != null) return false
+  rec.level = Math.min(MAX_LEVEL, Math.max(1, (rec.stage ?? 0) * 2 + 1))
+  rec.stage = stageForLevel(rec.level)
+  rec.starsFed = 0
+  return true
+}
+
+/** 学習の報酬（コインのみ） */
+export async function awardCoinsFor(profileId: string, coins: number, reason: string): Promise<Profile> {
+  return addCoins(profileId, coins, reason)
+}
+
+export interface FeedStarResult {
+  ok: true
+  leveledUp: boolean
+  fromLevel: number
   newLevel: number
-  /** 進化した場合のみ */
-  evolvedFrom: string | null
-  evolvedTo: string | null
-  newStage: number | null
-  speciesId: string
+  starsFed: number
+  /** 次のレベルまでに必要な残りスター（最大レベルならnull） */
+  starsNeeded: number | null
+  isMax: boolean
 }
 
-export function expToNext(level: number): number {
-  return GAME_CONFIG.levels.expToNext(level)
-}
+export type FeedStarOutcome = FeedStarResult | { ok: false; reason: 'noStars' | 'max' | 'notFound' }
 
-export function evolveLevelsOf(speciesId: string): number[] {
-  const sp = getSpecies(speciesId)
-  return sp?.evolveLevels ?? [...GAME_CONFIG.levels.defaultEvolveLevels]
-}
+/** スターを1個あげる。必要数に達したらレベルアップ（=姿が変わる） */
+export async function feedStar(profileId: string, ownedId: number): Promise<FeedStarOutcome> {
+  const profile = await getProfile(profileId)
+  const owned = await getOwned(ownedId)
+  if (!profile || !owned) return { ok: false, reason: 'notFound' }
+  if (profile.stars <= 0) return { ok: false, reason: 'noStars' }
+  if (owned.level >= MAX_LEVEL) return { ok: false, reason: 'max' }
 
-/** 次の進化レベル（無ければnull）と「もうすぐ…」表示フラグ */
-export function evolutionInfo(owned: OwnedCharacterRecord): { nextEvolveLevel: number | null; tease: boolean } {
-  const sp = getSpecies(owned.speciesId)
-  if (!sp) return { nextEvolveLevel: null, tease: false }
-  const levels = evolveLevelsOf(owned.speciesId)
-  if (owned.stage >= sp.stages.length - 1) return { nextEvolveLevel: null, tease: false }
-  const next = levels[owned.stage]
-  if (next == null) return { nextEvolveLevel: null, tease: false }
-  return { nextEvolveLevel: next, tease: owned.level >= next - GAME_CONFIG.levels.evolveTeaseWithin }
-}
+  profile.stars--
+  await saveProfile(profile)
 
-export async function grantExpToOwned(profile: Profile, owned: OwnedCharacterRecord, amount: number): Promise<ExpGrantEvents> {
-  const species = getSpecies(owned.speciesId)
-  if (!species) throw new Error(`unknown species: ${owned.speciesId}`)
-  const evolveLevels = evolveLevelsOf(owned.speciesId)
-
-  let exp = owned.exp + amount
-  let level = owned.level
-  let levels = 0
-  while (exp >= expToNext(level)) {
-    exp -= expToNext(level)
-    level++
-    levels++
+  const fromLevel = owned.level
+  owned.starsFed = (owned.starsFed ?? 0) + 1
+  const need = starsNeededFor(owned.level) ?? Infinity
+  let leveledUp = false
+  if (owned.starsFed >= need) {
+    owned.starsFed = 0
+    owned.level = Math.min(MAX_LEVEL, owned.level + 1)
+    leveledUp = true
+    const newStage = stageForLevel(owned.level)
+    if (newStage !== owned.stage) {
+      owned.stage = newStage
+      await discoverDex(profileId, owned.speciesId, newStage)
+    }
+    await addActivity(
+      profileId,
+      profile.name,
+      'evolve',
+      `${profile.name}の ${nameForLevel(owned.speciesId, owned.level)}が レベル${owned.level}に あがった！`
+    )
   }
-
-  const oldStageName = species.stages[owned.stage]?.name ?? '?'
-  let stage = owned.stage
-  while (stage < species.stages.length - 1 && evolveLevels[stage] != null && level >= evolveLevels[stage]) {
-    stage++
-  }
-  const stageChanged = stage !== owned.stage
-
-  owned.exp = exp
-  owned.level = level
-  owned.stage = stage
   await saveOwned(owned)
-
-  let evolvedTo: string | null = null
-  if (stageChanged) {
-    evolvedTo = species.stages[stage].name
-    await discoverDex(profile.id, owned.speciesId, stage)
-    await addActivity(profile.id, profile.name, 'evolve', `${profile.name}の ${oldStageName}が ${evolvedTo}に しんかした！`)
-  }
-
   return {
-    levelsGained: levels,
-    newLevel: level,
-    evolvedFrom: stageChanged ? oldStageName : null,
-    evolvedTo,
-    newStage: stageChanged ? stage : null,
-    speciesId: owned.speciesId,
+    ok: true,
+    leveledUp,
+    fromLevel,
+    newLevel: owned.level,
+    starsFed: owned.starsFed,
+    starsNeeded: starsNeededFor(owned.level),
+    isMax: owned.level >= MAX_LEVEL,
   }
 }
 
-export interface StudyReward {
-  profile: Profile
-  coinsAdded: number
-  expEvents: ExpGrantEvents | null
-}
-
-/** 学習の報酬: コイン＋（バディがいれば）EXP。仕様 §28「勉強した結果としてゲームが進む」 */
-export async function awardStudy(profileId: string, coins: number, exp: number, reason: string): Promise<StudyReward> {
-  const profile = await addCoins(profileId, coins, reason)
-  let expEvents: ExpGrantEvents | null = null
-  if (exp > 0 && profile.buddyId != null) {
-    const owned = await getOwned(profile.buddyId)
-    if (owned) expEvents = await grantExpToOwned(profile, owned, exp)
-  }
-  return { profile, coinsAdded: coins, expEvents }
+export async function buyStar(profileId: string): Promise<{ ok: boolean; profile?: Profile }> {
+  const profile = await getProfile(profileId)
+  if (!profile || profile.coins < GAME_CONFIG.star.cost) return { ok: false }
+  const updated = await addCoins(profileId, -GAME_CONFIG.star.cost, 'スターをかった')
+  updated.stars++
+  await saveProfile(updated)
+  return { ok: true, profile: updated }
 }
 
 function pickRarity(): Rarity {
@@ -121,9 +123,9 @@ export type GachaOutcome =
   | { outcome: 'noCoins' }
   | { outcome: 'miss'; profile: Profile }
   | { outcome: 'new'; profile: Profile; speciesId: string; name: string; becameBuddy: boolean }
-  | { outcome: 'dup'; profile: Profile; speciesId: string; stage: number; name: string; friendExp: number; expEvents: ExpGrantEvents }
+  | { outcome: 'dup'; profile: Profile; speciesId: string; stage: number; name: string; starGift: number }
 
-/** なかまガチャ（仕様 §20〜§22）。必ず出るとは限らない。 */
+/** なかまガチャ。重複はおみやげスターに変換 */
 export async function rollGacha(profileId: string): Promise<GachaOutcome> {
   const cfg = GAME_CONFIG.gacha
   let profile = await getProfile(profileId)
@@ -151,9 +153,7 @@ export async function rollGacha(profileId: string): Promise<GachaOutcome> {
   const existing = owned.find((o) => o.speciesId === sp.id)
 
   if (existing) {
-    // すでにいる仲間 → なかよしEXPへ変換（仕様 §22）
-    existing.friendExp += cfg.duplicateFriendExp
-    const expEvents = await grantExpToOwned(profile, existing, cfg.duplicateFriendExp)
+    profile.stars += cfg.duplicateStarGift
     await saveProfile(profile)
     await addGachaHistory({ profileId, cost: cfg.gachaCost, resultSpeciesId: sp.id, duplicated: true, at: Date.now() })
     return {
@@ -161,9 +161,8 @@ export async function rollGacha(profileId: string): Promise<GachaOutcome> {
       profile,
       speciesId: sp.id,
       stage: existing.stage,
-      name: getSpecies(sp.id)?.stages[existing.stage]?.name ?? sp.stages[0].name,
-      friendExp: cfg.duplicateFriendExp,
-      expEvents,
+      name: nameForLevel(sp.id, existing.level),
+      starGift: cfg.duplicateStarGift,
     }
   }
 
@@ -172,6 +171,7 @@ export async function rollGacha(profileId: string): Promise<GachaOutcome> {
     speciesId: sp.id,
     stage: 0,
     level: 1,
+    starsFed: 0,
     exp: 0,
     friendExp: 0,
     obtainedAt: Date.now(),
@@ -187,26 +187,6 @@ export async function rollGacha(profileId: string): Promise<GachaOutcome> {
   await addActivity(profileId, profile.name, 'gacha', `${profile.name}に あたらしい なかま「${sp.stages[0].name}」が ふえました`)
   await addGachaHistory({ profileId, cost: cfg.gachaCost, resultSpeciesId: sp.id, duplicated: false, at: Date.now() })
   return { outcome: 'new', profile, speciesId: sp.id, name: sp.stages[0].name, becameBuddy }
-}
-
-export async function buyStar(profileId: string): Promise<{ ok: boolean; profile?: Profile }> {
-  const profile = await getProfile(profileId)
-  if (!profile || profile.coins < GAME_CONFIG.star.cost) return { ok: false }
-  const updated = await addCoins(profileId, -GAME_CONFIG.star.cost, 'スターをかった')
-  updated.stars++
-  await saveProfile(updated)
-  return { ok: true, profile: updated }
-}
-
-export async function useStar(profileId: string, ownedId: number): Promise<{ ok: boolean; profile?: Profile; expEvents?: ExpGrantEvents }> {
-  const profile = await getProfile(profileId)
-  if (!profile || profile.stars <= 0) return { ok: false }
-  const owned = await getOwned(ownedId)
-  if (!owned) return { ok: false }
-  profile.stars--
-  await saveProfile(profile)
-  const expEvents = await grantExpToOwned(profile, owned, GAME_CONFIG.star.exp)
-  return { ok: true, profile, expEvents }
 }
 
 /** マスター字数のマイルストーン通知（みんな画面用。順位付けはしない） */

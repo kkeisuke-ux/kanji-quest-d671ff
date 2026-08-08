@@ -1,19 +1,15 @@
-// 進化演出（仕様 §24）。現在の姿 → 光 → 新しい姿。タップでスキップ可能。
+// レベルアップ演出（2026-08-08 レベル=姿システムに対応）。
+// レベルが上がるたびに姿が変わるので、毎回この演出でわくわくさせる。
+// いまの姿 → 光 → 新しい姿。最終レベル到達時はいちばん豪華な音。
 import { useEffect, useState } from 'react'
 import { setPendingEvolution, useAppState, type PendingEvolution } from '../state/store'
+import { MAX_LEVEL, nameForLevel } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
+import { playGrand, playPerfect } from '../sound/sound'
 import { Button } from './components'
-import type { ExpGrantEvents } from '../game/logic'
 
-export function queueEvolutionFromEvents(ev: ExpGrantEvents | null | undefined) {
-  if (!ev || !ev.evolvedTo || ev.newStage == null) return
-  setPendingEvolution({
-    speciesId: ev.speciesId,
-    fromStage: ev.newStage - 1,
-    toStage: ev.newStage,
-    fromName: ev.evolvedFrom ?? '',
-    toName: ev.evolvedTo,
-  })
+export function queueLevelUp(speciesId: string, fromLevel: number, toLevel: number) {
+  setPendingEvolution({ speciesId, fromLevel, toLevel, name: nameForLevel(speciesId, fromLevel) })
 }
 
 export function EvolutionModal() {
@@ -28,15 +24,22 @@ export function EvolutionModal() {
     }
     setCurrent(pending)
     setPhase('before')
-    const t1 = window.setTimeout(() => setPhase('flash'), 1500)
-    const t2 = window.setTimeout(() => setPhase('after'), 2400)
+    const t1 = window.setTimeout(() => setPhase('flash'), 1300)
+    const t2 = window.setTimeout(() => setPhase('after'), 2100)
     return () => {
       window.clearTimeout(t1)
       window.clearTimeout(t2)
     }
   }, [pending])
 
+  useEffect(() => {
+    if (phase !== 'after' || !current) return
+    if (current.toLevel >= MAX_LEVEL) playGrand()
+    else playPerfect()
+  }, [phase, current])
+
   if (!current) return null
+  const newName = nameForLevel(current.speciesId, current.toLevel)
 
   const advance = () => {
     if (phase === 'before') setPhase('flash')
@@ -49,9 +52,9 @@ export function EvolutionModal() {
         {phase === 'before' && (
           <div className="evo-stage" onClick={advance}>
             <div className="evo-glow">
-              <CharacterSprite speciesId={current.speciesId} stage={current.fromStage} size={150} />
+              <CharacterSprite speciesId={current.speciesId} level={current.fromLevel} size={150} />
             </div>
-            <p className="evo-text">…おや？ {current.fromName}の ようすが…！</p>
+            <p className="evo-text">…おや？ {current.name}の ようすが…！</p>
           </div>
         )}
         {phase === 'flash' && (
@@ -63,11 +66,12 @@ export function EvolutionModal() {
         {phase === 'after' && (
           <div className="evo-stage">
             <div className="evo-pop">
-              <CharacterSprite speciesId={current.speciesId} stage={current.toStage} size={170} />
+              <CharacterSprite speciesId={current.speciesId} level={current.toLevel} size={175} />
             </div>
             <p className="evo-text evo-text-big">
-              {current.fromName}は {current.toName}に しんかした！
+              {newName}は レベル{current.toLevel}に あがった！
             </p>
+            <p className="evo-text">すがたが かわった！{current.toLevel >= MAX_LEVEL ? '（さいしゅうレベル！）' : ''}</p>
             <Button onClick={() => setPendingEvolution(null)}>やったー！</Button>
           </div>
         )}

@@ -26,10 +26,9 @@ export interface ToastItem {
 
 export interface PendingEvolution {
   speciesId: string
-  fromStage: number
-  toStage: number
-  fromName: string
-  toName: string
+  fromLevel: number
+  toLevel: number
+  name: string
 }
 
 export interface AppState {

@@ -10,7 +10,7 @@ import { shuffled } from '../core/geometry'
 import type { KanjiEvaluation } from '../core/judge/evaluate'
 import type { InkStroke } from '../core/ink/types'
 import { questionProvider, type Question } from '../data/questions'
-import { awardStudy, checkMilestones, type ExpGrantEvents } from '../game/logic'
+import { awardCoinsFor, checkMilestones } from '../game/logic'
 import { playCorrect, playFinish, playPerfect, playWrong } from '../sound/sound'
 import { useProfile } from '../state/hooks'
 import { bumpData, navigate, showToast, type Route } from '../state/store'
@@ -33,7 +33,6 @@ import { BuddyCorner, type BuddyMood } from './BuddyCorner'
 import { Button, KanjiChip, LoadingView, TopBar } from '../ui/components'
 import { PerfectCelebration } from '../ui/Celebration'
 import { CoinReward, type CoinBreakdownItem } from '../ui/CoinReward'
-import { queueEvolutionFromEvents } from '../ui/EvolutionModal'
 import { JudgeMark } from '../ui/JudgeMark'
 import { QuestionPrompt } from './QuestionPrompt'
 import { TraceStep } from './TraceStep'
@@ -61,14 +60,12 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   const [tries, setTries] = useState(0)
   const [mark, setMark] = useState<'correct' | null>(null)
   const [revealMark, setRevealMark] = useState(false)
-  const [resultCoins, setResultCoins] = useState<{ amount: number; breakdown: CoinBreakdownItem[] } | null>(null)
+  const [resultCoins, setResultCoins] = useState<{ amount: number; breakdown?: CoinBreakdownItem[] } | null>(null)
   const [showCelebration, setShowCelebration] = useState(false)
-  const earnedRef = useRef(0)
   const [buddyMood, setBuddyMood] = useState<BuddyMood>('idle')
   const [savedSession, setSavedSession] = useState<TestSessionRecord | null>(null)
   const itemsRef = useRef<TestItemRecord[]>([])
   const startMasteredRef = useRef<number | null>(null)
-  const evoQueueRef = useRef<ExpGrantEvents[]>([])
   const busyRef = useRef(false)
   const moodTimerRef = useRef<number | null>(null)
   const testKey = `${kind}:${targetId}`
@@ -180,10 +177,6 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       correct,
       items: finalItems,
     })
-    // かんそうボーナス（点数に関係なく「やったらもらえる」）
-    const finishBonus = kind === 'term' ? GAME_CONFIG.coins.termTestFinishBonus : GAME_CONFIG.coins.stageTestFinishBonus
-    await awardStudy(profile.id, finishBonus, 0, 'テストかんそう')
-    earnedRef.current += finishBonus
     if (kind === 'term') {
       await deleteTestSession(profile.id, testKey)
       const msg = perfect
@@ -191,23 +184,14 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
         : `${profile.name}が ${title}に ちょうせんしました（${correct}/${finalItems.length}問正解）`
       await addActivity(profile.id, profile.name, 'termTest', msg)
     }
-    let perfectBonus = 0
+    // コインは「100点をとったら」だけ（2026-08-08 リバランス）
     if (perfect) {
-      // 100点スペシャルボーナス（100点を目指したくなる仕様）
-      perfectBonus = kind === 'term' ? GAME_CONFIG.coins.termTestPerfectBonus : GAME_CONFIG.coins.stageTestPerfectBonus
-      const reward = await awardStudy(profile.id, perfectBonus, 0, '100点ボーナス')
-      if (reward.expEvents) evoQueueRef.current.push(reward.expEvents)
-      earnedRef.current += perfectBonus
+      const perfectBonus = kind === 'term' ? GAME_CONFIG.coins.termTestPerfectBonus : GAME_CONFIG.coins.stageTestPerfectBonus
+      await awardCoinsFor(profile.id, perfectBonus, '100点ボーナス')
+      setResultCoins({ amount: perfectBonus })
+    } else {
+      setResultCoins(null)
     }
-    const perCorrect = kind === 'stage' ? GAME_CONFIG.coins.stageTestPerCorrect : GAME_CONFIG.coins.termTestPerCorrect
-    setResultCoins({
-      amount: earnedRef.current,
-      breakdown: [
-        { label: `せいかい ${correct}問`, value: perCorrect * correct },
-        { label: 'かんそうボーナス', value: finishBonus },
-        { label: '100点ボーナス', value: perfectBonus },
-      ],
-    })
     const after = await masteredCount(profile.id)
     const fresh = await getProfile(profile.id)
     if (fresh && startMasteredRef.current != null) await checkMilestones(fresh, startMasteredRef.current, after)
@@ -224,8 +208,6 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     } else {
       playFinish()
     }
-    const evo = evoQueueRef.current.find((e) => e.evolvedTo)
-    if (evo) queueEvolutionFromEvents(evo)
   }
 
   const advance = (newItems: TestItemRecord[]) => {
@@ -261,10 +243,6 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       })
       const removed = await clearUnknown(profile.id, char)
       if (removed) showToast(`「${char}」が わからないリストから きえたよ！`)
-      const perCorrect = kind === 'stage' ? GAME_CONFIG.coins.stageTestPerCorrect : GAME_CONFIG.coins.termTestPerCorrect
-      const reward = await awardStudy(profile.id, perCorrect, GAME_CONFIG.exp.testCorrect, 'テストせいかい')
-      earnedRef.current += perCorrect
-      if (reward.expEvents) evoQueueRef.current.push(reward.expEvents)
       await persistSession(chars, index + 1, newItems)
       bumpData()
       window.setTimeout(() => {
@@ -334,8 +312,6 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
 
   const restartTest = async () => {
     if (kind === 'term') await deleteTestSession(profile.id, testKey)
-    evoQueueRef.current = []
-    earnedRef.current = 0
     setResultCoins(null)
     setShowCelebration(false)
     setChars(shuffled(baseChars))

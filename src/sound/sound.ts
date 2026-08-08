@@ -135,6 +135,25 @@ export function playStrokePop() {
   bell(c, c.currentTime, N(19), 0.16, 0.06, { p2: 0.2, p4: 0 })
 }
 
+/** スター購入: キラリン */
+export function playStarGet() {
+  const c = seEnabled() ? ac() : null
+  if (!c) return
+  const t = c.currentTime
+  bell(c, t, N(19), 0.18, 0.13, { p2: 0.3, p4: 0.1 })
+  bell(c, t + 0.11, N(26), 0.5, 0.15, { p2: 0.32, p4: 0.12 })
+}
+
+/** スターをあげたとき: もぐもぐ食べる音 */
+export function playEat() {
+  const c = seEnabled() ? ac() : null
+  if (!c) return
+  const t = c.currentTime
+  bell(c, t, 196, 0.09, 0.09, { type: 'triangle', p2: 0.1, p4: 0 })
+  bell(c, t + 0.14, 165, 0.09, 0.09, { type: 'triangle', p2: 0.1, p4: 0 })
+  bell(c, t + 0.28, 196, 0.11, 0.08, { type: 'triangle', p2: 0.1, p4: 0 })
+}
+
 /** コイン獲得: チャリンチャリン */
 export function playCoins() {
   const c = seEnabled() ? ac() : null

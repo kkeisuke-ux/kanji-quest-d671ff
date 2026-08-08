@@ -2,7 +2,7 @@
 // speciesId + stage をキーに描画するため、将来 <img> による本格イラストへ
 // 差し替える場合もこのコンポーネントの中身を置き換えるだけでよい（仕様 §25）。
 import type { ReactNode } from 'react'
-import { getSpecies, type Look } from '../data/species'
+import { decorForLevel, getSpecies, stageForLevel, type Look } from '../data/species'
 
 const SIL = '#4a4460'
 
@@ -321,19 +321,25 @@ function face(look: Look, d: DrawCtx): ReactNode {
 export function CharacterSprite({
   speciesId,
   stage,
+  level,
   size = 96,
   silhouette = false,
   className,
 }: {
   speciesId: string
-  stage: number
+  /** 進化形態を直接指定（ずかん用） */
+  stage?: number
+  /** レベル指定（レベル=姿。かざり付き。こちらが優先） */
+  level?: number
   size?: number
   silhouette?: boolean
   className?: string
 }) {
   const species = getSpecies(speciesId)
   if (!species) return null
-  const clamped = Math.min(Math.max(stage, 0), species.stages.length - 1)
+  const baseStage = level != null ? stageForLevel(level) : (stage ?? 0)
+  const decor = level != null && !silhouette ? decorForLevel(level) : 0
+  const clamped = Math.min(Math.max(baseStage, 0), species.stages.length - 1)
   const look = species.stages[clamped].look
   const R = 24 + clamped * 4
   const d: DrawCtx = {
@@ -348,10 +354,26 @@ export function CharacterSprite({
   const lookForDraw: Look = { ...look }
   return (
     <svg viewBox="0 0 120 128" width={size} height={size * (128 / 120)} className={className} aria-hidden>
+      {decor >= 2 && (
+        <g aria-hidden>
+          {/* レベルMAX: 金のオーラ */}
+          <circle cx={d.cx} cy={d.cy} r={R + 14} fill="none" stroke="#ffd76e" strokeWidth={3.4} strokeDasharray="7 6" opacity={0.9} />
+          <path d={starPath(d.cx - R - 13, d.cy - R * 0.6, 5.4, 2.6)} fill="#f7d154" />
+          <path d={starPath(d.cx + R + 13, d.cy - R * 0.4, 4.6, 2.2)} fill="#f7d154" />
+        </g>
+      )}
       {extraShapes(lookForDraw, d, 'back')}
       {bodyShape(lookForDraw, d)}
       {extraShapes(lookForDraw, d, 'front')}
       {face(lookForDraw, d)}
+      {decor >= 1 && (
+        <g aria-hidden>
+          {/* がんばりのリボン */}
+          <path d={`M${d.cx - 11},${d.cy + R * 0.92} L${d.cx - 3},${d.cy + R * 0.92 - 5} L${d.cx - 3},${d.cy + R * 0.92 + 5} Z`} fill="#e0506b" />
+          <path d={`M${d.cx + 11},${d.cy + R * 0.92} L${d.cx + 3},${d.cy + R * 0.92 - 5} L${d.cx + 3},${d.cy + R * 0.92 + 5} Z`} fill="#e0506b" />
+          <circle cx={d.cx} cy={d.cy + R * 0.92} r={3.4} fill="#c73a56" />
+        </g>
+      )}
     </svg>
   )
 }

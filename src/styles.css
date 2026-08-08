@@ -2209,6 +2209,117 @@ body {
   color: var(--muted);
 }
 
+/* ---------- スター育成（第4回フィードバック） ---------- */
+.star-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 17px;
+  flex-wrap: wrap;
+}
+
+.star-on {
+  color: #f2c33c;
+  text-shadow: 0 1px 0 #d9a520;
+}
+
+.star-off {
+  color: #ddd6c4;
+}
+
+.star-meter-text {
+  margin-left: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.star-meter-max {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--accent-dark);
+  background: #fdeeb9;
+  border-radius: 999px;
+  padding: 3px 12px;
+}
+
+.star-shop-buy {
+  position: relative;
+}
+
+.star-pop {
+  position: absolute;
+  left: 50%;
+  top: -6px;
+  transform: translateX(-50%);
+  animation: star-pop 1s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes star-pop {
+  0% {
+    transform: translateX(-50%) translateY(10px) scale(0.4);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-46px) scale(1.25);
+    opacity: 0;
+  }
+}
+
+.friend-sprite {
+  position: relative;
+  flex: none;
+}
+
+.feed-star {
+  position: absolute;
+  left: 50%;
+  top: -14px;
+  transform: translateX(-50%);
+  animation: feed-star 0.85s ease-in forwards;
+  z-index: 2;
+  pointer-events: none;
+}
+
+@keyframes feed-star {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1.15);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(-50%) translateY(52px) scale(0.7);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(64px) scale(0.15);
+    opacity: 0;
+  }
+}
+
+.friend-eating svg {
+  animation: chomp 0.32s ease-in-out 3;
+  transform-origin: 50% 85%;
+}
+
+@keyframes chomp {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.86) scaleX(1.06);
+  }
+}
+
+.quick-h3 {
+  margin: 14px 0 4px;
+  font-size: 15px;
+}
+
 /* ---------- 縦向きフォールバック ---------- */
 @media (orientation: portrait) {
   .split {

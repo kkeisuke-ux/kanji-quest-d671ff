@@ -1,6 +1,6 @@
 // 学習・テスト画面に常駐するバディ（いっしょに勉強している仲間）。
 // 正解すると喜び、クリアではしゃぐ。
-import { getSpecies } from '../data/species'
+import { getSpecies, nameForLevel } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
 import { useAppState } from '../state/store'
@@ -33,9 +33,9 @@ export function BuddyCorner({
     <div className={`buddy-corner buddy-mood-${mood}`}>
       {message && <span className="buddy-bubble">{message}</span>}
       <div className="buddy-corner-sprite">
-        <CharacterSprite speciesId={buddy.speciesId} stage={buddy.stage} size={size} />
+        <CharacterSprite speciesId={buddy.speciesId} level={buddy.level} size={size} />
       </div>
-      <span className="buddy-corner-name">{sp.stages[buddy.stage].name}</span>
+      <span className="buddy-corner-name">{nameForLevel(buddy.speciesId, buddy.level)}</span>
     </div>
   )
 }

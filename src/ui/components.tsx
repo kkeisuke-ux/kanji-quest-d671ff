@@ -1,7 +1,6 @@
 // 共通UIコンポーネント。
 import type { ReactNode } from 'react'
 import { navigate, useAppState, type Route } from '../state/store'
-import { expToNext } from '../game/logic'
 import { getSpecies } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
@@ -29,7 +28,7 @@ export function StatusChips() {
       <StarBadge stars={data.stars} />
       {data.buddy && (
         <span className="badge buddy-chip">
-          <CharacterSprite speciesId={data.buddy.speciesId} stage={data.buddy.stage} size={22} />
+          <CharacterSprite speciesId={data.buddy.speciesId} level={data.buddy.level} size={22} />
           <span>Lv.{data.buddy.level}</span>
         </span>
       )}
@@ -166,13 +165,20 @@ export function KanjiChip({ char, state = 'none', onClick }: { char: string; sta
   )
 }
 
-export function ExpBar({ level, exp }: { level: number; exp: number }) {
-  const need = expToNext(level)
-  const pct = Math.min(100, Math.round((exp / need) * 100))
+/** 次のレベルまでのスター進捗（★★☆☆☆）。needがnullなら最大レベル */
+export function StarMeter({ fed, need }: { fed: number; need: number | null }) {
+  if (need == null) return <span className="star-meter star-meter-max">レベルMAX！</span>
   return (
-    <div className="expbar" title={`${exp}/${need}`}>
-      <div className="expbar-fill" style={{ width: `${pct}%` }} />
-    </div>
+    <span className="star-meter" aria-label={`スター ${fed}/${need}`}>
+      {Array.from({ length: need }, (_, i) => (
+        <span key={i} className={i < fed ? 'star-on' : 'star-off'}>
+          ★
+        </span>
+      ))}
+      <span className="star-meter-text">
+        つぎのレベルまで スター{need - fed}こ
+      </span>
+    </span>
   )
 }
 

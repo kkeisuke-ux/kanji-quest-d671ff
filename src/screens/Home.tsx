@@ -1,12 +1,11 @@
 // ホーム画面（仕様 §36）: 今日の学習・今日の復習・仲間・コイン・進捗。
 import { getCurriculumForGrade, termTestTitle, type StageDef } from '../data/curriculum'
-import { getSpecies } from '../data/species'
-import { evolutionInfo } from '../game/logic'
+import { MAX_LEVEL, getSpecies, nameForLevel, starsNeededFor } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
 import { dueReviewChars, getProfile, listOwned, listProgress, listTestResults, listUnknown } from '../storage/repo'
-import { Button, Card, ExpBar, LoadingView, StatusChips } from '../ui/components'
+import { Button, Card, LoadingView, StarMeter, StatusChips } from '../ui/components'
 import { SoundButton } from '../ui/SoundButton'
 
 export function Home() {
@@ -67,6 +66,7 @@ export function Home() {
 
   if (!data) return <LoadingView />
   const { profile, due, unknown, mastered, buddy, fallback, totalPlayable, clearedStages, totalStages, nextPractice, nextStageTest, nextTerm } = data
+  const buddySpecies = buddy ? getSpecies(buddy.speciesId) : null
 
   const recommend = nextPractice
     ? { text: `${nextPractice.label}「${nextPractice.kanji.join('')}」の れんしゅうを すすめよう`, route: { name: 'learn', stageId: nextPractice.id } as const }
@@ -75,8 +75,6 @@ export function Home() {
       : nextTerm
         ? { text: `${nextTerm.title}で 100てんに ちょうせん！`, route: { name: 'termTest', termId: nextTerm.id } as const }
         : { text: 'ぜんぶ 100てん！ すごい！ ふくしゅうで キープしよう', route: { name: 'review', mode: 'due' } as const }
-  const buddySpecies = buddy ? getSpecies(buddy.speciesId) : null
-  const tease = buddy ? evolutionInfo(buddy).tease : false
 
   return (
     <div className="screen home-screen">
@@ -151,12 +149,14 @@ export function Home() {
           <Card className="buddy-card" onClick={() => navigate({ name: 'friends' })}>
             {buddy && buddySpecies ? (
               <>
-                <CharacterSprite speciesId={buddy.speciesId} stage={buddy.stage} size={140} />
-                <p className="buddy-name">{buddySpecies.stages[buddy.stage].name}</p>
-                <p className="buddy-level">Lv.{buddy.level}</p>
-                <ExpBar level={buddy.level} exp={buddy.exp} />
-                {tease && <p className="buddy-tease">もうすぐ なにかが おこりそう……</p>}
-                <p className="tile-sub">いっしょに べんきょうちゅう</p>
+                <CharacterSprite speciesId={buddy.speciesId} level={buddy.level} size={140} />
+                <p className="buddy-name">{nameForLevel(buddy.speciesId, buddy.level)}</p>
+                <p className="buddy-level">
+                  レベル {buddy.level}
+                  {buddy.level >= MAX_LEVEL ? '（MAX）' : ` / ${MAX_LEVEL}`}
+                </p>
+                <StarMeter fed={buddy.starsFed ?? 0} need={starsNeededFor(buddy.level)} />
+                <p className="tile-sub">スターを あげて そだてよう</p>
               </>
             ) : (
               <>

@@ -11,12 +11,12 @@ import { GAME_CONFIG } from '../config/gameConfig'
 import type { KanjiEvaluation } from '../core/judge/evaluate'
 import type { InkStroke } from '../core/ink/types'
 import { findStage } from '../data/curriculum'
-import { awardStudy } from '../game/logic'
+import { awardCoinsFor } from '../game/logic'
 import { BuddyCorner, type BuddyMood } from '../learn/BuddyCorner'
 import { TraceStep, type TraceMode } from '../learn/TraceStep'
 import { WritingPad } from '../learn/WritingPad'
 import { saveSample } from '../learn/sampleUtil'
-import { playCorrect, playPerfect, playWrong } from '../sound/sound'
+import { playCoins, playCorrect, playPerfect, playWrong } from '../sound/sound'
 import { useProfile } from '../state/hooks'
 import { bumpData, navigate, showToast } from '../state/store'
 import {
@@ -29,7 +29,6 @@ import {
 } from '../storage/repo'
 import { Button, KanjiChip, LoadingView, TopBar } from '../ui/components'
 import { CoinReward } from '../ui/CoinReward'
-import { queueEvolutionFromEvents } from '../ui/EvolutionModal'
 import { JudgeMark } from '../ui/JudgeMark'
 import { KanjiSvg } from '../ui/KanjiSvg'
 import { StrictnessButton } from '../ui/StrictnessButton'
@@ -143,11 +142,13 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
     const progress = await getProgress(profile.id, char)
     progress.practicedAt = Date.now()
     await saveProgress(progress)
+    // 1文字れんしゅうかんりょう → +10コイン（画面アクションで分かるように音＋トースト）
+    await awardCoinsFor(profile.id, GAME_CONFIG.coins.practicePerKanji, `れんしゅう「${char}」`)
+    playCoins()
+    showToast(`「${char}」かんりょう！ +${GAME_CONFIG.coins.practicePerKanji}コイン`)
     if (kanjiIdx + 1 >= stage.kanji.length) {
       await deletePracticeSession(profile.id, stageId)
-      const reward = await awardStudy(profile.id, GAME_CONFIG.coins.stageClearBonus, 0, 'ステージれんしゅうかんりょう')
       await addActivity(profile.id, profile.name, 'stageClear', `${profile.name}が ${stage.label}の れんしゅうを おえました`)
-      queueEvolutionFromEvents(reward.expEvents)
       bumpData()
       playPerfect()
       setStageDone(true)
@@ -188,9 +189,6 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
         progress.nextReviewAt = d.getTime() + 86400000
       }
       await saveProgress(progress)
-      const reward = await awardStudy(profile.id, GAME_CONFIG.coins.trace, GAME_CONFIG.exp.trace, 'なぞりれんしゅう')
-      queueEvolutionFromEvents(reward.expEvents)
-      showToast(`なぞり かんぺき！ +${GAME_CONFIG.coins.trace}コイン`)
       bumpData()
     } finally {
       window.setTimeout(() => {
@@ -215,10 +213,6 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
     if (ev.correctForTest) {
       playCorrect()
       happyBuddy()
-      const coins = GAME_CONFIG.coins.freeWrite + (ev.verdict === 'perfect' ? GAME_CONFIG.coins.perfectBonus : 0)
-      const reward = await awardStudy(profile.id, coins, GAME_CONFIG.exp.write, 'かきとりれんしゅう')
-      queueEvolutionFromEvents(reward.expEvents)
-      showToast(`+${coins}コイン`)
     } else {
       playWrong()
     }
@@ -243,7 +237,7 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
                 <KanjiChip key={k} char={k} state="practiced" />
               ))}
             </div>
-            <CoinReward amount={GAME_CONFIG.coins.stageClearBonus} />
+            <CoinReward amount={stage.kanji.length * GAME_CONFIG.coins.practicePerKanji} />
             <div className="result-actions">
               <Button size="lg" variant="accent" onClick={() => navigate({ name: 'stageTest', stageId })}>
                 ５もんテストに ちょうせん！

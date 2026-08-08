@@ -8,7 +8,7 @@ import type { KanjiEvaluation } from '../core/judge/evaluate'
 import type { InkStroke } from '../core/ink/types'
 import { hasRefKanji } from '../core/refdata'
 import { questionProvider, type Question } from '../data/questions'
-import { awardStudy } from '../game/logic'
+import { awardCoinsFor } from '../game/logic'
 import { QuestionPrompt } from '../learn/QuestionPrompt'
 import { TraceStep } from '../learn/TraceStep'
 import { WritingPad } from '../learn/WritingPad'
@@ -18,7 +18,6 @@ import { bumpData, navigate, showToast, useAppState } from '../state/store'
 import { applyOutcome, dueReviewChars, getProgress, listUnknown, recordRecentVariant } from '../storage/repo'
 import { playCorrect, playWrong } from '../sound/sound'
 import { Button, LoadingView, TopBar } from '../ui/components'
-import { queueEvolutionFromEvents } from '../ui/EvolutionModal'
 import { JudgeMark } from '../ui/JudgeMark'
 import { KanjiSvg } from '../ui/KanjiSvg'
 
@@ -102,8 +101,7 @@ export function Review({ mode, chars: charsParam }: { mode: 'due' | 'unknown'; c
     })
     if (outcome === 'correct') {
       setCorrectCount((c) => c + 1)
-      const reward = await awardStudy(profileId, GAME_CONFIG.coins.reviewPerCorrect, GAME_CONFIG.exp.write, 'ふくしゅう')
-      queueEvolutionFromEvents(reward.expEvents)
+      await awardCoinsFor(profileId, GAME_CONFIG.coins.reviewPerCorrect, 'ふくしゅう')
       showToast(`+${GAME_CONFIG.coins.reviewPerCorrect}コイン`)
     }
     bumpData()

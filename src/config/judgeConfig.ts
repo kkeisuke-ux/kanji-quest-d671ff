@@ -108,16 +108,16 @@ export const DEFAULT_JUDGE_CONFIG: JudgeConfig = {
 // 注意: 「とてもあまい」でも別の漢字は不正解になる（自己テストX参照。
 // 誤字拒否コストの下限 avg≒0.73 に対し L1でも上限0.57で余裕がある）。
 // ============================================================
-// 2026-08-08 第3回フィードバック: デフォルト=とてもあまい(1.45)、さらに甘い「もっとあまい」を追加
+// 2026-08-08 第4回フィードバック: デフォルト=もっとあまい(1.6)、さらに甘い「いちばんあまい」(1.8)を追加
 export const STRICTNESS_FACTORS: Record<number, number> = {
-  1: 1.6,
-  2: 1.45,
-  3: 1.2,
-  4: 1.0,
-  5: 0.76,
+  1: 1.8,
+  2: 1.6,
+  3: 1.45,
+  4: 1.2,
+  5: 1.0,
 }
 
-export const STRICTNESS_LABELS = ['もっとあまい', 'とてもあまい', 'あまい', 'ふつう', 'きびしい']
+export const STRICTNESS_LABELS = ['いちばんあまい', 'もっとあまい', 'とてもあまい', 'あまい', 'ふつう']
 
 export const DEFAULT_STRICTNESS = 2
 
@@ -131,7 +131,9 @@ export function applyStrictness(cfg: JudgeConfig, level: number): JudgeConfig {
   return {
     ...cfg,
     strokePassCost: cfg.strokePassCost * f,
-    charAvgPassCost: cfg.charAvgPassCost * f,
+    // 全画平均の上限は1.6倍で頭打ちにする（「別の漢字を書いたら不正解」の
+    // 安全域＝誤字の平均コスト下限0.73に対する余裕を守るため。自己テストX参照）
+    charAvgPassCost: cfg.charAvgPassCost * Math.min(f, 1.6),
     trace: {
       passCost: cfg.trace.passCost * traceF,
       startRadius: cfg.trace.startRadius,

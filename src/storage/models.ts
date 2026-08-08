@@ -141,11 +141,14 @@ export interface OwnedCharacterRecord {
   id?: number
   profileId: string
   speciesId: string
-  /** 進化段階（0始まり） */
+  /** 進化段階（0始まり）。level から導出される（stageForLevel） */
   stage: number
+  /** レベル=姿（1〜maxLevel）。スターをあげると上がる */
   level: number
+  /** 次のレベルに向けてあげたスターの数（2026-08-08〜。未定義は旧EXP制データ→移行される） */
+  starsFed?: number
+  /** 旧EXP制の名残（未使用） */
   exp: number
-  /** ガチャの重複などで貯まった なかよしEXP の累計 */
   friendExp: number
   obtainedAt: number
 }
