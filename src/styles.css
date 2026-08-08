@@ -1553,6 +1553,28 @@ body {
   overflow-y: auto;
 }
 
+.grade-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  background: var(--panel);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 14px;
+}
+
+.grade-selector-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.grade-btn-sm {
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
 .debug-grade-select {
   font-family: inherit;
   font-size: 15px;

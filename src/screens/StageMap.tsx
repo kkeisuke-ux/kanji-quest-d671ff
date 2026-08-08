@@ -4,9 +4,11 @@ import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
 import { getProfile, listProgress, listTestResults, listUnknown } from '../storage/repo'
 import { Button, Card, KanjiChip, LoadingView, TopBar, type KanjiChipState } from '../ui/components'
+import { GradeSelector, effectiveBrowseGrade } from '../ui/GradeSelector'
 
 export function StageMap() {
   const profileId = useAppState((s) => s.profileId)
+  const browseGrade = useAppState((s) => s.browseGrade)
   const { data } = useAsyncData(async () => {
     if (!profileId) return null
     const profile = await getProfile(profileId)
@@ -16,7 +18,8 @@ export function StageMap() {
       listUnknown(profileId),
       listTestResults(profileId),
     ])
-    const { cur, fallback } = getCurriculumForGrade(profile.grade)
+    // どの学年の漢字でも練習できる（既定は自分の学年。2026-08-08 第8回）
+    const { cur, fallback } = getCurriculumForGrade(effectiveBrowseGrade(browseGrade, profile.grade))
     const stagePerfect = new Map<string, number>()
     for (const r of results) {
       if (r.kind === 'stage' && r.total > 0 && r.correct === r.total) {
@@ -30,11 +33,12 @@ export function StageMap() {
       stagePerfect,
       progressMap: new Map(progressList.map((p) => [p.char, p])),
       unknownSet: new Set(unknown.map((u) => u.char)),
+      ownGrade: profile.grade,
     }
-  }, [profileId])
+  }, [profileId, browseGrade])
 
   if (!data) return <LoadingView />
-  const { cur, fallback, progressMap, unknownSet, stagePerfect } = data
+  const { cur, fallback, progressMap, unknownSet, stagePerfect, ownGrade } = data
 
   const chipState = (char: string): KanjiChipState => {
     if (unknownSet.has(char)) return 'unknown'
@@ -48,8 +52,9 @@ export function StageMap() {
   return (
     <div className="screen">
       <TopBar title={`れんしゅうする（${cur.gradeLabel}）`} back={{ name: 'home' }} />
-      {fallback && <p className="map-note">いまは 小1の漢字で れんしゅうできるよ（ほかの学年は じゅんびちゅう）</p>}
+      {fallback && <p className="map-note">小1の漢字に ちょうせんするよ！</p>}
       <div className="map-scroll">
+        <GradeSelector ownGrade={ownGrade} />
         <p className="tile-sub map-note-inline">まとめテストは ホームの「テストする」から ちょうせんできるよ</p>
         {cur.terms.map((term) => {
           return (

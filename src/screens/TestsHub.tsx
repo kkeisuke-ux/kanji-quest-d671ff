@@ -10,6 +10,7 @@ import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
 import { getProfile, getTestSession, listProgress, listTestResults } from '../storage/repo'
 import { Button, Card, LoadingView, TopBar } from '../ui/components'
+import { GradeSelector, effectiveBrowseGrade } from '../ui/GradeSelector'
 
 interface TermEntry {
   termId: string
@@ -23,11 +24,13 @@ interface TermEntry {
 
 export function TestsHub() {
   const profileId = useAppState((s) => s.profileId)
+  const browseGrade = useAppState((s) => s.browseGrade)
   const { data } = useAsyncData(async () => {
     if (!profileId) return null
     const profile = await getProfile(profileId)
     if (!profile) return null
-    const { cur, fallback } = getCurriculumForGrade(profile.grade)
+    // どの学年のまとめテストでも受けられる（既定は自分の学年。2026-08-08 第8回）
+    const { cur, fallback } = getCurriculumForGrade(effectiveBrowseGrade(browseGrade, profile.grade))
     const [progress, results] = await Promise.all([listProgress(profileId), listTestResults(profileId)])
     const practiced = new Set(progress.filter((p) => p.practicedAt != null).map((p) => p.char))
     const entries: TermEntry[] = []
@@ -52,15 +55,16 @@ export function TestsHub() {
         hasSession: session != null && session.currentIndex > 0,
       })
     }
-    return { entries, fallback }
-  }, [profileId])
+    return { entries, fallback, gradeLabel: cur.gradeLabel, ownGrade: profile.grade }
+  }, [profileId, browseGrade])
 
   if (!data) return <LoadingView />
 
   return (
     <div className="screen">
-      <TopBar title="テストする" back={{ name: 'home' }} />
+      <TopBar title={`テストする（${data.gradeLabel}）`} back={{ name: 'home' }} />
       <div className="map-scroll">
+        <GradeSelector ownGrade={data.ownGrade} />
         <p className="tile-sub map-note">
           もんだいは まいかい ランダムに でるよ。100点を とると スペシャルボーナス +{GAME_CONFIG.coins.termTestPerfectBonus}コイン！
         </p>
@@ -97,7 +101,6 @@ export function TestsHub() {
             </Button>
           </Card>
         ))}
-        {data.fallback && <p className="tile-sub map-note">いまは 小1の漢字で ちょうせんできるよ（ほかの学年は じゅんびちゅう）</p>}
       </div>
     </div>
   )

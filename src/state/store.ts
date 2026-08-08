@@ -34,6 +34,8 @@ export interface PendingEvolution {
 export interface AppState {
   route: Route
   profileId: string | null
+  /** れんしゅう/テストページで見ている学年（null=自分の学年） */
+  browseGrade: number | null
   /** データ更新の通知カウンタ（useAsyncDataの再取得トリガ） */
   dataVersion: number
   /** 音設定変更の通知カウンタ（SoundButtonの再描画用） */
@@ -45,6 +47,7 @@ export interface AppState {
 let state: AppState = {
   route: { name: 'profiles' },
   profileId: null,
+  browseGrade: null,
   dataVersion: 0,
   soundVersion: 0,
   toasts: [],
@@ -82,7 +85,11 @@ export function navigate(route: Route) {
 }
 
 export function selectProfile(profileId: string | null) {
-  setState({ profileId })
+  setState({ profileId, browseGrade: null })
+}
+
+export function setBrowseGrade(grade: number | null) {
+  setState({ browseGrade: grade })
 }
 
 /** DB書き込み後に呼ぶと、useAsyncDataを使う画面が再取得する */
