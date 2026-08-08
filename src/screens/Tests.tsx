@@ -4,10 +4,7 @@ import { findStage, findTerm, termKanji, termTestTitle } from '../data/curriculu
 import { hasQuestions } from '../data/questions'
 import { hasRefKanji } from '../core/refdata'
 import { TestRunner } from '../learn/TestRunner'
-import { useAsyncData } from '../state/hooks'
-import { navigate, useAppState } from '../state/store'
-import { listProgress } from '../storage/repo'
-import { Button, LoadingView, TopBar } from '../ui/components'
+import { TopBar } from '../ui/components'
 
 export function StageTestScreen({ stageId }: { stageId: string }) {
   const found = findStage(stageId)
@@ -31,15 +28,7 @@ export function StageTestScreen({ stageId }: { stageId: string }) {
 }
 
 export function TermTestScreen({ termId }: { termId: string }) {
-  const profileId = useAppState((s) => s.profileId)
   const found = findTerm(termId)
-  const { data: chars } = useAsyncData(async () => {
-    if (!found || !profileId) return null
-    const progress = await listProgress(profileId)
-    const practiced = new Set(progress.filter((p) => p.practicedAt != null).map((p) => p.char))
-    return termKanji(found.term).filter((c) => hasRefKanji(c) && hasQuestions(c) && practiced.has(c))
-  }, [profileId, termId])
-
   if (!found) {
     return (
       <div className="screen">
@@ -48,20 +37,7 @@ export function TermTestScreen({ termId }: { termId: string }) {
     )
   }
   const title = termTestTitle(found.cur, found.term.index)
-  if (!chars) return <LoadingView />
-  if (chars.length === 0) {
-    return (
-      <div className="screen">
-        <TopBar title={title} back={{ name: 'tests' }} />
-        <div className="center-panel">
-          <div className="card result-main">
-            <p className="result-score">まだ れんしゅうした漢字が ないよ</p>
-            <p className="tile-sub">「れんしゅうする」で れんしゅうしてから ちょうせんしよう！</p>
-            <Button onClick={() => navigate({ name: 'stages' })}>れんしゅうへ</Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  // 練習していなくても、いつでもその学期の全漢字で受けられる（2026-08-08 第9回）
+  const chars = termKanji(found.term).filter((c) => hasRefKanji(c) && hasQuestions(c))
   return <TestRunner kind="term" targetId={termId} chars={chars} title={title} backRoute={{ name: 'tests' }} />
 }

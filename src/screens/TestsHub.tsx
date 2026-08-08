@@ -78,7 +78,7 @@ export function TestsHub() {
               <span className={`stage-clear ${e.perfectCount === 0 ? 'stage-clear-zero' : ''}`}>100点 {e.perfectCount}回</span>
             </div>
             <p className="tile-sub">
-              しゅつだい: れんしゅうずみの {e.practicedCount}字（ぜんぶで{e.totalCount}字）
+              しゅつだい: ぜんぶで{e.totalCount}字（いつでも うけられるよ。れんしゅうずみ {e.practicedCount}字）
             </p>
             {e.best ? (
               e.best.correct === e.best.total ? (
@@ -92,12 +92,8 @@ export function TestsHub() {
               <p className="termtest-status">まだ ちょうせんしていないよ</p>
             )}
             {e.hasSession && <p className="stage-resume">とちゅうの きろくあり（つづきから できるよ）</p>}
-            <Button
-              variant={e.perfectCount > 0 ? 'secondary' : 'accent'}
-              onClick={() => navigate({ name: 'termTest', termId: e.termId })}
-              disabled={e.practicedCount === 0}
-            >
-              {e.practicedCount === 0 ? 'まず れんしゅうしよう' : e.best && e.best.correct !== e.best.total ? '100点に ちょうせん！' : 'ちょうせんする'}
+            <Button variant={e.perfectCount > 0 ? 'secondary' : 'accent'} onClick={() => navigate({ name: 'termTest', termId: e.termId })}>
+              {e.best && e.best.correct !== e.best.total ? '100点に ちょうせん！' : 'ちょうせんする'}
             </Button>
           </Card>
         ))}

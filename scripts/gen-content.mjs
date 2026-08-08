@@ -194,7 +194,19 @@ for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
         }
         return true
       })
-      .sort((a, b) => b.score - a.score || a.len - b.len)
+      .map((c) => {
+        // 学年適合度: 語に含まれる他の漢字の最高学年（低いほどやさしい）
+        let maxOther = 0
+        for (let i = 0; i < c.segs.length; i++) {
+          if (i === c.segIdx) continue
+          for (const k of c.segs[i].ruby) {
+            if (isKanji(k)) maxOther = Math.max(maxOther, gradeOf.get(k) ?? 9)
+          }
+        }
+        return { ...c, maxOther }
+      })
+      // やさしい語から: 他の漢字の学年が低い → 頻度が高い → 短い
+      .sort((a, b) => a.maxOther - b.maxOther || b.score - a.score || a.len - b.len)
     const picked = []
     const usedReadings = new Set()
     const usedWords = new Set()
@@ -211,12 +223,19 @@ for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
     }
     let n = 0
     for (const c of picked) {
+      // 漢字セグメントにはルビを付ける（習っていない字でも読める。仮名同士のみ結合）
       const parts = []
       for (let i = 0; i < c.segs.length; i++) {
         const seg = c.segs[i]
-        if (i === c.segIdx) parts.push({ blank: { reading: seg.rt } })
-        else if (parts.length > 0 && parts[parts.length - 1].text != null) parts[parts.length - 1].text += seg.ruby
-        else parts.push({ text: seg.ruby })
+        if (i === c.segIdx) {
+          parts.push({ blank: { reading: seg.rt } })
+        } else if (seg.rt) {
+          parts.push({ text: seg.ruby, ruby: seg.rt })
+        } else if (parts.length > 0 && parts[parts.length - 1].text != null && parts[parts.length - 1].ruby == null) {
+          parts[parts.length - 1].text += seg.ruby
+        } else {
+          parts.push({ text: seg.ruby })
+        }
       }
       questions.push({ id: `g${ch}-${++n}`, char: ch, kind: 'word', parts })
     }

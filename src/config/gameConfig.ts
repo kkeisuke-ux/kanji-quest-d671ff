@@ -31,6 +31,13 @@ export const GAME_CONFIG = {
     /** まとめ買いの個数 */
     bulkCount: 5,
   },
+  /** テストのスター報酬（まちがっても完走すればもらえる。100点は多め。2026-08-08 第9回） */
+  starRewards: {
+    stageTestFinish: 1,
+    stageTestPerfect: 3,
+    termTestFinish: 2,
+    termTestPerfect: 5,
+  },
   levels: {
     /** 仲間の最大レベル（レベル=姿。上がるたびに見た目が変わる） */
     maxLevel: 6,

@@ -4,18 +4,20 @@ import { useEffect, useMemo } from 'react'
 import { BuddyCorner } from '../learn/BuddyCorner'
 import { playGrand } from '../sound/sound'
 import { Button } from './components'
-import { CoinReward, type CoinBreakdownItem } from './CoinReward'
+import { CoinReward, StarReward, type CoinBreakdownItem } from './CoinReward'
 
 const CONFETTI_COLORS = ['#e0645f', '#f2c33c', '#4a67d8', '#3f9d63', '#8a5bd6', '#f2a63c']
 
 export function PerfectCelebration({
   title,
   coins,
+  stars = 0,
   breakdown,
   onClose,
 }: {
   title: string
   coins: number
+  stars?: number
   breakdown?: CoinBreakdownItem[]
   onClose: () => void
 }) {
@@ -64,6 +66,7 @@ export function PerfectCelebration({
         <p className="celebration-title">{title}</p>
         <BuddyCorner mood="celebrate" size={150} message="すごい！！ やったね！！" />
         <CoinReward amount={coins} breakdown={breakdown} />
+        <StarReward amount={stars} />
         <Button size="lg" variant="accent" onClick={onClose}>
           やったー！ つぎへ！
         </Button>

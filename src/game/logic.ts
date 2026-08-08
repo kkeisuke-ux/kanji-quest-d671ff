@@ -43,6 +43,15 @@ export async function awardCoinsFor(profileId: string, coins: number, reason: st
   return addCoins(profileId, coins, reason)
 }
 
+/** テストのがんばり報酬（スター） */
+export async function awardStarsFor(profileId: string, stars: number): Promise<Profile | null> {
+  const profile = await getProfile(profileId)
+  if (!profile || stars <= 0) return profile ?? null
+  profile.stars += stars
+  await saveProfile(profile)
+  return profile
+}
+
 export interface FeedStarResult {
   ok: true
   leveledUp: boolean

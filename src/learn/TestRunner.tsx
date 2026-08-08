@@ -10,7 +10,7 @@ import { shuffled } from '../core/geometry'
 import type { KanjiEvaluation } from '../core/judge/evaluate'
 import type { InkStroke } from '../core/ink/types'
 import { questionProvider, type Question } from '../data/questions'
-import { awardCoinsFor, checkMilestones } from '../game/logic'
+import { awardCoinsFor, awardStarsFor, checkMilestones } from '../game/logic'
 import { playCorrect, playFinish, playPerfect, playWrong } from '../sound/sound'
 import { useProfile } from '../state/hooks'
 import { bumpData, navigate, showToast, type Route } from '../state/store'
@@ -32,7 +32,7 @@ import type { TestItemRecord, TestSessionRecord } from '../storage/models'
 import { BuddyCorner, type BuddyMood } from './BuddyCorner'
 import { Button, KanjiChip, LoadingView, TopBar } from '../ui/components'
 import { PerfectCelebration } from '../ui/Celebration'
-import { CoinReward, type CoinBreakdownItem } from '../ui/CoinReward'
+import { CoinReward, StarReward, type CoinBreakdownItem } from '../ui/CoinReward'
 import { JudgeMark } from '../ui/JudgeMark'
 import { QuestionPrompt } from './QuestionPrompt'
 import { TraceStep } from './TraceStep'
@@ -61,6 +61,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   const [mark, setMark] = useState<'correct' | null>(null)
   const [revealMark, setRevealMark] = useState(false)
   const [resultCoins, setResultCoins] = useState<{ amount: number; breakdown?: CoinBreakdownItem[] } | null>(null)
+  const [resultStars, setResultStars] = useState(0)
   const [showCelebration, setShowCelebration] = useState(false)
   const [buddyMood, setBuddyMood] = useState<BuddyMood>('idle')
   const [savedSession, setSavedSession] = useState<TestSessionRecord | null>(null)
@@ -192,6 +193,16 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     } else {
       setResultCoins(null)
     }
+    // スターは「がんばって完走したら」必ずもらえる。100点は多め（2026-08-08 第9回）
+    const starReward = perfect
+      ? kind === 'term'
+        ? GAME_CONFIG.starRewards.termTestPerfect
+        : GAME_CONFIG.starRewards.stageTestPerfect
+      : kind === 'term'
+        ? GAME_CONFIG.starRewards.termTestFinish
+        : GAME_CONFIG.starRewards.stageTestFinish
+    await awardStarsFor(profile.id, starReward)
+    setResultStars(starReward)
     const after = await masteredCount(profile.id)
     const fresh = await getProfile(profile.id)
     if (fresh && startMasteredRef.current != null) await checkMilestones(fresh, startMasteredRef.current, after)
@@ -313,6 +324,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   const restartTest = async () => {
     if (kind === 'term') await deleteTestSession(profile.id, testKey)
     setResultCoins(null)
+    setResultStars(0)
     setShowCelebration(false)
     setChars(shuffled(baseChars))
     setItemsBoth([])
@@ -360,6 +372,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
           <PerfectCelebration
             title={title}
             coins={resultCoins?.amount ?? 0}
+            stars={resultStars}
             breakdown={resultCoins?.breakdown}
             onClose={() => setShowCelebration(false)}
           />
@@ -375,6 +388,9 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
             <div className="result-rate">せいとうりつ {rate}%</div>
             {resultCoins && !(kind === 'term' && perfect && showCelebration) && (
               <CoinReward amount={resultCoins.amount} breakdown={resultCoins.breakdown} />
+            )}
+            {!(kind === 'term' && perfect && showCelebration) && (
+              <StarReward amount={resultStars} note={perfect ? undefined : 'がんばって かんそうした ごほうび！'} />
             )}
             {!perfect && (
               <p className="termtest-status">

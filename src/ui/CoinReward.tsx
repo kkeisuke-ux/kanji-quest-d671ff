@@ -1,8 +1,8 @@
-// コイン獲得アニメーション: コインが弾け、枚数がカウントアップする（音つき）。
+// コイン・スター獲得アニメーション: 弾けて数がカウントアップする（音つき）。
 // テスト・練習の結果画面で「もらえた」ことがひと目で分かるようにする。
 import { useEffect, useMemo, useState } from 'react'
-import { playCoins } from '../sound/sound'
-import { CoinIcon } from './components'
+import { playCoins, playStarGet } from '../sound/sound'
+import { CoinIcon, StarIcon } from './components'
 
 export interface CoinBreakdownItem {
   label: string
@@ -69,6 +69,26 @@ export function CoinReward({ amount, breakdown }: { amount: number; breakdown?: 
             ))}
         </ul>
       )}
+    </div>
+  )
+}
+
+/** スター獲得表示（まちがっても完走すればもらえる がんばり報酬） */
+export function StarReward({ amount, note }: { amount: number; note?: string }) {
+  useEffect(() => {
+    if (amount <= 0) return
+    const timer = window.setTimeout(() => playStarGet(), 500)
+    return () => window.clearTimeout(timer)
+  }, [amount])
+  if (amount <= 0) return null
+  return (
+    <div className="coin-reward">
+      <div className="coin-total star-total">
+        <StarIcon size={28} />
+        <span className="coin-total-num">+{amount}</span>
+        <span className="coin-total-label">スター ゲット！</span>
+      </div>
+      {note && <p className="coin-breakdown-note">{note}</p>}
     </div>
   )
 }
