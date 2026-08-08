@@ -6,7 +6,7 @@ import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
 import { dueReviewChars, getProfile, listOwned, listProgress, listTestResults, listUnknown } from '../storage/repo'
-import { Button, Card, CoinBadge, ExpBar, LoadingView, StarBadge } from '../ui/components'
+import { Button, Card, ExpBar, LoadingView, StatusChips } from '../ui/components'
 import { SoundButton } from '../ui/SoundButton'
 
 export function Home() {
@@ -88,9 +88,8 @@ export function Home() {
           <span>{profile.name}</span>
         </button>
         <div className="home-badges">
+          <StatusChips />
           <SoundButton />
-          <CoinBadge coins={profile.coins} />
-          <StarBadge stars={profile.stars} />
           <button className="btn btn-ghost btn-sm" onClick={() => navigate({ name: 'settings' })}>
             せってい
           </button>
@@ -139,7 +138,7 @@ export function Home() {
           </div>
           <div className="progress-line">
             <span>
-              マスターした漢字　{mastered} / {totalPlayable}字　　★100てんクリア　{clearedStages} / {totalStages}ステージ
+              マスターした漢字　{mastered} / {totalPlayable}字　　100点クリア　{clearedStages} / {totalStages}ステージ
             </span>
             <div className="masterbar">
               <div className="masterbar-fill" style={{ width: `${totalPlayable > 0 ? (mastered / totalPlayable) * 100 : 0}%` }} />

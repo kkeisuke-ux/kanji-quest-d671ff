@@ -2029,6 +2029,186 @@ body {
   margin: 0 2px;
 }
 
+/* ---------- ステータス常設表示 ---------- */
+.status-chips {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.buddy-chip {
+  padding: 3px 10px 3px 5px;
+  gap: 3px;
+}
+
+.buddy-chip svg {
+  display: block;
+}
+
+.stage-clear-zero {
+  background: #efeade;
+  color: #9a937f;
+}
+
+/* ---------- コイン獲得演出 ---------- */
+.coin-reward {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 0 2px;
+}
+
+.coin-burst {
+  position: absolute;
+  top: -6px;
+  left: 0;
+  right: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.coin-fly {
+  position: absolute;
+  top: 0;
+  animation: coin-fly 1s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes coin-fly {
+  0% {
+    transform: translateY(26px) scale(0.4);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-44px) scale(1);
+    opacity: 0;
+  }
+}
+
+.coin-total {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #fdf3d0;
+  border-radius: 999px;
+  padding: 8px 20px;
+  animation: flash-pop 0.4s ease;
+}
+
+.coin-total-num {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--accent-dark);
+}
+
+.coin-total-label {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent-dark);
+}
+
+.coin-breakdown {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---------- 結果画面のアクション ---------- */
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* ---------- 100点セレブレーション ---------- */
+.celebration-back {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(30, 22, 60, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.confetti-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti {
+  position: absolute;
+  top: -20px;
+  border-radius: 2px;
+  animation: confetti-fall linear infinite;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-30px) rotate(0deg);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(105vh) rotate(540deg);
+    opacity: 0.4;
+  }
+}
+
+.celebration-panel {
+  position: relative;
+  background: radial-gradient(circle at 50% 20%, #fffef2, #fdf3d0);
+  border-radius: 24px;
+  padding: 26px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 520px;
+  width: 94%;
+  max-height: 92dvh;
+  overflow-y: auto;
+  box-shadow: 0 12px 50px rgba(0, 0, 0, 0.35);
+}
+
+.celebration-100 {
+  font-size: 54px;
+  font-weight: 900;
+  color: var(--accent-dark);
+  text-shadow: 0 3px 0 #fff, 0 5px 10px rgba(216, 139, 29, 0.35);
+  animation: gacha-pop 0.6s cubic-bezier(0.2, 1.6, 0.4, 1);
+  line-height: 1.1;
+}
+
+.celebration-crown {
+  margin-right: 6px;
+}
+
+.celebration-title {
+  margin: 0;
+  font-weight: 800;
+  color: var(--muted);
+}
+
 /* ---------- 縦向きフォールバック ---------- */
 @media (orientation: portrait) {
   .split {
@@ -2103,5 +2283,30 @@ body {
 
   .topbar-title {
     font-size: 16px;
+  }
+
+  /* 上部ステータスをコンパクトに */
+  .topbar {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .topbar-right {
+    gap: 5px;
+  }
+
+  .badge {
+    padding: 4px 9px;
+    font-size: 13px;
+  }
+
+  .strict-btn {
+    font-size: 11px;
+    padding: 6px 9px;
+  }
+
+  .sound-btn {
+    width: 34px;
+    height: 34px;
   }
 }

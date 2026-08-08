@@ -21,7 +21,6 @@ import { Button, LoadingView, TopBar } from '../ui/components'
 import { queueEvolutionFromEvents } from '../ui/EvolutionModal'
 import { JudgeMark } from '../ui/JudgeMark'
 import { KanjiSvg } from '../ui/KanjiSvg'
-import { SoundButton } from '../ui/SoundButton'
 
 export function Review({ mode, chars: charsParam }: { mode: 'due' | 'unknown'; chars?: string[] }) {
   const profileId = useAppState((s) => s.profileId)
@@ -129,7 +128,7 @@ export function Review({ mode, chars: charsParam }: { mode: 'due' | 'unknown'; c
 
   return (
     <div className="screen">
-      <TopBar title={`${title}　${index + 1} / ${list.length}`} back={{ name: 'home' }} right={<SoundButton />} />
+      <TopBar title={`${title}　${index + 1} / ${list.length}`} back={{ name: 'home' }} />
       {mode === 'unknown' && <div className="step-banner">まちがえても だいじょうぶ。テストで せいかいしたら リストから そつぎょう！</div>}
       {phase === 'relearn' && char ? (
         <div className="split">

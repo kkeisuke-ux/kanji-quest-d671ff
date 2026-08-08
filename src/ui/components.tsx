@@ -2,6 +2,40 @@
 import type { ReactNode } from 'react'
 import { navigate, useAppState, type Route } from '../state/store'
 import { expToNext } from '../game/logic'
+import { getSpecies } from '../data/species'
+import { CharacterSprite } from '../game/sprites'
+import { useAsyncData } from '../state/hooks'
+import { getOwned, getProfile } from '../storage/repo'
+import { SoundButton } from './SoundButton'
+
+/** コイン・スター・バディレベルの常設表示（全画面のTopBarに出る。仕様追加 2026-08-08） */
+export function StatusChips() {
+  const profileId = useAppState((s) => s.profileId)
+  const { data } = useAsyncData(async () => {
+    if (!profileId) return null
+    const p = await getProfile(profileId)
+    if (!p) return null
+    const buddy = p.buddyId != null ? ((await getOwned(p.buddyId)) ?? null) : null
+    return {
+      coins: p.coins,
+      stars: p.stars,
+      buddy: buddy && getSpecies(buddy.speciesId) ? { speciesId: buddy.speciesId, stage: buddy.stage, level: buddy.level } : null,
+    }
+  }, [profileId])
+  if (!data) return null
+  return (
+    <span className="status-chips">
+      <CoinBadge coins={data.coins} />
+      <StarBadge stars={data.stars} />
+      {data.buddy && (
+        <span className="badge buddy-chip">
+          <CharacterSprite speciesId={data.buddy.speciesId} stage={data.buddy.stage} size={22} />
+          <span>Lv.{data.buddy.level}</span>
+        </span>
+      )}
+    </span>
+  )
+}
 
 export function TopBar({ title, back, right }: { title: string; back?: Route; right?: ReactNode }) {
   return (
@@ -14,7 +48,11 @@ export function TopBar({ title, back, right }: { title: string; back?: Route; ri
         <span className="btn-back-space" />
       )}
       <h1 className="topbar-title">{title}</h1>
-      <div className="topbar-right">{right}</div>
+      <div className="topbar-right">
+        {right}
+        <StatusChips />
+        <SoundButton />
+      </div>
     </header>
   )
 }

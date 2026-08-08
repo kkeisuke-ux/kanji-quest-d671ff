@@ -16,7 +16,7 @@ import { BuddyCorner, type BuddyMood } from '../learn/BuddyCorner'
 import { TraceStep, type TraceMode } from '../learn/TraceStep'
 import { WritingPad } from '../learn/WritingPad'
 import { saveSample } from '../learn/sampleUtil'
-import { playClear, playCorrect, playWrong } from '../sound/sound'
+import { playCorrect, playPerfect, playWrong } from '../sound/sound'
 import { useProfile } from '../state/hooks'
 import { bumpData, navigate, showToast } from '../state/store'
 import {
@@ -27,11 +27,11 @@ import {
   savePracticeSession,
   saveProgress,
 } from '../storage/repo'
-import { Button, CoinBadge, KanjiChip, LoadingView, TopBar } from '../ui/components'
+import { Button, KanjiChip, LoadingView, TopBar } from '../ui/components'
+import { CoinReward } from '../ui/CoinReward'
 import { queueEvolutionFromEvents } from '../ui/EvolutionModal'
 import { JudgeMark } from '../ui/JudgeMark'
 import { KanjiSvg } from '../ui/KanjiSvg'
-import { SoundButton } from '../ui/SoundButton'
 import { StrictnessButton } from '../ui/StrictnessButton'
 
 type RoundKind = 'trace-guided' | 'trace-numbers' | 'trace-gray' | 'write'
@@ -149,7 +149,7 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
       await addActivity(profile.id, profile.name, 'stageClear', `${profile.name}が ${stage.label}の れんしゅうを おえました`)
       queueEvolutionFromEvents(reward.expEvents)
       bumpData()
-      playClear()
+      playPerfect()
       setStageDone(true)
     } else {
       await persist(kanjiIdx + 1, 0)
@@ -233,21 +233,23 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
   if (stageDone) {
     return (
       <div className="screen">
-        <TopBar title={`${stage.label} かんりょう！`} back={{ name: 'stages' }} right={<SoundButton />} />
+        <TopBar title={`${stage.label} かんりょう！`} back={{ name: 'stages' }} />
         <div className="center-panel">
           <div className="card result-main">
             <BuddyCorner mood="celebrate" size={120} message="やったね！" />
             <div className="result-score">よく がんばりました！</div>
-            <p>ステージクリアボーナス +{GAME_CONFIG.coins.stageClearBonus}コイン</p>
             <div className="result-chips">
               {stage.kanji.map((k) => (
                 <KanjiChip key={k} char={k} state="practiced" />
               ))}
             </div>
-            <div className="row gap">
-              <Button onClick={() => navigate({ name: 'stageTest', stageId })}>５もんテストに ちょうせん！</Button>
-              <Button variant="secondary" onClick={() => navigate({ name: 'stages' })}>
-                マップへ もどる
+            <CoinReward amount={GAME_CONFIG.coins.stageClearBonus} />
+            <div className="result-actions">
+              <Button size="lg" variant="accent" onClick={() => navigate({ name: 'stageTest', stageId })}>
+                ５もんテストに ちょうせん！
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => navigate({ name: 'stages' })}>
+                もどる
               </Button>
             </div>
           </div>
@@ -268,8 +270,6 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
         right={
           <span className="row gap-sm">
             <StrictnessButton />
-            <SoundButton />
-            <CoinBadge coins={profile.coins} />
             <Button size="sm" variant="ghost" onClick={() => void restart()}>
               さいしょから
             </Button>
@@ -343,7 +343,10 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
                     <JudgeMark kind="correct" />
                   ) : (
                     <>
-                      <KanjiSvg char={char} full color="#e0645f" opacity={0.4} className="ghost-overlay" />
+                      {/* 形もちがう時だけ正しい形を重ねる（書き順ミスのみの時は×だけ） */}
+                      {!evalResult.shapeOk && (
+                        <KanjiSvg char={char} full color="#e0645f" opacity={0.4} className="ghost-overlay" />
+                      )}
                       <JudgeMark kind="wrong" />
                     </>
                   )

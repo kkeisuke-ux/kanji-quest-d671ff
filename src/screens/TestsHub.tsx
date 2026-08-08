@@ -10,7 +10,6 @@ import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
 import { getProfile, getTestSession, listProgress, listTestResults } from '../storage/repo'
 import { Button, Card, LoadingView, TopBar } from '../ui/components'
-import { SoundButton } from '../ui/SoundButton'
 
 interface TermEntry {
   termId: string
@@ -60,10 +59,10 @@ export function TestsHub() {
 
   return (
     <div className="screen">
-      <TopBar title="テストする" back={{ name: 'home' }} right={<SoundButton />} />
+      <TopBar title="テストする" back={{ name: 'home' }} />
       <div className="map-scroll">
         <p className="tile-sub map-note">
-          もんだいは まいかい ランダムに でるよ。100てんを とると スペシャルボーナス +{GAME_CONFIG.coins.termTestPerfectBonus}コイン！
+          もんだいは まいかい ランダムに でるよ。100点を とると スペシャルボーナス +{GAME_CONFIG.coins.termTestPerfectBonus}コイン！
         </p>
         {data.entries.map((e) => (
           <Card key={e.termId} className={`termtest-card ${e.perfectCount > 0 ? 'termtest-card-perfect' : ''}`}>
@@ -72,17 +71,17 @@ export function TestsHub() {
                 {e.perfectCount > 0 && <span className="crown">👑</span>}
                 {e.title}
               </span>
-              {e.perfectCount > 0 && <span className="stage-clear">100てん {e.perfectCount}かい</span>}
+              <span className={`stage-clear ${e.perfectCount === 0 ? 'stage-clear-zero' : ''}`}>100点 {e.perfectCount}回</span>
             </div>
             <p className="tile-sub">
               しゅつだい: れんしゅうずみの {e.practicedCount}字（ぜんぶで{e.totalCount}字）
             </p>
             {e.best ? (
               e.best.correct === e.best.total ? (
-                <p className="termtest-status termtest-status-perfect">100てん たっせい！ なんども ちょうせんして きろくを のばそう</p>
+                <p className="termtest-status termtest-status-perfect">100点 たっせい！ なんども ちょうせんして きろくを のばそう</p>
               ) : (
                 <p className="termtest-status">
-                  さいこう {e.best.correct}/{e.best.total}問　—　<b>100てんまで あと{e.best.total - e.best.correct}もん！</b>
+                  さいこう {e.best.correct}/{e.best.total}問　—　<b>100点まで あと{e.best.total - e.best.correct}問！</b>
                 </p>
               )
             ) : (
@@ -94,7 +93,7 @@ export function TestsHub() {
               onClick={() => navigate({ name: 'termTest', termId: e.termId })}
               disabled={e.practicedCount === 0}
             >
-              {e.practicedCount === 0 ? 'まず れんしゅうしよう' : e.best && e.best.correct !== e.best.total ? '100てんに ちょうせん！' : 'ちょうせんする'}
+              {e.practicedCount === 0 ? 'まず れんしゅうしよう' : e.best && e.best.correct !== e.best.total ? '100点に ちょうせん！' : 'ちょうせんする'}
             </Button>
           </Card>
         ))}

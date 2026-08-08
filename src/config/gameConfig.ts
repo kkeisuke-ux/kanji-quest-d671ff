@@ -22,6 +22,8 @@ export const GAME_CONFIG = {
     stageClearBonus: 10,
     /** 大型テスト完走ボーナス */
     termTestFinishBonus: 30,
+    /** ５もんテスト完走ボーナス（点数に関係なく） */
+    stageTestFinishBonus: 5,
     /** ５もんテストで100点（全問正解）ボーナス */
     stageTestPerfectBonus: 20,
     /** まとめテストで100点ボーナス（100点を目指したくなる目玉報酬） */

@@ -11,7 +11,7 @@ import type { KanjiEvaluation } from '../core/judge/evaluate'
 import type { InkStroke } from '../core/ink/types'
 import { questionProvider, type Question } from '../data/questions'
 import { awardStudy, checkMilestones, type ExpGrantEvents } from '../game/logic'
-import { playClear, playCorrect, playWrong } from '../sound/sound'
+import { playCorrect, playFinish, playPerfect, playWrong } from '../sound/sound'
 import { useProfile } from '../state/hooks'
 import { bumpData, navigate, showToast, type Route } from '../state/store'
 import {
@@ -31,9 +31,10 @@ import {
 import type { TestItemRecord, TestSessionRecord } from '../storage/models'
 import { BuddyCorner, type BuddyMood } from './BuddyCorner'
 import { Button, KanjiChip, LoadingView, TopBar } from '../ui/components'
+import { PerfectCelebration } from '../ui/Celebration'
+import { CoinReward, type CoinBreakdownItem } from '../ui/CoinReward'
 import { queueEvolutionFromEvents } from '../ui/EvolutionModal'
 import { JudgeMark } from '../ui/JudgeMark'
-import { SoundButton } from '../ui/SoundButton'
 import { QuestionPrompt } from './QuestionPrompt'
 import { TraceStep } from './TraceStep'
 import { WritingPad } from './WritingPad'
@@ -60,6 +61,9 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   const [tries, setTries] = useState(0)
   const [mark, setMark] = useState<'correct' | null>(null)
   const [revealMark, setRevealMark] = useState(false)
+  const [resultCoins, setResultCoins] = useState<{ amount: number; breakdown: CoinBreakdownItem[] } | null>(null)
+  const [showCelebration, setShowCelebration] = useState(false)
+  const earnedRef = useRef(0)
   const [buddyMood, setBuddyMood] = useState<BuddyMood>('idle')
   const [savedSession, setSavedSession] = useState<TestSessionRecord | null>(null)
   const itemsRef = useRef<TestItemRecord[]>([])
@@ -176,29 +180,49 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       correct,
       items: finalItems,
     })
+    // かんそうボーナス（点数に関係なく「やったらもらえる」）
+    const finishBonus = kind === 'term' ? GAME_CONFIG.coins.termTestFinishBonus : GAME_CONFIG.coins.stageTestFinishBonus
+    await awardStudy(profile.id, finishBonus, 0, 'テストかんそう')
+    earnedRef.current += finishBonus
     if (kind === 'term') {
       await deleteTestSession(profile.id, testKey)
-      await awardStudy(profile.id, GAME_CONFIG.coins.termTestFinishBonus, 0, 'テストかんそう')
       const msg = perfect
-        ? `${profile.name}が ${title}で 100てんを とりました！（${correct}/${finalItems.length}問）`
+        ? `${profile.name}が ${title}で 100点を とりました！（${correct}/${finalItems.length}問）`
         : `${profile.name}が ${title}に ちょうせんしました（${correct}/${finalItems.length}問正解）`
       await addActivity(profile.id, profile.name, 'termTest', msg)
     }
+    let perfectBonus = 0
     if (perfect) {
       // 100点スペシャルボーナス（100点を目指したくなる仕様）
-      const bonus = kind === 'term' ? GAME_CONFIG.coins.termTestPerfectBonus : GAME_CONFIG.coins.stageTestPerfectBonus
-      const reward = await awardStudy(profile.id, bonus, 0, '100てんボーナス')
+      perfectBonus = kind === 'term' ? GAME_CONFIG.coins.termTestPerfectBonus : GAME_CONFIG.coins.stageTestPerfectBonus
+      const reward = await awardStudy(profile.id, perfectBonus, 0, '100点ボーナス')
       if (reward.expEvents) evoQueueRef.current.push(reward.expEvents)
-      showToast(`100てんボーナス +${bonus}コイン！`)
+      earnedRef.current += perfectBonus
     }
+    const perCorrect = kind === 'stage' ? GAME_CONFIG.coins.stageTestPerCorrect : GAME_CONFIG.coins.termTestPerCorrect
+    setResultCoins({
+      amount: earnedRef.current,
+      breakdown: [
+        { label: `せいかい ${correct}問`, value: perCorrect * correct },
+        { label: 'かんそうボーナス', value: finishBonus },
+        { label: '100点ボーナス', value: perfectBonus },
+      ],
+    })
     const after = await masteredCount(profile.id)
     const fresh = await getProfile(profile.id)
     if (fresh && startMasteredRef.current != null) await checkMilestones(fresh, startMasteredRef.current, after)
     bumpData()
     setPhase('done')
+    // ジングルは3段階: 完了 ＜ ５もんテスト100点 ＜ まとめテスト100点
     if (perfect) {
-      playClear()
       setBuddyMood('celebrate')
+      if (kind === 'term') {
+        setShowCelebration(true) // playGrandはセレブレーション側で鳴る
+      } else {
+        playPerfect()
+      }
+    } else {
+      playFinish()
     }
     const evo = evoQueueRef.current.find((e) => e.evolvedTo)
     if (evo) queueEvolutionFromEvents(evo)
@@ -237,12 +261,9 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       })
       const removed = await clearUnknown(profile.id, char)
       if (removed) showToast(`「${char}」が わからないリストから きえたよ！`)
-      const reward = await awardStudy(
-        profile.id,
-        kind === 'stage' ? GAME_CONFIG.coins.stageTestPerCorrect : GAME_CONFIG.coins.termTestPerCorrect,
-        GAME_CONFIG.exp.testCorrect,
-        'テストせいかい'
-      )
+      const perCorrect = kind === 'stage' ? GAME_CONFIG.coins.stageTestPerCorrect : GAME_CONFIG.coins.termTestPerCorrect
+      const reward = await awardStudy(profile.id, perCorrect, GAME_CONFIG.exp.testCorrect, 'テストせいかい')
+      earnedRef.current += perCorrect
       if (reward.expEvents) evoQueueRef.current.push(reward.expEvents)
       await persistSession(chars, index + 1, newItems)
       bumpData()
@@ -314,6 +335,9 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   const restartTest = async () => {
     if (kind === 'term') await deleteTestSession(profile.id, testKey)
     evoQueueRef.current = []
+    earnedRef.current = 0
+    setResultCoins(null)
+    setShowCelebration(false)
     setChars(shuffled(baseChars))
     setItemsBoth([])
     setIndex(0)
@@ -329,7 +353,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   if (phase === 'askResume') {
     return (
       <div className="screen">
-        <TopBar title={title} back={backRoute} right={<SoundButton />} />
+        <TopBar title={title} back={backRoute} />
         <div className="center-panel">
           <div className="card resume-card">
             <p>
@@ -356,18 +380,29 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     const rate = items.length > 0 ? Math.round((correct / items.length) * 100) : 0
     return (
       <div className="screen">
-        <TopBar title={`${title} けっか`} back={backRoute} right={<SoundButton />} />
+        {showCelebration && (
+          <PerfectCelebration
+            title={title}
+            coins={resultCoins?.amount ?? 0}
+            breakdown={resultCoins?.breakdown}
+            onClose={() => setShowCelebration(false)}
+          />
+        )}
+        <TopBar title={`${title} けっか`} back={backRoute} />
         <div className="result-wrap">
           <div className={`card result-main ${perfect ? 'result-perfect' : ''}`}>
-            {perfect && <div className="perfect-banner">👑 100てん！ パーフェクト！</div>}
+            {perfect && <div className="perfect-banner">👑 100点！ パーフェクト！</div>}
             <BuddyCorner mood={perfect ? 'celebrate' : 'idle'} size={100} message={perfect ? 'すごーい！' : 'よくがんばったね'} />
             <div className="result-score">
               {items.length}問中 {correct}問 せいかい！
             </div>
             <div className="result-rate">せいとうりつ {rate}%</div>
+            {resultCoins && !(kind === 'term' && perfect && showCelebration) && (
+              <CoinReward amount={resultCoins.amount} breakdown={resultCoins.breakdown} />
+            )}
             {!perfect && (
               <p className="termtest-status">
-                <b>100てんまで あと{items.length - correct}もん！</b> もういちど ちょうせんしてみよう
+                <b>100点まで あと{items.length - correct}問！</b> もういちど ちょうせんしてみよう
               </p>
             )}
             <div className="result-chips">
@@ -406,18 +441,26 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
               </div>
             </div>
           )}
-          <div className="row gap wrap">
-            {!perfect && (
-              <Button variant="accent" onClick={() => void restartTest()}>
-                100てんに もういちど ちょうせん！
+          <div className="result-actions">
+            {perfect ? (
+              <Button size="lg" variant="accent" onClick={() => navigate(kind === 'stage' ? { name: 'stages' } : { name: 'home' })}>
+                つぎへ！
+              </Button>
+            ) : (
+              <Button size="lg" variant="accent" onClick={() => void restartTest()}>
+                100点に もういちど ちょうせん！
               </Button>
             )}
-            <Button variant="secondary" onClick={() => navigate(backRoute)}>
-              もどる
-            </Button>
-            {unknowns.length > 0 && (
-              <Button onClick={() => navigate({ name: 'review', mode: 'unknown' })}>わからなかった漢字を ふくしゅう</Button>
-            )}
+            <div className="row gap wrap">
+              {unknowns.length > 0 && (
+                <Button size="sm" variant="secondary" onClick={() => navigate({ name: 'review', mode: 'unknown' })}>
+                  こたえを みた漢字を ふくしゅう
+                </Button>
+              )}
+              <Button size="sm" variant="ghost" onClick={() => navigate(backRoute)}>
+                もどる
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -428,7 +471,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     const char = chars[index]
     return (
       <div className="screen">
-        <TopBar title={`${title}　${index + 1} / ${chars.length}`} back={backRoute} right={<SoundButton />} />
+        <TopBar title={`${title}　${index + 1} / ${chars.length}`} back={backRoute} />
         <div className="step-banner">こたえは「{char}」。すうじの じゅんばんに なぞって おぼえよう</div>
         <div className="split">
           <div className="split-left">
@@ -455,7 +498,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
 
   return (
     <div className="screen">
-      <TopBar title={`${title}　${index + 1} / ${chars.length}`} back={backRoute} right={<SoundButton />} />
+      <TopBar title={`${title}　${index + 1} / ${chars.length}`} back={backRoute} />
       <div className="split">
         <div className="split-left">
           {question ? (

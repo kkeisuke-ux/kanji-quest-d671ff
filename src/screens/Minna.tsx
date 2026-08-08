@@ -124,7 +124,7 @@ export function Minna() {
                     <span className="minna-term-best">
                       {t.best ? `まとめテストさいこう ${t.best.correct}/${t.best.total}問` : 'まとめテストは まだ'}
                     </span>
-                    {t.perfectCount > 0 && <span className="stage-clear">👑100てん {t.perfectCount}かい</span>}
+                    {t.perfectCount > 0 && <span className="stage-clear">👑100点 {t.perfectCount}回</span>}
                   </div>
                 ))}
               </div>

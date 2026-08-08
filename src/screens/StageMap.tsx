@@ -4,7 +4,6 @@ import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
 import { getProfile, listProgress, listTestResults, listUnknown } from '../storage/repo'
 import { Button, Card, KanjiChip, LoadingView, TopBar, type KanjiChipState } from '../ui/components'
-import { SoundButton } from '../ui/SoundButton'
 
 export function StageMap() {
   const profileId = useAppState((s) => s.profileId)
@@ -48,7 +47,7 @@ export function StageMap() {
 
   return (
     <div className="screen">
-      <TopBar title={`れんしゅうする（${cur.gradeLabel}）`} back={{ name: 'home' }} right={<SoundButton />} />
+      <TopBar title={`れんしゅうする（${cur.gradeLabel}）`} back={{ name: 'home' }} />
       {fallback && <p className="map-note">いまは 小1の漢字で れんしゅうできるよ（ほかの学年は じゅんびちゅう）</p>}
       <div className="map-scroll">
         <p className="tile-sub map-note-inline">まとめテストは ホームの「テストする」から ちょうせんできるよ</p>
@@ -72,7 +71,7 @@ export function StageMap() {
                           <div className="stage-head">
                             <span className="stage-label">{stage.label}</span>
                             <span className="row gap-sm">
-                              {perfect > 0 && <span className="stage-clear">★クリア　100てん{perfect}かい</span>}
+                              <span className={`stage-clear ${perfect === 0 ? 'stage-clear-zero' : ''}`}>100点 {perfect}回</span>
                               {perfect === 0 && practicedAll && <span className="stage-done">れんしゅうずみ</span>}
                             </span>
                           </div>

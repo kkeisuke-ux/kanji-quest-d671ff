@@ -92,7 +92,9 @@ export const DEFAULT_JUDGE_CONFIG: JudgeConfig = {
     startRadius: 0.4,
   },
   scoring: {
-    orderStrictInTests: false,
+    // 2026-08-08変更: 書き順・書く方向が違う場合は○にしない（正しく書けるまでリトライ）。
+    // 字形のきびしさとは独立（字形はSTRICTNESSで調整、書き順は常に判定）。
+    orderStrictInTests: true,
     autoJudgeDelayMs: 700,
   },
   samples: {
@@ -106,17 +108,18 @@ export const DEFAULT_JUDGE_CONFIG: JudgeConfig = {
 // 注意: 「とてもあまい」でも別の漢字は不正解になる（自己テストX参照。
 // 誤字拒否コストの下限 avg≒0.73 に対し L1でも上限0.57で余裕がある）。
 // ============================================================
+// 2026-08-08 第3回フィードバック: デフォルト=とてもあまい(1.45)、さらに甘い「もっとあまい」を追加
 export const STRICTNESS_FACTORS: Record<number, number> = {
-  1: 1.45,
-  2: 1.2,
-  3: 1.0,
-  4: 0.76,
-  5: 0.62,
+  1: 1.6,
+  2: 1.45,
+  3: 1.2,
+  4: 1.0,
+  5: 0.76,
 }
 
-export const STRICTNESS_LABELS = ['とてもあまい', 'あまい', 'ふつう', 'きびしい', 'とてもきびしい']
+export const STRICTNESS_LABELS = ['もっとあまい', 'とてもあまい', 'あまい', 'ふつう', 'きびしい']
 
-export const DEFAULT_STRICTNESS = 3
+export const DEFAULT_STRICTNESS = 2
 
 export function applyStrictness(cfg: JudgeConfig, level: number): JudgeConfig {
   const lv = Math.min(5, Math.max(1, Math.round(level || DEFAULT_STRICTNESS)))
