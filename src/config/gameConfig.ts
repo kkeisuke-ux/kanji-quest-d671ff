@@ -22,6 +22,10 @@ export const GAME_CONFIG = {
     stageClearBonus: 10,
     /** 大型テスト完走ボーナス */
     termTestFinishBonus: 30,
+    /** ５もんテストで100点（全問正解）ボーナス */
+    stageTestPerfectBonus: 20,
+    /** まとめテストで100点ボーナス（100点を目指したくなる目玉報酬） */
+    termTestPerfectBonus: 80,
     /** はじめてのプレゼント（プロフィール作成時） */
     initialGift: 60,
   },

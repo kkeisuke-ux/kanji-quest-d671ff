@@ -70,6 +70,12 @@ export function termLabel(index: number): string {
   return GAME_CONFIG.termLabels[index] ?? `第${index + 1}期`
 }
 
+/** まとめテストの表示名（例: 「1年1学期まとめテスト」） */
+export function termTestTitle(cur: GradeCurriculum, termIndex: number): string {
+  const gradePart = cur.grade <= 6 ? `${cur.grade}年` : gradeLabelOf(cur.grade)
+  return `${gradePart}${termLabel(termIndex)}まとめテスト`
+}
+
 export function termKanji(term: TermDef): string[] {
   return term.stages.flatMap((s) => s.kanji)
 }

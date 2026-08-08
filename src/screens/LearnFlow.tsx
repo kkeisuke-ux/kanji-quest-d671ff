@@ -32,6 +32,7 @@ import { queueEvolutionFromEvents } from '../ui/EvolutionModal'
 import { JudgeMark } from '../ui/JudgeMark'
 import { KanjiSvg } from '../ui/KanjiSvg'
 import { SoundButton } from '../ui/SoundButton'
+import { StrictnessButton } from '../ui/StrictnessButton'
 
 type RoundKind = 'trace-guided' | 'trace-numbers' | 'trace-gray' | 'write'
 
@@ -62,6 +63,7 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
   const [attempt, setAttempt] = useState(0)
   const [evalResult, setEvalResult] = useState<KanjiEvaluation | null>(null)
   const [stageDone, setStageDone] = useState(false)
+  const [traceMark, setTraceMark] = useState(false)
   const [buddyMood, setBuddyMood] = useState<BuddyMood>('idle')
   const busyRef = useRef(false)
   const moodTimerRef = useRef<number | null>(null)
@@ -172,9 +174,11 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
   const onTraceDone = async () => {
     if (busyRef.current) return
     busyRef.current = true
+    // なぞりでも大きな○＋ピンポーン（2026-08-08フィードバック）
+    setTraceMark(true)
+    playCorrect()
+    happyBuddy()
     try {
-      playCorrect()
-      happyBuddy()
       const progress = await getProgress(profile.id, char)
       progress.traceDone++
       progress.lastSeenAt = Date.now()
@@ -188,9 +192,13 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
       queueEvolutionFromEvents(reward.expEvents)
       showToast(`なぞり かんぺき！ +${GAME_CONFIG.coins.trace}コイン`)
       bumpData()
-      await completeRound()
     } finally {
-      busyRef.current = false
+      window.setTimeout(() => {
+        setTraceMark(false)
+        void completeRound().finally(() => {
+          busyRef.current = false
+        })
+      }, 950)
     }
   }
 
@@ -259,6 +267,7 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
         back={{ name: 'stages' }}
         right={
           <span className="row gap-sm">
+            <StrictnessButton />
             <SoundButton />
             <CoinBadge coins={profile.coins} />
             <Button size="sm" variant="ghost" onClick={() => void restart()}>
@@ -342,7 +351,13 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
               }
             />
           ) : (
-            <TraceStep key={`${char}-${round}`} char={char} mode={traceMode} onDone={() => void onTraceDone()} />
+            <TraceStep
+              key={`${char}-${round}`}
+              char={char}
+              mode={traceMode}
+              onDone={() => void onTraceDone()}
+              overlay={traceMark ? <JudgeMark kind="correct" /> : null}
+            />
           )}
         </div>
       </div>

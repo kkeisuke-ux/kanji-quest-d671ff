@@ -22,6 +22,7 @@ interface ProfileDash {
     label: string
     stages: { label: string; state: 'cleared' | 'practiced' | 'none'; perfectCount: number }[]
     best: { correct: number; total: number } | null
+    perfectCount: number
   }[]
 }
 
@@ -36,6 +37,7 @@ export function Minna() {
         const { cur } = getCurriculumForGrade(p.grade)
         const stagePerfect = new Map<string, number>()
         const termBest = new Map<string, { correct: number; total: number }>()
+        const termPerfect = new Map<string, number>()
         for (const r of results) {
           if (r.kind === 'stage' && r.total > 0 && r.correct === r.total) {
             stagePerfect.set(r.targetId, (stagePerfect.get(r.targetId) ?? 0) + 1)
@@ -43,6 +45,7 @@ export function Minna() {
           if (r.kind === 'term') {
             const best = termBest.get(r.targetId)
             if (!best || r.correct > best.correct) termBest.set(r.targetId, { correct: r.correct, total: r.total })
+            if (r.total > 0 && r.correct === r.total) termPerfect.set(r.targetId, (termPerfect.get(r.targetId) ?? 0) + 1)
           }
         }
         const terms = cur.terms
@@ -50,6 +53,7 @@ export function Minna() {
           .map((t) => ({
             label: termLabel(t.index),
             best: termBest.get(t.id) ?? null,
+            perfectCount: termPerfect.get(t.id) ?? 0,
             stages: t.stages.map((s) => {
               const practicedAll = s.kanji.every((k) => progressMap.get(k)?.practicedAt != null)
               const perfectCount = stagePerfect.get(s.id) ?? 0
@@ -118,8 +122,9 @@ export function Minna() {
                       ))}
                     </span>
                     <span className="minna-term-best">
-                      {t.best ? `テストさいこう ${t.best.correct}/${t.best.total}問` : 'テストは まだ'}
+                      {t.best ? `まとめテストさいこう ${t.best.correct}/${t.best.total}問` : 'まとめテストは まだ'}
                     </span>
+                    {t.perfectCount > 0 && <span className="stage-clear">👑100てん {t.perfectCount}かい</span>}
                   </div>
                 ))}
               </div>

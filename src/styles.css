@@ -1918,6 +1918,117 @@ body {
   font-weight: 700;
 }
 
+/* ---------- 判定きびしさボタン ---------- */
+.strict-btn {
+  border: none;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--muted);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ---------- ホームの2大アクション ---------- */
+.home-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.action-btn {
+  flex: 1;
+  border: none;
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  box-shadow: var(--shadow);
+  transition: transform 0.06s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+.action-practice {
+  background: linear-gradient(135deg, #e8edfb, #dbe7fa);
+}
+
+.action-test {
+  background: linear-gradient(135deg, #fdf1d2, #fde3b6);
+}
+
+.action-icon {
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.action-label {
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.action-sub {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* ---------- まとめテストページ ---------- */
+.termtest-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.termtest-card-perfect {
+  background: linear-gradient(135deg, #fffbe8, #fdf3d0);
+}
+
+.termtest-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.termtest-title {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.crown {
+  margin-right: 4px;
+}
+
+.termtest-status {
+  margin: 2px 0;
+  font-size: 14.5px;
+}
+
+.termtest-status b {
+  color: var(--accent-dark);
+}
+
+.termtest-status-perfect {
+  color: var(--good);
+  font-weight: 800;
+}
+
+.map-note-inline {
+  margin: 0 2px;
+}
+
 /* ---------- 縦向きフォールバック ---------- */
 @media (orientation: portrait) {
   .split {

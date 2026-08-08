@@ -1,5 +1,5 @@
 // ホーム画面（仕様 §36）: 今日の学習・今日の復習・仲間・コイン・進捗。
-import { getCurriculumForGrade, type StageDef } from '../data/curriculum'
+import { getCurriculumForGrade, termTestTitle, type StageDef } from '../data/curriculum'
 import { getSpecies } from '../data/species'
 import { evolutionInfo } from '../game/logic'
 import { CharacterSprite } from '../game/sprites'
@@ -26,25 +26,55 @@ export function Home() {
     const mastered = progressList.filter((p) => p.masteredAt != null).length
     const { cur, fallback } = getCurriculumForGrade(profile.grade)
     const practicedSet = new Set(progressList.filter((p) => p.practicedAt != null).map((p) => p.char))
-    let nextStage: StageDef | null = null
-    outer: for (const term of cur.terms) {
+    const stagePerfectSet = new Set(
+      results.filter((r) => r.kind === 'stage' && r.total > 0 && r.correct === r.total).map((r) => r.targetId)
+    )
+    const termPerfectSet = new Set(
+      results.filter((r) => r.kind === 'term' && r.total > 0 && r.correct === r.total).map((r) => r.targetId)
+    )
+    // おすすめ: ①練習が終わっていないステージ → ②100点がまだの5問テスト → ③100点がまだのまとめテスト
+    let nextPractice: StageDef | null = null
+    let nextStageTest: StageDef | null = null
+    let nextTerm: { id: string; title: string } | null = null
+    for (const term of cur.terms) {
       for (const st of term.stages) {
-        if (st.kanji.some((k) => !practicedSet.has(k))) {
-          nextStage = st
-          break outer
-        }
+        const allPracticed = st.kanji.every((k) => practicedSet.has(k))
+        if (!allPracticed && !nextPractice) nextPractice = st
+        if (allPracticed && !stagePerfectSet.has(st.id) && !nextStageTest) nextStageTest = st
+      }
+      if (term.stages.length > 0 && !termPerfectSet.has(term.id) && !nextTerm) {
+        nextTerm = { id: term.id, title: termTestTitle(cur, term.index) }
       }
     }
     const totalPlayable = cur.terms.flatMap((t) => t.stages).flatMap((s) => s.kanji).length
     const allStages = cur.terms.flatMap((t) => t.stages)
-    const clearedStages = allStages.filter((s) =>
-      results.some((r) => r.kind === 'stage' && r.targetId === s.id && r.total > 0 && r.correct === r.total)
-    ).length
-    return { profile, due, unknown, mastered, buddy, nextStage, fallback, totalPlayable, clearedStages, totalStages: allStages.length }
+    const clearedStages = allStages.filter((s) => stagePerfectSet.has(s.id)).length
+    return {
+      profile,
+      due,
+      unknown,
+      mastered,
+      buddy,
+      fallback,
+      totalPlayable,
+      clearedStages,
+      totalStages: allStages.length,
+      nextPractice,
+      nextStageTest,
+      nextTerm,
+    }
   }, [profileId])
 
   if (!data) return <LoadingView />
-  const { profile, due, unknown, mastered, buddy, nextStage, fallback, totalPlayable, clearedStages, totalStages } = data
+  const { profile, due, unknown, mastered, buddy, fallback, totalPlayable, clearedStages, totalStages, nextPractice, nextStageTest, nextTerm } = data
+
+  const recommend = nextPractice
+    ? { text: `${nextPractice.label}「${nextPractice.kanji.join('')}」の れんしゅうを すすめよう`, route: { name: 'learn', stageId: nextPractice.id } as const }
+    : nextStageTest
+      ? { text: `${nextStageTest.label}の ５もんテストで 100てんを めざそう！`, route: { name: 'stageTest', stageId: nextStageTest.id } as const }
+      : nextTerm
+        ? { text: `${nextTerm.title}で 100てんに ちょうせん！`, route: { name: 'termTest', termId: nextTerm.id } as const }
+        : { text: 'ぜんぶ 100てん！ すごい！ ふくしゅうで キープしよう', route: { name: 'review', mode: 'due' } as const }
   const buddySpecies = buddy ? getSpecies(buddy.speciesId) : null
   const tease = buddy ? evolutionInfo(buddy).tease : false
 
@@ -69,22 +99,22 @@ export function Home() {
 
       <div className="home-main">
         <div className="home-left">
-          <Card className="tile tile-study" onClick={() => (nextStage ? navigate({ name: 'learn', stageId: nextStage.id }) : navigate({ name: 'stages' }))}>
+          <Card className="tile tile-study" onClick={() => navigate(recommend.route)}>
             <h2>きょうの がくしゅう</h2>
-            {nextStage ? (
-              <>
-                <p className="tile-big">{nextStage.label}</p>
-                <p className="tile-kanji">{nextStage.kanji.join('　')}</p>
-                <Button size="lg">はじめる！</Button>
-              </>
-            ) : (
-              <>
-                <p className="tile-big">ぜんぶ れんしゅうずみ！</p>
-                <p>テストや ふくしゅうに ちょうせんしよう</p>
-                <Button size="lg">マップを みる</Button>
-              </>
-            )}
+            <p className="tile-big">{recommend.text}</p>
           </Card>
+          <div className="home-actions">
+            <button className="action-btn action-practice" onClick={() => navigate({ name: 'stages' })}>
+              <span className="action-icon">✏️</span>
+              <span className="action-label">れんしゅうする</span>
+              <span className="action-sub">かきじゅん・かきとり・５もんテスト</span>
+            </button>
+            <button className="action-btn action-test" onClick={() => navigate({ name: 'tests' })}>
+              <span className="action-icon">💮</span>
+              <span className="action-label">テストする</span>
+              <span className="action-sub">まとめテストで 100てんを めざそう</span>
+            </button>
+          </div>
           <div className="tile-row">
             <Card className="tile" onClick={() => due.length > 0 && navigate({ name: 'review', mode: 'due' })}>
               <h3>きょうの ふくしゅう</h3>
@@ -97,9 +127,6 @@ export function Home() {
             </Card>
           </div>
           <div className="tile-row">
-            <Card className="tile tile-sm" onClick={() => navigate({ name: 'stages' })}>
-              れんしゅうマップ
-            </Card>
             <Card className="tile tile-sm" onClick={() => navigate({ name: 'gacha' })}>
               なかまガチャ
             </Card>

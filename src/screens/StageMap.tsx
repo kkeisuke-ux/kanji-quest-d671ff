@@ -1,10 +1,8 @@
 // れんしゅうマップ: 学習済みの場所が視覚的に分かる（仕様 §1, §16）。
-import { getCurriculumForGrade, termKanji, termLabel } from '../data/curriculum'
-import { hasQuestions } from '../data/questions'
-import { hasRefKanji } from '../core/refdata'
+import { getCurriculumForGrade, termLabel } from '../data/curriculum'
 import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
-import { getProfile, getTestSession, listProgress, listTestResults, listUnknown } from '../storage/repo'
+import { getProfile, listProgress, listTestResults, listUnknown } from '../storage/repo'
 import { Button, Card, KanjiChip, LoadingView, TopBar, type KanjiChipState } from '../ui/components'
 import { SoundButton } from '../ui/SoundButton'
 
@@ -20,37 +18,24 @@ export function StageMap() {
       listTestResults(profileId),
     ])
     const { cur, fallback } = getCurriculumForGrade(profile.grade)
-    const sessions: Record<string, boolean> = {}
-    for (const term of cur.terms) {
-      if (term.stages.length === 0) continue
-      const s = await getTestSession(profileId, `term:${term.id}`)
-      sessions[term.id] = s != null && s.currentIndex > 0
-    }
     const stagePerfect = new Map<string, number>()
-    const termBest = new Map<string, { correct: number; total: number }>()
     for (const r of results) {
       if (r.kind === 'stage' && r.total > 0 && r.correct === r.total) {
         stagePerfect.set(r.targetId, (stagePerfect.get(r.targetId) ?? 0) + 1)
-      }
-      if (r.kind === 'term') {
-        const best = termBest.get(r.targetId)
-        if (!best || r.correct > best.correct) termBest.set(r.targetId, { correct: r.correct, total: r.total })
       }
     }
     return {
       profile,
       cur,
       fallback,
-      sessions,
       stagePerfect,
-      termBest,
       progressMap: new Map(progressList.map((p) => [p.char, p])),
       unknownSet: new Set(unknown.map((u) => u.char)),
     }
   }, [profileId])
 
   if (!data) return <LoadingView />
-  const { cur, fallback, progressMap, unknownSet, sessions, stagePerfect, termBest } = data
+  const { cur, fallback, progressMap, unknownSet, stagePerfect } = data
 
   const chipState = (char: string): KanjiChipState => {
     if (unknownSet.has(char)) return 'unknown'
@@ -63,11 +48,11 @@ export function StageMap() {
 
   return (
     <div className="screen">
-      <TopBar title={`れんしゅうマップ（${cur.gradeLabel}）`} back={{ name: 'home' }} right={<SoundButton />} />
+      <TopBar title={`れんしゅうする（${cur.gradeLabel}）`} back={{ name: 'home' }} right={<SoundButton />} />
       {fallback && <p className="map-note">いまは 小1の漢字で れんしゅうできるよ（ほかの学年は じゅんびちゅう）</p>}
       <div className="map-scroll">
+        <p className="tile-sub map-note-inline">まとめテストは ホームの「テストする」から ちょうせんできるよ</p>
         {cur.terms.map((term) => {
-          const kanji = termKanji(term).filter((c) => hasRefKanji(c) && hasQuestions(c))
           return (
             <section key={term.id} className="term-section">
               <h2 className="term-title">{termLabel(term.index)}</h2>
@@ -107,21 +92,6 @@ export function StageMap() {
                         </Card>
                       )
                     })}
-                    <Card className="stage-card stage-card-test">
-                      <div className="stage-head">
-                        <span className="stage-label">{termLabel(term.index)}の 大きなテスト</span>
-                      </div>
-                      <p className="stage-test-desc">れんしゅうした漢字ぜんぶに ちょうせん！ とちゅうで やめても つづきから できるよ</p>
-                      {termBest.get(term.id) && (
-                        <p className="stage-resume">
-                          さいこうきろく: {termBest.get(term.id)!.correct}/{termBest.get(term.id)!.total}問
-                        </p>
-                      )}
-                      {sessions[term.id] && <p className="stage-resume">とちゅうの きろくあり</p>}
-                      <Button variant="accent" onClick={() => navigate({ name: 'termTest', termId: term.id })} disabled={kanji.length === 0}>
-                        ちょうせんする
-                      </Button>
-                    </Card>
                   </div>
                 </>
               )}

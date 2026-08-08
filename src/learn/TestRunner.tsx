@@ -59,6 +59,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   const [wrongEval, setWrongEval] = useState<KanjiEvaluation | null>(null)
   const [tries, setTries] = useState(0)
   const [mark, setMark] = useState<'correct' | null>(null)
+  const [revealMark, setRevealMark] = useState(false)
   const [buddyMood, setBuddyMood] = useState<BuddyMood>('idle')
   const [savedSession, setSavedSession] = useState<TestSessionRecord | null>(null)
   const itemsRef = useRef<TestItemRecord[]>([])
@@ -183,6 +184,13 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
         : `${profile.name}が ${title}に ちょうせんしました（${correct}/${finalItems.length}問正解）`
       await addActivity(profile.id, profile.name, 'termTest', msg)
     }
+    if (perfect) {
+      // 100点スペシャルボーナス（100点を目指したくなる仕様）
+      const bonus = kind === 'term' ? GAME_CONFIG.coins.termTestPerfectBonus : GAME_CONFIG.coins.stageTestPerfectBonus
+      const reward = await awardStudy(profile.id, bonus, 0, '100てんボーナス')
+      if (reward.expEvents) evoQueueRef.current.push(reward.expEvents)
+      showToast(`100てんボーナス +${bonus}コイン！`)
+    }
     const after = await masteredCount(profile.id)
     const fresh = await getProfile(profile.id)
     if (fresh && startMasteredRef.current != null) await checkMilestones(fresh, startMasteredRef.current, after)
@@ -292,10 +300,28 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     }
   }
 
+  // 「こたえをみる」のなぞりにも○を出す（ただし正解にはカウントしない）
   const revealDone = () => {
+    setRevealMark(true)
     playCorrect()
+    window.setTimeout(() => {
+      setRevealMark(false)
+      setPhase('running')
+      advance(itemsRef.current)
+    }, 950)
+  }
+
+  const restartTest = async () => {
+    if (kind === 'term') await deleteTestSession(profile.id, testKey)
+    evoQueueRef.current = []
+    setChars(shuffled(baseChars))
+    setItemsBoth([])
+    setIndex(0)
+    setWrongEval(null)
+    setTries(0)
+    setMark(null)
+    setBuddyMood('idle')
     setPhase('running')
-    advance(itemsRef.current)
   }
 
   if (phase === 'init') return <LoadingView />
@@ -333,12 +359,17 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
         <TopBar title={`${title} けっか`} back={backRoute} right={<SoundButton />} />
         <div className="result-wrap">
           <div className={`card result-main ${perfect ? 'result-perfect' : ''}`}>
-            {perfect && <div className="perfect-banner">100てん！ パーフェクト！</div>}
+            {perfect && <div className="perfect-banner">👑 100てん！ パーフェクト！</div>}
             <BuddyCorner mood={perfect ? 'celebrate' : 'idle'} size={100} message={perfect ? 'すごーい！' : 'よくがんばったね'} />
             <div className="result-score">
               {items.length}問中 {correct}問 せいかい！
             </div>
             <div className="result-rate">せいとうりつ {rate}%</div>
+            {!perfect && (
+              <p className="termtest-status">
+                <b>100てんまで あと{items.length - correct}もん！</b> もういちど ちょうせんしてみよう
+              </p>
+            )}
             <div className="result-chips">
               {items.map((i, n) => (
                 <KanjiChip key={n} char={i.char} state={i.result === 'correct' ? 'mastered' : 'unknown'} />
@@ -347,7 +378,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
           </div>
           {unknowns.length > 0 && (
             <div className="card">
-              <h3>わからなかった漢字（ふくしゅうリストに いれたよ）</h3>
+              <h3>こたえを みた漢字（ふくしゅうリストに いれたよ）</h3>
               <div className="result-chips">
                 {unknowns.map((i, n) => (
                   <KanjiChip key={n} char={i.char} state="unknown" />
@@ -375,7 +406,12 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
               </div>
             </div>
           )}
-          <div className="row gap">
+          <div className="row gap wrap">
+            {!perfect && (
+              <Button variant="accent" onClick={() => void restartTest()}>
+                100てんに もういちど ちょうせん！
+              </Button>
+            )}
             <Button variant="secondary" onClick={() => navigate(backRoute)}>
               もどる
             </Button>
@@ -393,18 +429,24 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     return (
       <div className="screen">
         <TopBar title={`${title}　${index + 1} / ${chars.length}`} back={backRoute} right={<SoundButton />} />
-        <div className="step-banner">こたえは「{char}」。なぞって おぼえてから つぎへ いこう</div>
+        <div className="step-banner">こたえは「{char}」。すうじの じゅんばんに なぞって おぼえよう</div>
         <div className="split">
           <div className="split-left">
             {question && <QuestionPrompt question={question} answered />}
             <div className="model-note card">
-              <p>みどりの●から じゅんばんに なぞってね。</p>
-              <p>なぞりおわったら つぎの もんだいへ すすむよ。</p>
+              <p>グレーの字を 1画ずつ なぞってね。</p>
+              <p>なぞりおわったら ○が ついて、つぎの もんだいへ すすむよ。</p>
             </div>
             <BuddyCorner mood="idle" message="いっしょに おぼえよう" />
           </div>
           <div className="split-right">
-            <TraceStep key={`reveal-${char}-${index}`} char={char} mode="guided" onDone={revealDone} />
+            <TraceStep
+              key={`reveal-${char}-${index}`}
+              char={char}
+              mode="numbers"
+              onDone={revealDone}
+              overlay={revealMark ? <JudgeMark kind="correct" /> : null}
+            />
           </div>
         </div>
       </div>
@@ -421,7 +463,11 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
           ) : (
             <LoadingView label="もんだいを よういちゅう…" />
           )}
-          {!wrongEval && <p className="test-note">お手本なしで 書いてみよう。せいかいするまで 何どでも かきなおせるよ。</p>}
+          {!wrongEval && (
+            <p className="test-note">
+              お手本なしで 書いてみよう。せいかいするまで 何どでも かきなおせるよ。わからないときは「こたえを みる」！
+            </p>
+          )}
           {wrongEval && (
             <div className="feedback fb-wrong">
               <div className="feedback-icon">×</div>
@@ -433,7 +479,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
               <div className="row gap">
                 <Button onClick={retryWrite}>もういちど かく</Button>
                 <Button variant="secondary" onClick={() => void handleUnknown()}>
-                  わからない
+                  こたえを みる
                 </Button>
               </div>
             </div>
@@ -449,7 +495,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
             overlay={mark === 'correct' ? <JudgeMark kind="correct" /> : wrongEval ? <JudgeMark kind="wrong" /> : null}
             extraFooter={
               <Button variant="secondary" size="sm" onClick={() => void handleUnknown()} disabled={mark != null}>
-                わからない
+                こたえを みる
               </Button>
             }
           />

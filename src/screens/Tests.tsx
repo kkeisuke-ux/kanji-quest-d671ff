@@ -1,6 +1,6 @@
 // ステージテスト（5問）と学期相当の大型テスト。
 // 大型テストは「その期で れんしゅうずみの全漢字」を対象にする（2026-08-08変更）。
-import { findStage, findTerm, termKanji, termLabel } from '../data/curriculum'
+import { findStage, findTerm, termKanji, termTestTitle } from '../data/curriculum'
 import { hasQuestions } from '../data/questions'
 import { hasRefKanji } from '../core/refdata'
 import { TestRunner } from '../learn/TestRunner'
@@ -43,32 +43,25 @@ export function TermTestScreen({ termId }: { termId: string }) {
   if (!found) {
     return (
       <div className="screen">
-        <TopBar title="テストが みつかりません" back={{ name: 'stages' }} />
+        <TopBar title="テストが みつかりません" back={{ name: 'tests' }} />
       </div>
     )
   }
+  const title = termTestTitle(found.cur, found.term.index)
   if (!chars) return <LoadingView />
   if (chars.length === 0) {
     return (
       <div className="screen">
-        <TopBar title={`${termLabel(found.term.index)}の 大きなテスト`} back={{ name: 'stages' }} />
+        <TopBar title={title} back={{ name: 'tests' }} />
         <div className="center-panel">
           <div className="card result-main">
             <p className="result-score">まだ れんしゅうした漢字が ないよ</p>
-            <p className="tile-sub">ステージで れんしゅうしてから ちょうせんしよう！</p>
-            <Button onClick={() => navigate({ name: 'stages' })}>マップへ</Button>
+            <p className="tile-sub">「れんしゅうする」で れんしゅうしてから ちょうせんしよう！</p>
+            <Button onClick={() => navigate({ name: 'stages' })}>れんしゅうへ</Button>
           </div>
         </div>
       </div>
     )
   }
-  return (
-    <TestRunner
-      kind="term"
-      targetId={termId}
-      chars={chars}
-      title={`${termLabel(found.term.index)}の 大きなテスト`}
-      backRoute={{ name: 'stages' }}
-    />
-  )
+  return <TestRunner kind="term" targetId={termId} chars={chars} title={title} backRoute={{ name: 'tests' }} />
 }

@@ -47,10 +47,12 @@ export function KanjiSvg({
     const startT = performance.now()
     const loop = (t: number) => {
       const period = 1500
-      const k = ((t - startT) % period) / period
-      const p = pts[Math.min(pts.length - 1, Math.floor(k * pts.length))]
+      // rAFの初回タイムスタンプはstartTよりわずかに過去のことがあるため、負値を正規化する
+      const elapsed = (((t - startT) % period) + period) % period
+      const idx = Math.min(pts.length - 1, Math.max(0, Math.floor((elapsed / period) * pts.length)))
+      const p = pts[idx]
       const dot = dotRef.current
-      if (dot) {
+      if (dot && p) {
         dot.setAttribute('cx', String(p.x))
         dot.setAttribute('cy', String(p.y))
       }

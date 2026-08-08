@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { loadAppFlags } from './config/appFlags'
 import { loadJudgeOverrides } from './config/judgeRuntime'
+import { setBgmScene } from './sound/sound'
 import { navigate, useAppState, type Route } from './state/store'
 import { Toasts } from './ui/components'
 import { EvolutionModal } from './ui/EvolutionModal'
 import { ProfileSelect } from './screens/ProfileSelect'
 import { Home } from './screens/Home'
 import { StageMap } from './screens/StageMap'
+import { TestsHub } from './screens/TestsHub'
 import { LearnFlow } from './screens/LearnFlow'
 import { StageTestScreen, TermTestScreen } from './screens/Tests'
 import { Review } from './screens/Review'
@@ -27,6 +29,8 @@ function RouteView({ route }: { route: Route }) {
       return <Home />
     case 'stages':
       return <StageMap />
+    case 'tests':
+      return <TestsHub />
     case 'learn':
       return <LearnFlow stageId={route.stageId} startIndex={route.startIndex} />
     case 'stageTest':
@@ -66,6 +70,12 @@ export default function App() {
   useEffect(() => {
     if (booted && !profileId && route.name !== 'profiles') navigate({ name: 'profiles' })
   }, [booted, profileId, route])
+
+  // BGMのシーン切替: 学習・テスト系の画面では練習用の曲、それ以外はホーム用の曲
+  useEffect(() => {
+    const practiceScreens = ['learn', 'stageTest', 'termTest', 'review', 'pencilDiag', 'judgeDebug']
+    setBgmScene(practiceScreens.includes(route.name) ? 'practice' : 'home')
+  }, [route])
 
   if (!booted) return <div className="loading-view">よみこみちゅう…</div>
 

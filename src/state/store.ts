@@ -5,6 +5,7 @@ export type Route =
   | { name: 'profiles' }
   | { name: 'home' }
   | { name: 'stages' }
+  | { name: 'tests' }
   | { name: 'learn'; stageId: string; startIndex?: number }
   | { name: 'stageTest'; stageId: string }
   | { name: 'termTest'; termId: string }

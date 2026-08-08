@@ -346,8 +346,16 @@ export function judgeTraceStroke(
   const feat = strokeFeatures(norm)
   const featRev = strokeFeatures([...norm].reverse())
   const refF = refStrokeFeatures(rs)
-  const costF = pairCost(pairMetrics(feat, refF, cfg.dtwBand), cfg.weights)
-  const costR = pairCost(pairMetrics(featRev, refF, cfg.dtwBand), cfg.weights)
+  // なぞりは位置ガイドが見えているため、位置系（始点・終点・重心）の重みを倍にして
+  // 「となりの別の画」への誤マッチを防ぐ。線の揺れ（DTW）への寛容さは変えない。
+  const traceWeights = {
+    ...cfg.weights,
+    start: cfg.weights.start * 2,
+    end: cfg.weights.end * 2,
+    centroid: cfg.weights.centroid * 2,
+  }
+  const costF = pairCost(pairMetrics(feat, refF, cfg.dtwBand), traceWeights)
+  const costR = pairCost(pairMetrics(featRev, refF, cfg.dtwBand), traceWeights)
   const startDist = Math.hypot(feat.start.x - rs.normStart.x, feat.start.y - rs.normStart.y)
   const endNearStart = Math.hypot(feat.end.x - rs.normStart.x, feat.end.y - rs.normStart.y)
 

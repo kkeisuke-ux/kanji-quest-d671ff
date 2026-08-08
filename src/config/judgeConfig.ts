@@ -122,13 +122,16 @@ export function applyStrictness(cfg: JudgeConfig, level: number): JudgeConfig {
   const lv = Math.min(5, Math.max(1, Math.round(level || DEFAULT_STRICTNESS)))
   const f = STRICTNESS_FACTORS[lv] ?? 1
   if (f === 1) return cfg
+  // なぞりは位置ガイドが見えているので緩めすぎない（隣の画への誤マッチ防止）。
+  // 始点半径は固定、合格コストの緩和は±15〜20%まで。
+  const traceF = Math.min(1.15, Math.max(0.8, f))
   return {
     ...cfg,
     strokePassCost: cfg.strokePassCost * f,
     charAvgPassCost: cfg.charAvgPassCost * f,
     trace: {
-      passCost: cfg.trace.passCost * f,
-      startRadius: Math.min(0.5, cfg.trace.startRadius * f),
+      passCost: cfg.trace.passCost * traceF,
+      startRadius: cfg.trace.startRadius,
     },
   }
 }

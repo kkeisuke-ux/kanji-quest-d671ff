@@ -3,6 +3,7 @@
 import { evaluateKanji, judgeTraceStroke } from './core/judge/evaluate'
 import { runSelfTest } from './core/judge/selftest'
 import { getRefKanji, listRefKanji } from './core/refdata'
+import { QUESTION_BANK } from './data/questions'
 import { getJudgeConfig } from './config/judgeRuntime'
 import { bumpData, getState, navigate, selectProfile } from './state/store'
 import * as repo from './storage/repo'
@@ -19,6 +20,7 @@ window.__kanjiDev = {
   judgeTraceStroke,
   getRefKanji,
   listRefKanji,
+  QUESTION_BANK,
   getJudgeConfig,
   getState,
   navigate,

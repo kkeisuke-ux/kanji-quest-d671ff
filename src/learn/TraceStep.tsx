@@ -5,6 +5,7 @@
 //   gray   : 全画うすいグレーのみ（3回目）
 // いずれも1画ずつ正しい順で書く。判定は「きびしさ」設定を反映。
 import { useEffect, useRef, useState } from 'react'
+import type React from 'react'
 import { InkCanvas, type InkCanvasHandle } from '../core/ink/InkCanvas'
 import type { InkStroke } from '../core/ink/types'
 import { judgeTraceStroke } from '../core/judge/evaluate'
@@ -20,10 +21,12 @@ export function TraceStep({
   char,
   mode = 'guided',
   onDone,
+  overlay,
 }: {
   char: string
   mode?: TraceMode
   onDone: () => void
+  overlay?: React.ReactNode
 }) {
   const [strokeIdx, setStrokeIdx] = useState(0)
   const [hint, setHint] = useState<string | null>(null)
@@ -109,6 +112,7 @@ export function TraceStep({
         onStrokeEnd={handleStroke}
         className="pad-box"
         guide={guide}
+        overlay={overlay}
       />
       <div className="trace-status">
         <span className="trace-count">
