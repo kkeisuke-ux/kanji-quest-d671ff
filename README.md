@@ -1,5 +1,8 @@
 # かんじクエスト
 
+**公開URL（家族用・リンク限定共有）**: https://kkeisuke-ux.github.io/kanji-quest-d671ff/
+（noindex + robots.txt で検索エンジンには載せていない。iPadのSafariで開き「ホーム画面に追加」で利用）
+
 iPad + Apple Pencil 向けの手書き漢字学習PWA。小学生〜中学生が漢字を「実際に何度も書く」ことで習得し、仲間集め・育成の報酬システムで長期間継続できるように設計している。
 
 - 対象環境: **iPad + Apple Pencil + Safari**（第一ターゲット）。PC + マウスでも開発検証できる

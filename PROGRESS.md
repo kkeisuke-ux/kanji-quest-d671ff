@@ -1,5 +1,13 @@
 # かんじクエスト 進捗
 
+## 2026-08-08 GitHub Pagesで公開（v0.1.0）
+
+- 公開URL: https://kkeisuke-ux.github.io/kanji-quest-d671ff/ （リンク限定・検索よけ済み）
+- リポジトリ: https://github.com/kkeisuke-ux/kanji-quest-d671ff （public）
+- 更新手順: 修正後に `npm run deploy` 1コマンド（ビルド→gh-pages push→確認まで自動）
+- 公開URL上で確認済み: アプリ起動 / 自己テスト合格 / Service Worker active（オフラインPWA有効）/ robots.txt / noindexメタ
+- 次: ユーザーからの修正点を反映 → 小1〜中3の完全版へ（問題文はドラフト生成+人間レビューで拡張予定）
+
 ## 2026-08-08 初回実装完了（v0.1.0）
 
 仕様書のPHASE 1〜16をすべて実装し、ビルド成功・ブラウザ自動テスト合格を確認済み。
