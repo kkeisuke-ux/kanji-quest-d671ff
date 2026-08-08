@@ -196,7 +196,13 @@ profiles / kanjiProgress / strokeSamples / testResults / testSessions / unknownK
   [KanjiVG](https://kanjivg.tagaini.net)（Copyright © Ulrich Apel）由来。
   ライセンス: [Creative Commons Attribution-Share Alike 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
   このため当該データファイルおよびその改変物はCC BY-SA 3.0の継承条件に従う。アプリ内の設定画面にも出典を表示している。
-- 学年別漢字配当（小1の80字）: 文部科学省 学習指導要領の学年別漢字配当表に基づく
+- **KANJIDIC2 / JMdict / 例文（Tanaka Corpus）**: 学年配当・頻度・読み・頻出単語・例文は
+  [EDRDG](https://www.edrdg.org/)（Electronic Dictionary Research and Development Group）の辞書ファイル
+  （kanjidic2.xml / JMdict / examples.utf）から `scripts/gen-content.mjs` が決定的に抽出。
+  ライセンス: [CC BY-SA 4.0（EDRDG licence）](https://www.edrdg.org/edrdg/licence.html)。
+  例文はTanaka Corpus（人間が作成した対訳例文集）由来で、AIによる自由生成の問題文は含まない（仕様§12準拠）
+- **JmdictFurigana**: 単語のふりがな分割データ（[Doublevil/JmdictFurigana](https://github.com/Doublevil/JmdictFurigana)）
+- 学年別漢字配当（小1〜小6）: 文部科学省 学習指導要領の学年別漢字配当表（KANJIDIC2のgrade値）に基づく
 - キャラクター・アイコン・UIはすべて本プロジェクトのオリジナル。既存アプリ・作品からの画像流用はない
 
 ---

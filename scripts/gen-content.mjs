@@ -125,6 +125,8 @@ const words = new Map() // word -> {reading, score}
     if (!keb || keb.length < 2 || keb.length > 6) continue
     if (!/^[㐀-鿿぀-ゟ゠-ヿー々]+$/u.test(keb)) continue
     if (keb.includes('々')) continue
+    // 子ども向けに不適切な語は候補にしない（該当漢字は読み問題で補完される）
+    if (/殺|死体|死刑|麻薬|覚醒剤|売春|娼|痴漢|強姦|姦|淫|奴隷|処刑|拷問|遺体|自爆/.test(keb)) continue
     const reb = e.match(/<reb>(.*?)<\/reb>/)?.[1]
     if (!reb) continue
     // 「ふつうは かな書き」の語（強ち・一に等）は漢字書き取りの題材に不向きなので除外
@@ -153,8 +155,11 @@ console.log(`  頻出単語: ${words.size}語`)
 console.log('JmdictFurigana を読み込み中…')
 const furiganaRaw = JSON.parse(fs.readFileSync(path.join(CACHE, 'JmdictFurigana.json'), 'utf8').replace(/^﻿/, ''))
 const furigana = new Map()
+const furiByText = new Map() // text -> [{reading, segs}]（例文の語のルビ付け・読み一意判定用）
 for (const item of furiganaRaw) {
   furigana.set(`${item.text}|${item.reading}`, item.furigana)
+  if (!furiByText.has(item.text)) furiByText.set(item.text, [])
+  furiByText.get(item.text).push({ reading: item.reading, segs: item.furigana })
 }
 console.log(`  ${furigana.size}件`)
 
@@ -208,6 +213,8 @@ for (const [word, { reading, score }] of words) {
     if (!seg.rt || seg.ruby.length !== 1 || !isKanji(seg.ruby)) continue
     const ch = seg.ruby
     if (!strokesMap.has(ch)) continue
+    // 語の中に同じ字が2回出る語（九九・恐る恐る等）は答えが見えてしまうので除外
+    if ([...word].filter((k) => k === ch).length > 1) continue
     if (!candidates.has(ch)) candidates.set(ch, [])
     candidates.get(ch).push({
       word,
@@ -222,6 +229,184 @@ for (const [word, { reading, score }] of words) {
       rOk: readingFamiliar(ch, seg.rt) ? 0 : 1,
     })
   }
+}
+
+// ---------- 6.5 例文コーパス（Tanaka Corpus） ----------
+// 単語だけの出題は「一〇(いっぺん)=一変/一遍/一辺…」のように候補が多すぎる（第14回）。
+// 人間が編纂した対訳例文コーパス（EDRDG管理・examples.utf）から対象語を含む文を
+// 決定的に選び、「景色が一変する」のような文の中で書かせる。AIの自由生成は使わない。
+// B行の語注釈（基本形(読み)[語義]{文中の表記}）で対象語の位置を正確に特定し、
+// 文中の他の漢字はJmdictFuriganaと照合してルビを付ける。照合できない文は使わない。
+console.log('例文コーパス（Tanaka Corpus）を読み込み中…')
+const exSentences = [] // {jp, toks}
+const exIndex = new Map() // 語(基本形) -> [exSentencesのindex]
+{
+  const wordSet = new Set(words.keys())
+  const raw = zlib.gunzipSync(fs.readFileSync(path.join(CACHE, 'examples.utf.gz'))).toString('utf8')
+  const lines = raw.split('\n')
+  const tokRe = /^(.+?)(?:\(([^)]*)\))?(?:\[\d+\])?(?:\{([^}]*)\})?(~)?$/
+  for (let i = 0; i < lines.length - 1; i++) {
+    if (!lines[i].startsWith('A: ') || !lines[i + 1].startsWith('B: ')) continue
+    const tab = lines[i].indexOf('\t')
+    if (tab < 0) continue
+    const jp = lines[i].slice(3, tab)
+    // 子ども向けに短めの文だけ。英数字・記号まじりは除外
+    if (jp.length < 4 || jp.length > 26) continue
+    if (/[A-Za-zＡ-Ｚａ-ｚ0-9０-９%％&＆@＠]/.test(jp)) continue
+    // 子どもに不適切な語（侮蔑・暴力・性的・自傷）を含む文は使わない
+    if (/デブ|ブス|バカ|馬鹿|ばかやろ|アホ|クソ|くそっ|死ね|死んで|殺|死体|死刑|処刑|拷問|レイプ|強姦|セックス|エッチ|売春|愛人|不倫|浮気|童貞|処女|麻薬|覚醒剤|拳銃|銃で|爆弾|テロ|人質|誘拐|虐待|いじめ|遺体|地獄/.test(jp)) continue
+    const toks = []
+    let ok = true
+    for (const t of lines[i + 1].slice(3).split(/\s+/)) {
+      if (!t) continue
+      const m = t.match(tokRe)
+      if (!m) {
+        ok = false
+        break
+      }
+      const reading = m[2] && !m[2].startsWith('#') ? m[2] : null
+      toks.push({ base: m[1], reading, surface: m[3] ?? m[1] })
+    }
+    if (!ok || toks.length === 0) continue
+    let idx = -1
+    for (const tok of toks) {
+      if (wordSet.has(tok.base)) {
+        if (idx < 0) {
+          idx = exSentences.length
+          exSentences.push({ jp, toks })
+        }
+        if (!exIndex.has(tok.base)) exIndex.set(tok.base, [])
+        const arr = exIndex.get(tok.base)
+        if (arr.length < 40) arr.push(idx)
+      }
+    }
+    i++
+  }
+  console.log(`  例文 ${exSentences.length}文 / 語インデックス ${exIndex.size}語`)
+}
+
+// 語トークン（基本形＋文中の表記）をルビ付きパーツ列にする。確信が持てなければ null
+function tokenParts(tok, targetSegs = null, targetSegIdx = -1) {
+  const surface = tok.surface
+  const hasKanji = /[㐀-鿿]/u.test(surface)
+  // 対象語が文中でかな書きされている（空く→「すいて」等）と空欄が作れないので不採用
+  if (!hasKanji) return targetSegIdx >= 0 ? null : surface ? [{ text: surface }] : []
+  let segs = targetSegs
+  // カ変動詞「来る」は活用で読みが変わる（来る=く/来て=き/来ない=こ）唯一の漢字動詞。
+  // 規則で読みを決め、決められない形は使わない
+  if (tok.base === '来る' && surface.startsWith('来') && surface !== '来る') {
+    // 「来る{来}」のように語幹だけの表記は読みを決められない（次の語に活用が続く）ので使わない
+    const nx = surface[1]
+    const r = !nx ? null : 'るれ'.includes(nx) ? 'く' : 'てたちまつ'.includes(nx) ? 'き' : 'ならさよいずんじ'.includes(nx) ? 'こ' : null
+    if (!r) return null
+    segs = [{ ruby: '来', rt: r }]
+    if (targetSegIdx > 0) return null
+  }
+  if (!segs) {
+    const entries = furiByText.get(tok.base)
+    if (!entries || entries.length === 0) return null
+    let entry = null
+    if (tok.reading) entry = entries.find((e) => e.reading === tok.reading) ?? null
+    else if (entries.length === 1) entry = entries[0]
+    else {
+      // 読み注釈なしで複数読み → 全読みでふりがな分割が一致する場合だけ採用（誤ルビ防止）
+      const j = JSON.stringify(entries[0].segs)
+      if (entries.every((e) => JSON.stringify(e.segs) === j)) entry = entries[0]
+    }
+    if (!entry) return null
+    segs = entry.segs
+  }
+  const parts = []
+  let pos = 0
+  let lastMatched = null
+  let diverged = false
+  for (let i = 0; i < segs.length; i++) {
+    const s = segs[i]
+    if (surface.startsWith(s.ruby, pos)) {
+      if (i === targetSegIdx) parts.push({ blank: { reading: s.rt } })
+      else if (s.rt) parts.push({ text: s.ruby, ruby: s.rt })
+      else if (s.ruby) parts.push({ text: s.ruby })
+      pos += s.ruby.length
+      lastMatched = s
+    } else {
+      // 活用による語尾変化。空欄より前で崩れる・漢字が残るなら不採用
+      if (targetSegIdx >= 0 && i <= targetSegIdx) return null
+      diverged = true
+      break
+    }
+  }
+  const rest = surface.slice(pos)
+  if (/[㐀-鿿]/u.test(rest)) return null
+  // 複合語末尾の「来」（持って来て等）も読みが変わりうるので、活用差異がある時は使わない
+  if (diverged && rest && lastMatched && lastMatched.rt && lastMatched.ruby.endsWith('来') && tok.base !== '来る') return null
+  if (rest) parts.push({ text: rest })
+  return parts
+}
+
+// 候補語 c（char/word/segIdx/segs）に合う例文をパーツ列にして返す。無ければ null
+function buildSentenceParts(c, allowed) {
+  const sids = exIndex.get(c.word)
+  if (!sids) return null
+  const wordReading = c.segs.map((s) => s.rt ?? s.ruby).join('')
+  let best = null
+  let bestScore = Infinity
+  for (const sid of sids) {
+    const { jp, toks } = exSentences[sid]
+    // 学年適合スコア: 習っていない漢字（ルビは付くが少ないほどよい）と長さ
+    let unknown = 0
+    for (const ch of jp) if (isKanji(ch) && !allowed.has(ch)) unknown++
+    const score = unknown * 3 + Math.max(0, jp.length - 14) * 0.4
+    if (score >= bestScore) continue
+    // 文をパーツ化（対象語は最初の出現を空欄化）
+    const parts = []
+    let pos = 0
+    let targeted = false
+    let ok = true
+    for (const tok of toks) {
+      const idx = jp.indexOf(tok.surface, pos)
+      if (idx < 0) {
+        ok = false
+        break
+      }
+      if (idx > pos) {
+        const plain = jp.slice(pos, idx)
+        if (/[㐀-鿿]/u.test(plain)) {
+          ok = false
+          break
+        }
+        parts.push({ text: plain })
+      }
+      const isTarget = !targeted && tok.base === c.word && (!tok.reading || tok.reading === wordReading)
+      const tp = isTarget ? tokenParts(tok, c.segs, c.segIdx) : tokenParts(tok)
+      if (!tp) {
+        ok = false
+        break
+      }
+      if (isTarget) targeted = true
+      parts.push(...tp)
+      pos = idx + tok.surface.length
+    }
+    if (ok && pos < jp.length) {
+      const tail = jp.slice(pos)
+      if (/[㐀-鿿]/u.test(tail)) ok = false
+      else parts.push({ text: tail })
+    }
+    if (!ok || !targeted) continue
+    // 空欄が必ず1つあること（対象語がかな書き等で空欄化に失敗した文は使わない）
+    if (!parts.some((p) => p.blank != null)) continue
+    // 答えの漢字が文中の別の場所に見えてしまう文は使わない（テストにならない）
+    if (parts.some((p) => p.text != null && p.text.includes(c.segs[c.segIdx].ruby))) continue
+    // 仮名同士の連続パーツを結合
+    const merged = []
+    for (const p of parts) {
+      const last = merged[merged.length - 1]
+      if (p.text != null && p.ruby == null && last && last.text != null && last.ruby == null) last.text += p.text
+      else merged.push({ ...p })
+    }
+    best = merged
+    bestScore = score
+  }
+  return best
 }
 
 // 学年ごとの「見せてよい漢字」累積セット
@@ -239,6 +424,8 @@ for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) for (const ch of gradeKanji[g]) gra
 // ---------- 7. 問題生成 ----------
 const questions = []
 let fallbackOnly = 0
+let sentenceCount = 0
+let wordOnlyCount = 0
 for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
   const allowed = cumulative.get(g)
   // 低学年ほど「短くて漢字が少ない語」を優先（第11回: 読み・語の難しさがやる気を奪う対策）
@@ -295,7 +482,15 @@ for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
     }
     let n = 0
     for (const c of picked) {
-      // 漢字セグメントにはルビを付ける（習っていない字でも読める。仮名同士のみ結合）
+      // まず例文（文の中で書かせる。第14回: 単語だけでは候補が多すぎるため）
+      const sentence = buildSentenceParts(c, allowed)
+      if (sentence) {
+        sentenceCount++
+        questions.push({ id: `g${ch}-${++n}`, char: ch, kind: 'sentence', parts: sentence })
+        continue
+      }
+      wordOnlyCount++
+      // 例文が見つからない語は単語のまま（漢字セグメントにはルビ。仮名同士のみ結合）
       const parts = []
       for (let i = 0; i < c.segs.length; i++) {
         const seg = c.segs[i]
@@ -337,7 +532,9 @@ for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
     }
   }
 }
-console.log(`  問題: ${questions.length}問（単語問題なし=読みのみの字: ${fallbackOnly}）`)
+console.log(
+  `  問題: ${questions.length}問（例文つき: ${sentenceCount} / 単語のみ: ${wordOnlyCount} / 単語問題なし=読みのみの字: ${fallbackOnly}）`
+)
 
 // ---------- 8. カリキュラム ----------
 // 小1の既存4ステージはID・構成を維持（進捗データ互換）
