@@ -126,6 +126,14 @@ export interface UnknownKanjiRecord {
   addedAt: number
   reason: 'unknown' | 'wrong'
   lastFailedAt: number
+  /**
+   * どのテストで「わからなかった」か（2026-08-08 第6回で分離）。
+   * ５もんテスト由来は５もんテストの正解で、まとめテスト由来はまとめテストの正解で消える。
+   * 未定義（旧データ）は ['stage'] として扱う。
+   */
+  sources?: ('stage' | 'term')[]
+  /** 最後に「わからなかった漢字のふくしゅう」を完了した日時（復習済み表示用） */
+  lastReviewedAt?: number
 }
 
 export interface CoinHistoryRecord {

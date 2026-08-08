@@ -8,32 +8,38 @@
 //   （長く遊べて飽きないバランスを狙った初期値。実際の様子で調整する）
 // ============================================================
 
+// 2026-08-08 第5回フィードバックで再バランス（コイン1/5デノミ）:
+// - コインの単位を小さくして「1コインの重み」を上げた（既存残高は1/5に自動変換）
+// - スター1個=5コイン・5個まとめ買い可。必要スター2/3/5/7/9（1体MAX=26個=130コイン）
+// - 全コンテンツを100点で1周 ≈ 140コイン ≒ 1体MAX+ガチャ数回。くり返し挑戦で2体目以降
 export const GAME_CONFIG = {
   coins: {
     /** 1文字のれんしゅう（5回コース）を完了 */
-    practicePerKanji: 10,
+    practicePerKanji: 2,
     /** ５もんテストで100点 */
-    stageTestPerfectBonus: 50,
+    stageTestPerfectBonus: 10,
     /** まとめテストで100点 */
-    termTestPerfectBonus: 100,
+    termTestPerfectBonus: 30,
     /** 復習1問正解 */
-    reviewPerCorrect: 2,
+    reviewPerCorrect: 1,
     /** はじめてのプレゼント（プロフィール作成時） */
-    initialGift: 60,
+    initialGift: 30,
   },
   star: {
     /** スター1個の値段（コイン） */
-    cost: 10,
+    cost: 5,
+    /** まとめ買いの個数 */
+    bulkCount: 5,
   },
   levels: {
     /** 仲間の最大レベル（レベル=姿。上がるたびに見た目が変わる） */
     maxLevel: 6,
-    /** レベルN→N+1 に必要なスター数（index = N-1）。合計36個 */
-    starsPerLevel: [3, 5, 7, 9, 12],
+    /** レベルN→N+1 に必要なスター数（index = N-1）。合計26個 */
+    starsPerLevel: [2, 3, 5, 7, 9],
   },
   gacha: {
     /** ガチャ1回の値段 */
-    gachaCost: 30,
+    gachaCost: 20,
     /** 仲間に出会える確率（0-1） */
     encounterRate: 0.72,
     /** この回数連続ではずれたら次は必ず出会える（0で無効） */

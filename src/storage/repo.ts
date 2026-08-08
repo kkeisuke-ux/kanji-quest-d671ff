@@ -216,28 +216,67 @@ export async function masteredCount(profileId: string): Promise<number> {
   return all.filter((p) => p.masteredAt != null).length
 }
 
-// ---------------- Unknown list（わからなかった漢字。仕様 §15） ----------------
-export async function addUnknown(profileId: string, char: string, reason: 'unknown' | 'wrong'): Promise<void> {
+// ---------------- Unknown list（わからなかった漢字。仕様 §15 + 2026-08-08 出どころ分離） ----------------
+export type UnknownSource = 'stage' | 'term'
+
+function unknownSources(rec: UnknownKanjiRecord): UnknownSource[] {
+  return rec.sources ?? ['stage']
+}
+
+export async function addUnknown(
+  profileId: string,
+  char: string,
+  reason: 'unknown' | 'wrong',
+  source: UnknownSource
+): Promise<void> {
   const existing = await dbGet<UnknownKanjiRecord>('unknownKanji', [profileId, char])
   const now = Date.now()
   if (existing) {
     existing.lastFailedAt = now
     existing.reason = reason
+    const sources = unknownSources(existing)
+    if (!sources.includes(source)) sources.push(source)
+    existing.sources = sources
     await dbPut('unknownKanji', existing)
   } else {
-    await dbPut('unknownKanji', { profileId, char, addedAt: now, reason, lastFailedAt: now } satisfies UnknownKanjiRecord)
+    await dbPut('unknownKanji', {
+      profileId,
+      char,
+      addedAt: now,
+      reason,
+      lastFailedAt: now,
+      sources: [source],
+    } satisfies UnknownKanjiRecord)
   }
 }
 
-export async function clearUnknown(profileId: string, char: string): Promise<boolean> {
+/** テストで正解したとき、そのテスト種類ぶんのリストから外す。全部外れたらレコード削除 */
+export async function clearUnknown(profileId: string, char: string, source: UnknownSource): Promise<boolean> {
   const existing = await dbGet<UnknownKanjiRecord>('unknownKanji', [profileId, char])
   if (!existing) return false
-  await dbDelete('unknownKanji', [profileId, char])
+  const sources = unknownSources(existing).filter((s) => s !== source)
+  if (!unknownSources(existing).includes(source)) return false
+  if (sources.length === 0) {
+    await dbDelete('unknownKanji', [profileId, char])
+  } else {
+    existing.sources = sources
+    await dbPut('unknownKanji', existing)
+  }
   return true
 }
 
-export function listUnknown(profileId: string): Promise<UnknownKanjiRecord[]> {
-  return dbIndexAll<UnknownKanjiRecord>('unknownKanji', 'byProfile', profileId)
+export async function listUnknown(profileId: string, source?: UnknownSource): Promise<UnknownKanjiRecord[]> {
+  const all = await dbIndexAll<UnknownKanjiRecord>('unknownKanji', 'byProfile', profileId)
+  if (!source) return all
+  return all.filter((r) => unknownSources(r).includes(source))
+}
+
+/** 「わからなかった漢字のふくしゅう」完了を記録（復習済み表示用） */
+export async function markUnknownReviewed(profileId: string, char: string): Promise<void> {
+  const existing = await dbGet<UnknownKanjiRecord>('unknownKanji', [profileId, char])
+  if (!existing) return
+  existing.lastReviewedAt = Date.now()
+  await dbPut('unknownKanji', existing)
 }
 
 // ---------------- Coins ----------------

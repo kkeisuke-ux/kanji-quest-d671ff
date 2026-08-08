@@ -99,13 +99,30 @@ export async function feedStar(profileId: string, ownedId: number): Promise<Feed
   }
 }
 
-export async function buyStar(profileId: string): Promise<{ ok: boolean; profile?: Profile }> {
+export async function buyStars(profileId: string, count = 1): Promise<{ ok: boolean; bought?: number; profile?: Profile }> {
   const profile = await getProfile(profileId)
-  if (!profile || profile.coins < GAME_CONFIG.star.cost) return { ok: false }
-  const updated = await addCoins(profileId, -GAME_CONFIG.star.cost, 'スターをかった')
-  updated.stars++
+  if (!profile) return { ok: false }
+  const cost = GAME_CONFIG.star.cost * count
+  if (profile.coins < cost) return { ok: false }
+  const updated = await addCoins(profileId, -cost, count === 1 ? 'スターをかった' : `スターを${count}こかった`)
+  updated.stars += count
   await saveProfile(updated)
-  return { ok: true, profile: updated }
+  return { ok: true, bought: count, profile: updated }
+}
+
+/**
+ * コインの1/5デノミ移行（2026-08-08 第5回リバランス）。
+ * レートを5分の1にしたため、既存残高も1/5に変換して実質価値を保つ。一度だけ実行。
+ */
+export async function migrateCoinDenomination(): Promise<void> {
+  const { getSetting, putSetting, listProfiles } = await import('../storage/repo')
+  const done = await getSetting<boolean>('coinRebalance1')
+  if (done) return
+  for (const p of await listProfiles()) {
+    p.coins = Math.max(0, Math.round(p.coins / 5))
+    await saveProfile(p)
+  }
+  await putSetting('coinRebalance1', true)
 }
 
 function pickRarity(): Rarity {

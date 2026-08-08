@@ -243,7 +243,7 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
                 ５もんテストに ちょうせん！
               </Button>
               <Button size="sm" variant="ghost" onClick={() => navigate({ name: 'stages' })}>
-                もどる
+                べつのステージを えらぶ
               </Button>
             </div>
           </div>

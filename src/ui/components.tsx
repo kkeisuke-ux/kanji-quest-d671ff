@@ -27,10 +27,14 @@ export function StatusChips() {
       <CoinBadge coins={data.coins} />
       <StarBadge stars={data.stars} />
       {data.buddy && (
-        <span className="badge buddy-chip">
+        <button
+          className="badge buddy-chip buddy-chip-btn"
+          onClick={() => navigate({ name: 'friends' })}
+          title="なかまのページへ（スターをかう・あげる）"
+        >
           <CharacterSprite speciesId={data.buddy.speciesId} level={data.buddy.level} size={22} />
           <span>Lv.{data.buddy.level}</span>
-        </span>
+        </button>
       )}
     </span>
   )

@@ -9,7 +9,7 @@ export type Route =
   | { name: 'learn'; stageId: string; startIndex?: number }
   | { name: 'stageTest'; stageId: string }
   | { name: 'termTest'; termId: string }
-  | { name: 'review'; mode: 'due' | 'unknown'; chars?: string[] }
+  | { name: 'review'; source: 'stage' | 'term'; chars?: string[] }
   | { name: 'unknownList' }
   | { name: 'gacha' }
   | { name: 'friends' }

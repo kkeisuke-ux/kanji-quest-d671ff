@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { loadAppFlags } from './config/appFlags'
 import { loadJudgeOverrides } from './config/judgeRuntime'
+import { migrateCoinDenomination } from './game/logic'
 import { setBgmScene } from './sound/sound'
 import { navigate, useAppState, type Route } from './state/store'
 import { Toasts } from './ui/components'
@@ -38,7 +39,7 @@ function RouteView({ route }: { route: Route }) {
     case 'termTest':
       return <TermTestScreen termId={route.termId} />
     case 'review':
-      return <Review mode={route.mode} chars={route.chars} />
+      return <Review source={route.source} chars={route.chars} />
     case 'unknownList':
       return <UnknownList />
     case 'gacha':
@@ -64,7 +65,9 @@ export default function App() {
   const [booted, setBooted] = useState(false)
 
   useEffect(() => {
-    void Promise.all([loadJudgeOverrides(), loadAppFlags()]).then(() => setBooted(true))
+    void Promise.all([loadJudgeOverrides(), loadAppFlags()])
+      .then(() => migrateCoinDenomination())
+      .then(() => setBooted(true))
   }, [])
 
   useEffect(() => {

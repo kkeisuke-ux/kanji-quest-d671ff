@@ -1,10 +1,10 @@
 // ホーム画面（仕様 §36）: 今日の学習・今日の復習・仲間・コイン・進捗。
-import { getCurriculumForGrade, termTestTitle, type StageDef } from '../data/curriculum'
-import { MAX_LEVEL, getSpecies, nameForLevel, starsNeededFor } from '../data/species'
+import { getCurriculumForGrade, gradeLabelOf, termTestTitle, type StageDef } from '../data/curriculum'
+import { MAX_LEVEL, getSpecies, nameForLevel, stageForLevel, starsNeededFor } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
-import { dueReviewChars, getProfile, listOwned, listProgress, listTestResults, listUnknown } from '../storage/repo'
+import { getProfile, listOwned, listProgress, listTestResults, listUnknown } from '../storage/repo'
 import { Button, Card, LoadingView, StarMeter, StatusChips } from '../ui/components'
 import { SoundButton } from '../ui/SoundButton'
 
@@ -14,8 +14,7 @@ export function Home() {
     if (!profileId) return null
     const profile = await getProfile(profileId)
     if (!profile) return null
-    const [due, unknown, progressList, owned, results] = await Promise.all([
-      dueReviewChars(profileId),
+    const [unknown, progressList, owned, results] = await Promise.all([
       listUnknown(profileId),
       listProgress(profileId),
       listOwned(profileId),
@@ -31,26 +30,30 @@ export function Home() {
     const termPerfectSet = new Set(
       results.filter((r) => r.kind === 'term' && r.total > 0 && r.correct === r.total).map((r) => r.targetId)
     )
-    // おすすめ: ①練習が終わっていないステージ → ②100点がまだの5問テスト → ③100点がまだのまとめテスト
-    let nextPractice: StageDef | null = null
-    let nextStageTest: StageDef | null = null
+    // おすすめ: 「100点を1回も取っていない いちばん低いステージ」を出す（2026-08-08修正）。
+    // そのステージが練習未完了なら練習へ、練習済みなら５もんテストへ。
+    let targetStage: { stage: StageDef; practiced: boolean } | null = null
     let nextTerm: { id: string; title: string } | null = null
-    for (const term of cur.terms) {
+    outer: for (const term of cur.terms) {
       for (const st of term.stages) {
-        const allPracticed = st.kanji.every((k) => practicedSet.has(k))
-        if (!allPracticed && !nextPractice) nextPractice = st
-        if (allPracticed && !stagePerfectSet.has(st.id) && !nextStageTest) nextStageTest = st
-      }
-      if (term.stages.length > 0 && !termPerfectSet.has(term.id) && !nextTerm) {
-        nextTerm = { id: term.id, title: termTestTitle(cur, term.index) }
+        if (!stagePerfectSet.has(st.id)) {
+          targetStage = { stage: st, practiced: st.kanji.every((k) => practicedSet.has(k)) }
+          break outer
+        }
       }
     }
+    for (const term of cur.terms) {
+      if (term.stages.length > 0 && !termPerfectSet.has(term.id)) {
+        nextTerm = { id: term.id, title: termTestTitle(cur, term.index) }
+        break
+      }
+    }
+    const gradeName = cur.grade <= 6 ? `${cur.grade}年生` : gradeLabelOf(cur.grade)
     const totalPlayable = cur.terms.flatMap((t) => t.stages).flatMap((s) => s.kanji).length
     const allStages = cur.terms.flatMap((t) => t.stages)
     const clearedStages = allStages.filter((s) => stagePerfectSet.has(s.id)).length
     return {
       profile,
-      due,
       unknown,
       mastered,
       buddy,
@@ -58,23 +61,29 @@ export function Home() {
       totalPlayable,
       clearedStages,
       totalStages: allStages.length,
-      nextPractice,
-      nextStageTest,
+      targetStage,
       nextTerm,
+      gradeName,
     }
   }, [profileId])
 
   if (!data) return <LoadingView />
-  const { profile, due, unknown, mastered, buddy, fallback, totalPlayable, clearedStages, totalStages, nextPractice, nextStageTest, nextTerm } = data
+  const { profile, unknown, mastered, buddy, fallback, totalPlayable, clearedStages, totalStages, targetStage, nextTerm, gradeName } = data
   const buddySpecies = buddy ? getSpecies(buddy.speciesId) : null
 
-  const recommend = nextPractice
-    ? { text: `${nextPractice.label}「${nextPractice.kanji.join('')}」の れんしゅうを すすめよう`, route: { name: 'learn', stageId: nextPractice.id } as const }
-    : nextStageTest
-      ? { text: `${nextStageTest.label}の ５もんテストで 100てんを めざそう！`, route: { name: 'stageTest', stageId: nextStageTest.id } as const }
-      : nextTerm
-        ? { text: `${nextTerm.title}で 100てんに ちょうせん！`, route: { name: 'termTest', termId: nextTerm.id } as const }
-        : { text: 'ぜんぶ 100てん！ すごい！ ふくしゅうで キープしよう', route: { name: 'review', mode: 'due' } as const }
+  const recommend = targetStage
+    ? targetStage.practiced
+      ? {
+          text: `${gradeName}　${targetStage.stage.label}の ５もんテストで 100点を めざそう！`,
+          route: { name: 'stageTest', stageId: targetStage.stage.id } as const,
+        }
+      : {
+          text: `${gradeName}　${targetStage.stage.label}「${targetStage.stage.kanji.join('')}」の れんしゅうを すすめよう`,
+          route: { name: 'learn', stageId: targetStage.stage.id } as const,
+        }
+    : nextTerm
+      ? { text: `${nextTerm.title}で 100点に ちょうせん！`, route: { name: 'termTest', termId: nextTerm.id } as const }
+      : { text: 'ぜんぶ 100点！ すごい！ また ちょうせんして きろくを のばそう', route: { name: 'tests' } as const }
 
   return (
     <div className="screen home-screen">
@@ -113,14 +122,10 @@ export function Home() {
             </button>
           </div>
           <div className="tile-row">
-            <Card className="tile" onClick={() => due.length > 0 && navigate({ name: 'review', mode: 'due' })}>
-              <h3>きょうの ふくしゅう</h3>
-              <p className="tile-num">{due.length}字</p>
-              {due.length === 0 && <p className="tile-sub">いまは なし！</p>}
-            </Card>
             <Card className="tile" onClick={() => navigate({ name: 'unknownList' })}>
-              <h3>わからなかった漢字</h3>
+              <h3>わからなかった漢字の ふくしゅう</h3>
               <p className="tile-num">{unknown.length}字</p>
+              {unknown.length === 0 && <p className="tile-sub">いまは なし！</p>}
             </Card>
           </div>
           <div className="tile-row">
@@ -155,6 +160,7 @@ export function Home() {
                   レベル {buddy.level}
                   {buddy.level >= MAX_LEVEL ? '（MAX）' : ` / ${MAX_LEVEL}`}
                 </p>
+                <p className="buddy-desc">{buddySpecies.stages[stageForLevel(buddy.level)].desc}</p>
                 <StarMeter fed={buddy.starsFed ?? 0} need={starsNeededFor(buddy.level)} />
                 <p className="tile-sub">スターを あげて そだてよう</p>
               </>

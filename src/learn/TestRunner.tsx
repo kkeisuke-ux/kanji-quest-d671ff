@@ -241,7 +241,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
         directionError: item.directionError,
         shapeError: false,
       })
-      const removed = await clearUnknown(profile.id, char)
+      const removed = await clearUnknown(profile.id, char, kind)
       if (removed) showToast(`「${char}」が わからないリストから きえたよ！`)
       await persistSession(chars, index + 1, newItems)
       bumpData()
@@ -289,7 +289,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
       const newItems = [...itemsRef.current, item]
       setItemsBoth(newItems)
       await applyOutcome(profile.id, char, 'unknown', { context: 'test', shapeError: true })
-      await addUnknown(profile.id, char, 'unknown')
+      await addUnknown(profile.id, char, 'unknown', kind)
       await persistSession(chars, index + 1, newItems)
       bumpData()
       setWrongEval(null)
@@ -423,20 +423,20 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
                 つぎへ！
               </Button>
             ) : (
-              <Button size="lg" variant="accent" onClick={() => void restartTest()}>
-                100点に もういちど ちょうせん！
+              <>
+                <Button size="lg" variant="accent" onClick={() => void restartTest()}>
+                  100点に もういちど ちょうせん！
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => navigate(backRoute)}>
+                  つぎへ すすむ
+                </Button>
+              </>
+            )}
+            {unknowns.length > 0 && (
+              <Button size="sm" variant="secondary" onClick={() => navigate({ name: 'review', source: kind })}>
+                こたえを みた漢字を ふくしゅう
               </Button>
             )}
-            <div className="row gap wrap">
-              {unknowns.length > 0 && (
-                <Button size="sm" variant="secondary" onClick={() => navigate({ name: 'review', mode: 'unknown' })}>
-                  こたえを みた漢字を ふくしゅう
-                </Button>
-              )}
-              <Button size="sm" variant="ghost" onClick={() => navigate(backRoute)}>
-                もどる
-              </Button>
-            </div>
           </div>
         </div>
       </div>

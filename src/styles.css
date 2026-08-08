@@ -1152,9 +1152,30 @@ body {
   line-height: 1.1;
 }
 
-.unknown-reason {
-  font-size: 12.5px;
+.unknown-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.unknown-reviewed {
+  font-size: 12px;
+  font-weight: 800;
   color: var(--muted);
+  background: #efeade;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.unknown-reviewed.is-reviewed {
+  color: var(--good);
+  background: #ddf1e5;
+}
+
+.unknown-zero {
+  font-size: 18px;
 }
 
 /* ---------- ガチャ ---------- */
@@ -2318,6 +2339,38 @@ body {
 .quick-h3 {
   margin: 14px 0 4px;
   font-size: 15px;
+}
+
+.buddy-chip-btn {
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.buddy-chip-btn:active {
+  transform: scale(0.95);
+}
+
+.friend-desc {
+  margin: 2px 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.friend-tease {
+  margin: 2px 0;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--accent-dark);
+}
+
+.buddy-desc {
+  margin: 2px 0 4px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 260px;
 }
 
 /* ---------- 縦向きフォールバック ---------- */

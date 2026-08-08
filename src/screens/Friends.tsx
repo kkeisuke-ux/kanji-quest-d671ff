@@ -4,8 +4,8 @@
 // - 「つぎのレベルまで スター○こ」を明示。必要数に達するとレベルアップ（=姿が変わる）
 import { useRef, useState } from 'react'
 import { GAME_CONFIG } from '../config/gameConfig'
-import { MAX_LEVEL, getSpecies, nameForLevel, starsNeededFor } from '../data/species'
-import { buyStar, feedStar } from '../game/logic'
+import { MAX_LEVEL, getSpecies, nameForLevel, stageForLevel, starsNeededFor } from '../data/species'
+import { buyStars, feedStar } from '../game/logic'
 import { CharacterSprite } from '../game/sprites'
 import { playEat, playStarGet } from '../sound/sound'
 import { useAsyncData } from '../state/hooks'
@@ -38,22 +38,29 @@ export function Friends() {
     showToast('いっしょに べんきょうする なかまを かえたよ')
   }
 
-  const onBuyStar = async () => {
+  const onBuyStars = async (count: number) => {
     if (busyRef.current) return
     busyRef.current = true
     try {
-      const res = await buyStar(profile.id)
+      const res = await buyStars(profile.id, count)
       if (!res.ok) {
         showToast('コインが たりないよ')
         return
       }
       playStarGet()
       setBuyAnim((n) => n + 1)
-      showToast('スターを 1こ かった！')
+      showToast(`スターを ${count}こ かった！`)
       bumpData()
     } finally {
       busyRef.current = false
     }
+  }
+
+  // 次のレベルのわくわく予告（L2→3, L4→5が大変身。L5→6は最終形態）
+  const nextTease = (level: number): string | null => {
+    if (level >= MAX_LEVEL) return null
+    if (level === MAX_LEVEL - 1) return 'つぎは さいごの すがた…！ でんせつに なりそう！'
+    return level % 2 === 0 ? 'つぎのレベルで おおきく へんしんしそう…！' : 'つぎのレベルで ちょっと おしゃれに なるよ'
   }
 
   const onFeedStar = async (ownedId: number) => {
@@ -103,14 +110,21 @@ export function Friends() {
               スターを かって、なかまに あげよう。あげると レベルが あがって <b>すがたが かわる</b>よ！
             </p>
           </div>
-          <div className="star-shop-buy">
+          <div className="star-shop-buy row gap-sm wrap">
             {buyAnim > 0 && (
               <span key={buyAnim} className="star-pop" aria-hidden>
                 <StarIcon size={30} />
               </span>
             )}
-            <Button onClick={() => void onBuyStar()} disabled={profile.coins < GAME_CONFIG.star.cost}>
-              スターを かう（{GAME_CONFIG.star.cost}コイン）
+            <Button onClick={() => void onBuyStars(1)} disabled={profile.coins < GAME_CONFIG.star.cost}>
+              スターを 1こ かう（{GAME_CONFIG.star.cost}コイン）
+            </Button>
+            <Button
+              variant="accent"
+              onClick={() => void onBuyStars(GAME_CONFIG.star.bulkCount)}
+              disabled={profile.coins < GAME_CONFIG.star.cost * GAME_CONFIG.star.bulkCount}
+            >
+              まとめて {GAME_CONFIG.star.bulkCount}こ かう（{GAME_CONFIG.star.cost * GAME_CONFIG.star.bulkCount}コイン）
             </Button>
           </div>
         </Card>
@@ -143,6 +157,8 @@ export function Friends() {
                       {sp.lineName}　<b>レベル {o.level}</b>
                       {o.level >= MAX_LEVEL ? '（MAX）' : ` / ${MAX_LEVEL}`}
                     </p>
+                    <p className="friend-desc">{sp.stages[stageForLevel(o.level)].desc}</p>
+                    {nextTease(o.level) && <p className="friend-tease">{nextTease(o.level)}</p>}
                     <StarMeter fed={o.starsFed ?? 0} need={need} />
                     <div className="row gap-sm wrap">
                       <Button
