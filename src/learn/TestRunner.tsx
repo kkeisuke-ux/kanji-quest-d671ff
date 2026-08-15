@@ -30,6 +30,9 @@ import {
   saveTestSession,
 } from '../storage/repo'
 import type { TestItemRecord, TestSessionRecord } from '../storage/models'
+import { perfectTermTestIds } from '../data/curriculum'
+import { rankForCount, type RankDef } from '../game/ranks'
+import { RankUpModal } from '../ui/RankBadge'
 import { BuddyCorner, type BuddyMood } from './BuddyCorner'
 import { Button, KanjiChip, LoadingView, TopBar } from '../ui/components'
 import { PerfectCelebration } from '../ui/Celebration'
@@ -67,6 +70,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
   const [resultCoins, setResultCoins] = useState<{ amount: number; breakdown?: CoinBreakdownItem[] } | null>(null)
   const [resultStars, setResultStars] = useState(0)
   const [showCelebration, setShowCelebration] = useState(false)
+  const [rankUp, setRankUp] = useState<RankDef | null>(null)
   const [buddyMood, setBuddyMood] = useState<BuddyMood>('idle')
   const [savedSession, setSavedSession] = useState<TestSessionRecord | null>(null)
   const itemsRef = useRef<TestItemRecord[]>([])
@@ -193,10 +197,13 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
     const correct = finalItems.filter((i) => i.result === 'correct').length
     const perfect = finalItems.length > 0 && correct === finalItems.length
     // まとめテストの「何回目か」は、今回の結果を保存する前に数える（第16回: 2回目からは半分）
-    const pastTermRuns =
-      kind === 'term'
-        ? (await listTestResults(profile.id)).filter((r) => r.kind === 'term' && r.targetId === targetId).length
-        : 0
+    const priorTermResults = kind === 'term' ? (await listTestResults(profile.id)).filter((r) => r.kind === 'term') : []
+    const pastTermRuns = priorTermResults.filter((r) => r.targetId === targetId).length
+    // 称号ランクアップ判定: このまとめテストで「はじめての100点」なら1ランク上がる（第36回）
+    if (kind === 'term' && perfect) {
+      const prevPerfect = perfectTermTestIds(priorTermResults)
+      if (!prevPerfect.has(targetId)) setRankUp(rankForCount(prevPerfect.size + 1))
+    }
     await addTestResult({
       profileId: profile.id,
       kind,
@@ -213,19 +220,27 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
         : `${profile.name}が ${title}に ちょうせんしました（${correct}/${finalItems.length}問正解）`
       await addActivity(profile.id, profile.name, 'termTest', msg)
     }
-    // コイン（第16回改定）:
-    // - まとめテスト: 長いので点数に関わらず完走ボーナス。ミスが少ないほど多く、100点は大きい。
-    //   同じテストの2回目以降は半分。
+    // コイン（第16回改定、第22回で問題数比例に）:
+    // - まとめテスト: 長いので点数に関わらず完走ボーナス。学年によって問題数が違うため
+    //   ボーナスは問題数に比例（たくさん がんばったぶん たくさん もらえる）。
+    //   ミスが少ないほど多く、100点は大きい。同じテストの2回目以降は半分。
     // - ５もんテスト: 100点のときだけボーナス（従来どおり）。
     if (kind === 'term') {
       const T = GAME_CONFIG.termTest
-      const misses = finalItems.length - correct
-      const base = misses === 0 ? T.perfect : misses === 1 ? T.miss1 : misses === 2 ? T.miss2 : T.finish
+      const n = finalItems.length
+      const misses = n - correct
+      const base =
+        misses === 0
+          ? n * T.perfectPerQuestion + T.perfectBonus
+          : n * T.finishPerQuestion + (misses === 1 ? T.miss1Bonus : misses === 2 ? T.miss2Bonus : 0)
       const half = pastTermRuns >= 1
       const amount = Math.max(1, half ? Math.floor(base * T.repeatFactor) : base)
       const label =
-        (misses === 0 ? '100点ボーナス' : misses <= 2 ? `ミス${misses}こだけ ボーナス` : 'さいごまで がんばった ボーナス') +
-        (half ? '（2回目からは はんぶん）' : '')
+        (misses === 0
+          ? `100点ボーナス（${n}問）`
+          : misses <= 2
+            ? `ミス${misses}こだけ ボーナス（${n}問）`
+            : `${n}問 さいごまで がんばった ボーナス`) + (half ? '（2回目からは はんぶん）' : '')
       await awardCoinsFor(profile.id, amount, label)
       setResultCoins({ amount, breakdown: [{ label, value: amount }] })
     } else if (perfect) {
@@ -434,6 +449,8 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
             onClose={() => setShowCelebration(false)}
           />
         )}
+        {/* 称号アップは100点セレブレーションを閉じたあとに見せる（第36回） */}
+        {rankUp && !showCelebration && <RankUpModal rank={rankUp} onClose={() => setRankUp(null)} />}
         <TopBar title={`${title} けっか`} back={backRoute} />
         <div className="result-wrap">
           <div className={`card result-main ${perfect ? 'result-perfect' : ''}`}>
@@ -567,7 +584,7 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
           )}
           {!wrongEval && (
             <p className="test-note">
-              お手本なしで 書いてみよう。せいかいするまで 何どでも かきなおせるよ。わからないときは「こたえを みる」！
+              おてほんなしで かいてみよう。せいかいするまで なんどでも かきなおせるよ。わからないときは「こたえを みる」！
             </p>
           )}
           {wrongEval && (
@@ -583,6 +600,10 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
               <div className="row gap">
                 <Button variant="secondary" onClick={() => void handleUnknown()}>
                   こたえを みる
+                </Button>
+                {/* スマホでは問題文に重なるため、すぐ閉じられるように（第41回） */}
+                <Button variant="ghost" onClick={() => setWrongEval(null)}>
+                  とじる
                 </Button>
               </div>
             </div>

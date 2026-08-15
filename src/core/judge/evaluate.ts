@@ -264,25 +264,26 @@ export function evaluateKanji(
 
   const messages: string[] = []
   const notes: string[] = []
+  // メッセージは低学年でも読めるようにひらがな中心にする（第41回）
   if (verdict === 'perfect') {
     messages.push('よくできました！')
   } else if (verdict === 'okWithNotes') {
-    messages.push('形は合っています')
+    messages.push('かたちは あっているよ')
     for (const e of order.errors) {
-      if (e.kind === 'swap') messages.push(`${e.a + 1}画目と${e.b + 1}画目の書き順が逆です`)
-      else messages.push(`${e.a + 1}番目に書いた線は、ほんとうは${e.b + 1}画目の線です`)
+      if (e.kind === 'swap') messages.push(`${e.a + 1}かくめと ${e.b + 1}かくめの かきじゅんが ぎゃくだよ`)
+      else messages.push(`${e.a + 1}ばんめに かいた せんは、ほんとうは ${e.b + 1}かくめだよ`)
     }
-    for (const r of directionErrors) messages.push(`${r + 1}画目は反対の方向から書いています`)
+    for (const r of directionErrors) messages.push(`${r + 1}かくめは はんたいの ほうこうから かいているよ`)
   } else {
     if (!countMatch) {
-      if (userCount < refCount) messages.push(`画がたりないよ（お手本は${refCount}画、いま${userCount}画）`)
-      else messages.push(`画がおおいよ（お手本は${refCount}画、いま${userCount}画）`)
+      if (userCount < refCount) messages.push(`せんが たりないよ（おてほんは ${refCount}かく、いまは ${userCount}かく）`)
+      else messages.push(`せんが おおいよ（おてほんは ${refCount}かく、いまは ${userCount}かく）`)
     } else if (worstPair) {
-      messages.push(`${worstPair.refIndex + 1}画目の形がすこしちがうようです`)
-      messages.push('お手本をよく見てもういちど書いてみよう')
+      messages.push(`${worstPair.refIndex + 1}かくめの かたちが すこし ちがうみたい`)
+      messages.push('おてほんを よく見て もういちど かいてみよう')
     }
   }
-  if (shapeOk && !aspectOk) notes.push('たてよこのバランスにも気をつけよう')
+  if (shapeOk && !aspectOk) notes.push('たてよこの バランスにも きをつけよう')
 
   const correctForTest = shapeOk && (cfg.scoring.orderStrictInTests ? order.ok && directionOk : true)
 

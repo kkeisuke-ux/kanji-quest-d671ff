@@ -192,6 +192,11 @@ profiles / kanjiProgress / strokeSamples / testResults / testSessions / unknownK
 
 ## 7. ライセンス・出典
 
+**このアプリのライセンス: [LICENSE](LICENSE)（オリジナル部分は CC BY-NC-SA 4.0＝表示・非営利・継承）**
+出典を示せば自由に使える／改変できる／配れる。ただし**販売など営利目的での利用は不可**。
+同梱する第三者データは元のライセンスのまま（非営利条件は付かない）。一覧は
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。
+
 - **KanjiVG**: 筆順ストロークデータ（`src/data/kanjivg/strokes.gen.ts` と `scripts/kanjivg-cache/`）は
   [KanjiVG](https://kanjivg.tagaini.net)（Copyright © Ulrich Apel）由来。
   ライセンス: [Creative Commons Attribution-Share Alike 3.0](https://creativecommons.org/licenses/by-sa/3.0/)

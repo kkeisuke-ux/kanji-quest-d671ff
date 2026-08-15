@@ -1,9 +1,8 @@
-// 学習フロー（2026-08-08フィードバック反映版）:
-// 1漢字につき5回書く。
+// 学習フロー（2026-08-08 第24回で5回→3回に短縮）:
+// 1漢字につき3回書く。
 //   1回目: 書き順ガイドつきなぞり（始点●・方向アニメ）
-//   2回目: うすいグレー＋書き順の数字でなぞり
-//   3回目: うすいグレーのみでなぞり
-//   4・5回目: 自分で書く
+//   2回目: うすいグレーのみでなぞり
+//   3回目: 自分で書く
 // 途中でやめても同じ場所から再開できる（practiceSessionsに自動保存）。
 // バディが画面に常駐し、正解すると一緒に喜ぶ。
 import { useEffect, useRef, useState } from 'react'
@@ -11,7 +10,9 @@ import { GAME_CONFIG } from '../config/gameConfig'
 import type { KanjiEvaluation } from '../core/judge/evaluate'
 import type { InkStroke } from '../core/ink/types'
 import { findStage } from '../data/curriculum'
+import { yojiQuestionOf } from '../data/questions'
 import { awardCoinsFor, awardStarsFor } from '../game/logic'
+import { YojiLearnFlow } from './YojiLearnFlow'
 import { BuddyCorner, type BuddyMood } from '../learn/BuddyCorner'
 import { TraceStep, type TraceMode } from '../learn/TraceStep'
 import { WritingPad } from '../learn/WritingPad'
@@ -35,27 +36,36 @@ import { StarSplash } from '../ui/StarSplash'
 import { KanjiSvg } from '../ui/KanjiSvg'
 import { StrictnessButton } from '../ui/StrictnessButton'
 
-type RoundKind = 'trace-guided' | 'trace-numbers' | 'trace-gray' | 'write'
+type RoundKind = 'trace-guided' | 'trace-gray' | 'write'
 
-const ROUNDS: RoundKind[] = ['trace-guided', 'trace-numbers', 'trace-gray', 'write', 'write']
+const ROUNDS: RoundKind[] = ['trace-guided', 'trace-gray', 'write']
 
 const ROUND_LABELS = [
   '1かいめ　かきじゅんを おぼえよう',
-  '2かいめ　すうじの じゅんばんに なぞろう',
-  '3かいめ　うすい字を なぞろう',
-  '4かいめ　じぶんで かこう',
-  '5かいめ　じぶんで かこう（さいご！）',
+  '2かいめ　うすい字を なぞろう',
+  '3かいめ　じぶんで かこう（さいご！）',
 ]
 
 const ROUND_HINTS = [
   ['うすい線を じゅんばんに なぞってね。', 'みどりの●が かきはじめ、あおい点が すすむ ほうこうだよ。'],
-  ['こんどは すうじだけが ヒント。', 'すうじの じゅんばんに 1画ずつ なぞろう。'],
   ['ヒントは うすい字だけ！', 'かきじゅんを おもいだしながら なぞろう。'],
-  ['なにも見ないで かいてみよう。', 'まちがえても だいじょうぶ！'],
-  ['さいごの1かい！', 'じしんを もって かこう。'],
+  ['なにも見ないで かいてみよう。', 'じしんを もって かこう！'],
 ]
 
-export function LearnFlow({ stageId }: { stageId: string; startIndex?: number }) {
+/**
+ * 練習フローの振り分け（第21回）:
+ * マスター級の四字熟語ステージ（全字が「全部書く」問題を持つ）は、1文字ずつではなく
+ * 四字熟語を4文字つづけて書くYojiLearnFlowで練習する。それ以外は従来の1文字5回フロー。
+ */
+export function LearnFlow({ stageId, startIndex }: { stageId: string; startIndex?: number }) {
+  const found = findStage(stageId)
+  const isYojiStage =
+    found != null && found.cur.grade === 10 && found.stage.kanji.every((c) => yojiQuestionOf(c) != null)
+  if (isYojiStage) return <YojiLearnFlow stageId={stageId} />
+  return <SingleKanjiLearnFlow stageId={stageId} startIndex={startIndex} />
+}
+
+function SingleKanjiLearnFlow({ stageId }: { stageId: string; startIndex?: number }) {
   const profile = useProfile()
   const found = findStage(stageId)
   const [loaded, setLoaded] = useState(false)
@@ -269,7 +279,7 @@ export function LearnFlow({ stageId }: { stageId: string; startIndex?: number })
 
   const roundKind = ROUNDS[round]
   const isWrite = roundKind === 'write'
-  const traceMode: TraceMode = roundKind === 'trace-guided' ? 'guided' : roundKind === 'trace-numbers' ? 'numbers' : 'gray'
+  const traceMode: TraceMode = roundKind === 'trace-guided' ? 'guided' : 'gray'
 
   return (
     <div className="screen">

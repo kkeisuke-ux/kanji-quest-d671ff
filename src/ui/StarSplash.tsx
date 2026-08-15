@@ -10,6 +10,7 @@ export function StarSplash({
   stars,
   coins,
   remain,
+  nextLabel,
   onNext,
 }: {
   char: string
@@ -17,6 +18,8 @@ export function StarSplash({
   coins: number
   /** のこりの字数（1以上。最後の字はステージ完了画面側で祝う） */
   remain: number
+  /** 「つぎへ」ボタンの文言の上書き（四字熟語ステージ用。第21回） */
+  nextLabel?: string
   onNext: () => void
 }) {
   useEffect(() => {
@@ -39,7 +42,7 @@ export function StarSplash({
         </p>
         <BuddyCorner mood="celebrate" size={110} message="やったね！" />
         <Button size="lg" variant="accent" onClick={onNext}>
-          つぎの かんじへ（あと{remain}字）
+          {nextLabel ?? `つぎの かんじへ（あと${remain}字）`}
         </Button>
       </div>
     </div>

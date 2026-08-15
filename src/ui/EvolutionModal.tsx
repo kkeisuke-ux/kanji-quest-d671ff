@@ -3,7 +3,7 @@
 // いまの姿 → 光 → 新しい姿。最終レベル到達時はいちばん豪華な音。
 import { useEffect, useState } from 'react'
 import { setPendingEvolution, useAppState, type PendingEvolution } from '../state/store'
-import { MAX_LEVEL, nameForLevel } from '../data/species'
+import { FINAL_FORM_LEVEL, MAX_LEVEL, nameForLevel } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { playGrand, playPerfect } from '../sound/sound'
 import { Button } from './components'
@@ -34,7 +34,8 @@ export function EvolutionModal() {
 
   useEffect(() => {
     if (phase !== 'after' || !current) return
-    if (current.toLevel >= MAX_LEVEL) playGrand()
+    // 最終形態（L6）と最大レベル（L99）はいちばん豪華な音
+    if (current.toLevel >= MAX_LEVEL || current.toLevel === FINAL_FORM_LEVEL) playGrand()
     else playPerfect()
   }, [phase, current])
 
@@ -54,7 +55,11 @@ export function EvolutionModal() {
             <div className="evo-glow">
               <CharacterSprite speciesId={current.speciesId} level={current.fromLevel} size={150} />
             </div>
-            <p className="evo-text">…おや？ {current.name}の ようすが…！</p>
+            <p className="evo-text">
+              {current.toLevel <= FINAL_FORM_LEVEL
+                ? `…おや？ ${current.name}の ようすが…！`
+                : `${current.name}に ちからが みなぎる…！`}
+            </p>
           </div>
         )}
         {phase === 'flash' && (
@@ -71,7 +76,14 @@ export function EvolutionModal() {
             <p className="evo-text evo-text-big">
               {newName}は レベル{current.toLevel}に あがった！
             </p>
-            <p className="evo-text">すがたが かわった！{current.toLevel >= MAX_LEVEL ? '（さいしゅうレベル！）' : ''}</p>
+            <p className="evo-text">
+              {current.toLevel <= FINAL_FORM_LEVEL ? 'すがたが かわった！' : 'もっと たくましく なった！'}
+              {current.toLevel >= MAX_LEVEL
+                ? '（さいしゅうレベル！）'
+                : current.toLevel === FINAL_FORM_LEVEL
+                  ? `（さいしゅうけいたい！ ここから レベル${MAX_LEVEL}まで そだてられるよ）`
+                  : ''}
+            </p>
             <Button onClick={() => setPendingEvolution(null)}>やったー！</Button>
           </div>
         )}

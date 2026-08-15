@@ -1,23 +1,32 @@
 // 共通UIコンポーネント。
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { navigate, useAppState, type Route } from '../state/store'
+import { perfectStageIds, perfectTermTestIds, stageClearLevelLabel } from '../data/curriculum'
 import { getSpecies } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
-import { getOwned, getProfile } from '../storage/repo'
+import { getOwned, getProfile, listTestResults } from '../storage/repo'
+import { RankChip, RankListModal } from './RankBadge'
 import { SoundButton } from './SoundButton'
 
-/** コイン・スター・バディレベルの常設表示（全画面のTopBarに出る。仕様追加 2026-08-08） */
+/** コイン・スター・称号・バディレベルの常設表示（全画面のTopBarに出る。仕様追加 2026-08-08、称号は第41回） */
 export function StatusChips() {
   const profileId = useAppState((s) => s.profileId)
+  const [showRanks, setShowRanks] = useState(false)
   const { data } = useAsyncData(async () => {
     if (!profileId) return null
     const p = await getProfile(profileId)
     if (!p) return null
     const buddy = p.buddyId != null ? ((await getOwned(p.buddyId)) ?? null) : null
+    const results = await listTestResults(profileId)
+    const termPerfectCount = perfectTermTestIds(results).size
+    // 到達レベル（5問テスト100点が全部そろっている いちばん上の学年学期。第44回で復活）
+    const levelLabel = stageClearLevelLabel(perfectStageIds(results))
     return {
       coins: p.coins,
       stars: p.stars,
+      termPerfectCount,
+      levelLabel,
       buddy: buddy && getSpecies(buddy.speciesId) ? { speciesId: buddy.speciesId, stage: buddy.stage, level: buddy.level } : null,
     }
   }, [profileId])
@@ -50,6 +59,14 @@ export function StatusChips() {
         <span key={pop.key} className={`chip-pop chip-pop-${pop.kind}`} aria-hidden>
           +{pop.amount}
           {pop.kind === 'stars' ? '⭐' : '🪙'}
+        </span>
+      )}
+      {/* 称号バッジは常に上に出す（第41回） */}
+      <RankChip perfectCount={data.termPerfectCount} onClick={() => setShowRanks(true)} />
+      <RankListModal open={showRanks} perfectCount={data.termPerfectCount} onClose={() => setShowRanks(false)} />
+      {data.levelLabel && (
+        <span className="badge level-chip" title="5もんテスト100点が ぜんぶ そろっている ところまでのレベル">
+          Lv {data.levelLabel}
         </span>
       )}
       <CoinBadge coins={data.coins} />
@@ -110,9 +127,14 @@ export function Button({
   )
 }
 
-export function Card({ children, className = '', onClick }: { children: ReactNode; className?: string; onClick?: () => void }) {
+export function Card({
+  children,
+  className = '',
+  onClick,
+  ...rest
+}: { children: ReactNode; className?: string; onClick?: () => void } & Record<`data-${string}`, string>) {
   return (
-    <div className={`card ${onClick ? 'card-tap' : ''} ${className}`} onClick={onClick}>
+    <div className={`card ${onClick ? 'card-tap' : ''} ${className}`} onClick={onClick} {...rest}>
       {children}
     </div>
   )
@@ -190,8 +212,10 @@ export function LoadingView({ label = 'よみこみちゅう…' }: { label?: st
 export type KanjiChipState = 'none' | 'practiced' | 'mastered' | 'unknown'
 
 export function KanjiChip({ char, state = 'none', onClick }: { char: string; state?: KanjiChipState; onClick?: () => void }) {
+  // 四字熟語など複数文字はチップを横に広げる（第24回）
+  const wide = [...char].length > 1
   return (
-    <span className={`kanji-chip chip-${state} ${onClick ? 'chip-tap' : ''}`} onClick={onClick}>
+    <span className={`kanji-chip chip-${state} ${wide ? 'chip-wide' : ''} ${onClick ? 'chip-tap' : ''}`} onClick={onClick}>
       {char}
     </span>
   )

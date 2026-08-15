@@ -1,0 +1,116 @@
+[
+  { "kanji": "揚", "questions": [
+    { "sentence": "油で えびを ○げて 天ぷらを 作った。", "reading": "あ" },
+    { "sentence": "朝礼で 国旗を 掲(けい)○する 係に なった。", "reading": "よう" },
+    { "sentence": "優勝した 選手団が 意気○々と 帰って きた。", "reading": "よう" },
+    { "sentence": "抑(よく)○を つけて 物語を 音読する。", "reading": "よう" },
+    { "sentence": "飛行機の つばさに 生じる ○力の 仕組みを 学んだ。", "reading": "よう" } ] },
+  { "kanji": "曽", "questions": [
+    { "sentence": "○祖父は 九十さいまで 畑仕事を して いた。", "reading": "そう" },
+    { "sentence": "○祖母の 子どものころの 話を 聞いた。", "reading": "そう" },
+    { "sentence": "未○有の 大雨で 川の 水が あふれた。", "reading": "ぞ" },
+    { "sentence": "木○川に かかる 長い 橋を わたった。", "reading": "そ" },
+    { "sentence": "○孫とは 孫の 子の ことを いう。", "reading": "そう" } ] },
+  { "kanji": "岳", "questions": [
+    { "sentence": "兄は 高校の 山○部で 活動して いる。", "reading": "がく" },
+    { "sentence": "夏休みに 父と 谷川○に 登った。", "reading": "だけ" },
+    { "sentence": "北○は 日本で 二番目に 高い 山だ。", "reading": "だけ" },
+    { "sentence": "東京の 御(み)○山へ ハイキングに 出かけた。", "reading": "たけ" },
+    { "sentence": "八ヶ○の ふもとで キャンプを 楽しんだ。", "reading": "たけ" } ] },
+  { "kanji": "炉", "questions": [
+    { "sentence": "暖○の 火を 囲んで 家族と 過ごした。", "reading": "ろ" },
+    { "sentence": "原子○の 仕組みを 理科の 授業で 学んだ。", "reading": "ろ" },
+    { "sentence": "昔の 家には 囲○裏が あった。", "reading": "ろ" },
+    { "sentence": "製鉄所の 溶鉱○で 鉄を 作る。", "reading": "ろ" },
+    { "sentence": "○ばた焼きの 店で 焼き魚を 注文した。", "reading": "ろ" } ] },
+  { "kanji": "殖", "questions": [
+    { "sentence": "この 地域では カキの 養○が さかんだ。", "reading": "しょく" },
+    { "sentence": "ウイルスは 細ぼうの 中で 増○する。", "reading": "しょく" },
+    { "sentence": "動物園が パンダの 繁(はん)○に 成功した。", "reading": "しょく" },
+    { "sentence": "明治政府は ○産興業の 政策を 進めた。", "reading": "しょく" },
+    { "sentence": "植物の 生○の 仕組みを 理科で 学んだ。", "reading": "しょく" } ] },
+  { "kanji": "鶴", "questions": [
+    { "sentence": "千羽○を 折って 入院中の 友人に おくった。", "reading": "づる" },
+    { "sentence": "○の 恩返しの 昔話を 音読した。", "reading": "つる" },
+    { "sentence": "会長の ○の 一声で 計画が 決まった。", "reading": "つる" },
+    { "sentence": "京都府の 舞(まい)○市には 大きな 港が ある。", "reading": "づる" },
+    { "sentence": "紙で 折り○を 作って 教室に かざった。", "reading": "づる" } ] },
+  { "kanji": "浄", "questions": [
+    { "sentence": "○水場の 働きを 社会科見学で 学んだ。", "reading": "じょう" },
+    { "sentence": "実験の 後で 器具を 水で よく 洗○する。", "reading": "じょう" },
+    { "sentence": "空気清○機で 部屋の 空気を きれいに 保つ。", "reading": "じょう" },
+    { "sentence": "川の 水を ○化する 活動に 参加した。", "reading": "じょう" },
+    { "sentence": "平等院は ○土の 世界を 表現した 建物だ。", "reading": "じょう" } ] },
+  { "kanji": "貞", "questions": [
+    { "sentence": "野球の 王○治選手の 伝記を 読んだ。", "reading": "さだ" },
+    { "sentence": "○観は 平安時代の 元号の 一つだ。", "reading": "じょう" },
+    { "sentence": "御(ご)成敗式目は ○永式目とも 呼ばれる。", "reading": "じょう" },
+    { "sentence": "川上○奴(やっこ)は 日本初の 女優と いわれる。", "reading": "さだ" },
+    { "sentence": "○明皇后は 大正天皇の きさきと なった 人物だ。", "reading": "てい" } ] },
+  { "kanji": "丘", "questions": [
+    { "sentence": "鳥取砂○の 広さに おどろいた。", "reading": "きゅう" },
+    { "sentence": "小高い ○の 上から 町を 見下ろした。", "reading": "おか" },
+    { "sentence": "なだらかな ○陵(りょう)地帯に 茶畑が 広がる。", "reading": "きゅう" },
+    { "sentence": "桜ヶ○という 地名は 全国の あちこちに ある。", "reading": "おか" },
+    { "sentence": "古墳(こふん)の 墳(ふん)○の 上に 木が しげって いる。", "reading": "きゅう" } ] },
+  { "kanji": "棟", "questions": [
+    { "sentence": "祖父の 入院する 病○に 見まいに 行った。", "reading": "とう" },
+    { "sentence": "団地に 同じ 形の 建物が 五○ 並んで いる。", "reading": "とう" },
+    { "sentence": "新しい 家の ○上げを 祝う 式が 行われた。", "reading": "むね" },
+    { "sentence": "屋根の いちばん 高い ところを ○と 呼ぶ。", "reading": "むね" },
+    { "sentence": "音楽室は 別○の 校舎に ある。", "reading": "むね" } ] },
+  { "kanji": "緯", "questions": [
+    { "sentence": "地球儀(ちきゅうぎ)で 世界の 国々の ○度を 調べた。", "reading": "い" },
+    { "sentence": "日本の 国土は およそ 北○二十度から 四十六度の 間に ある。", "reading": "い" },
+    { "sentence": "けんかに 至った 経○を 先生に 説明した。", "reading": "い" },
+    { "sentence": "地図上の 横向きの 線を ○線と いう。", "reading": "い" },
+    { "sentence": "南極点は 南○九十度の 地点に ある。", "reading": "い" } ] },
+  { "kanji": "艇", "questions": [
+    { "sentence": "船から 救命○に 乗りうつる 訓練を 見学した。", "reading": "てい" },
+    { "sentence": "飛行○は 水面から 飛び立てる 航空機だ。", "reading": "てい" },
+    { "sentence": "海上保安庁の 巡(じゅん)視○が 港を 出て いった。", "reading": "てい" },
+    { "sentence": "大学の ボート部が 川で ○を こいで いた。", "reading": "てい" },
+    { "sentence": "川岸の ○庫から ボートを 運び出す。", "reading": "てい" } ] },
+  { "kanji": "錦", "questions": [
+    { "sentence": "池で 色あざやかな ○ごいが 泳いで いる。", "reading": "にしき" },
+    { "sentence": "江戸時代の ○絵には 役者の すがたが えがかれた。", "reading": "にしき" },
+    { "sentence": "故郷に ○を かざるという 言葉の 意味を 調べた。", "reading": "にしき" },
+    { "sentence": "山々が 赤や 黄に 色づき ○秋の けしきと なった。", "reading": "きん" },
+    { "sentence": "山口県の ○帯橋は 美しい アーチで 知られる。", "reading": "きん" } ] },
+  { "kanji": "准", "questions": [
+    { "sentence": "大学の ○教授が 出前授業に 来て くれた。", "reading": "じゅん" },
+    { "sentence": "国会で 条約の 批○が 承認された。", "reading": "じゅん" },
+    { "sentence": "○看護師の 資格を 取る ための 学校が ある。", "reading": "じゅん" },
+    { "sentence": "軍隊の 階級には ○将という ものが ある。", "reading": "じゅん" },
+    { "sentence": "農協には ○組合員という 区分が ある。", "reading": "じゅん" } ] },
+  { "kanji": "駒", "questions": [
+    { "sentence": "将棋(しょうぎ)の ○の 動かし方を 覚えた。", "reading": "こま" },
+    { "sentence": "ひょうたんから ○という ことわざが ある。", "reading": "こま" },
+    { "sentence": "サッカー部は 決勝戦へと ○を 進めた。", "reading": "こま" },
+    { "sentence": "中央アルプスの ○ヶ岳(だけ)に 登った。", "reading": "こま" },
+    { "sentence": "将棋(しょうぎ)で 持ち○を うまく 使って 勝った。", "reading": "ごま" } ] },
+  { "kanji": "据", "questions": [
+    { "sentence": "部屋の 中央に 新しい テレビを ○えた。", "reading": "す" },
+    { "sentence": "今年度の 部費は ○え置きと 決まった。", "reading": "す" },
+    { "sentence": "将来を 見○えて 進路を 選ぶ。", "reading": "す" },
+    { "sentence": "こしを ○えて 受験勉強に 取り組む。", "reading": "す" },
+    { "sentence": "姉は きもが ○わって いて 発表でも 動じない。", "reading": "す" } ] },
+  { "kanji": "徐", "questions": [
+    { "sentence": "雪の 日は 車が ○行して 走る。", "reading": "じょ" },
+    { "sentence": "かぜは ○々に 良く なって きた。", "reading": "じょ" },
+    { "sentence": "電車が ○行運転で ホームに 入って きた。", "reading": "じょ" },
+    { "sentence": "春に なり 気温が ○々に 上がって いく。", "reading": "じょ" },
+    { "sentence": "毎日の 練習で 記録が ○々に のびた。", "reading": "じょ" } ] },
+  { "kanji": "滝", "questions": [
+    { "sentence": "山道の 先に 大きな ○が 現れた。", "reading": "たき" },
+    { "sentence": "日光の 華(け)厳の ○は 高さが 百メートル 近く ある。", "reading": "たき" },
+    { "sentence": "○つぼの 近くまで 遊歩道が 続いて いる。", "reading": "たき" },
+    { "sentence": "あせが ○の ように 流れる ほど 走りこんだ。", "reading": "たき" },
+    { "sentence": "富士山の ふもとの 白糸の ○を 見に 行った。", "reading": "たき" } ] },
+  { "kanji": "拐", "questions": [
+    { "sentence": "学校で 誘(ゆう)○防止の 教室が 開かれた。", "reading": "かい" },
+    { "sentence": "地域の 人たちが 誘(ゆう)○防止の ために 通学路に 立って いる。", "reading": "かい" },
+    { "sentence": "警察の 人から 誘(ゆう)○に あわない ための 注意を 聞いた。", "reading": "かい" },
+    { "sentence": "防犯ブザーは 誘(ゆう)○の 防止に 役立つ。", "reading": "かい" },
+    { "sentence": "知らない 人の 車には 乗らないと いう 誘(ゆう)○防止の 約束を 家族で 確かめた。", "reading": "かい" } ] }
+]

@@ -6,7 +6,17 @@ import { setStrictnessRuntime } from '../config/judgeRuntime'
 import { setBgm, setSe } from '../sound/sound'
 import { useAsyncData } from '../state/hooks'
 import { bumpData, navigate, showToast, useAppState } from '../state/store'
-import { canShareBackup, downloadBackup, importAllData, shareBackup } from '../storage/backup'
+import {
+  canShareBackup,
+  downloadBackup,
+  downloadProfileBackup,
+  importAllData,
+  importProfileData,
+  inspectBackup,
+  shareBackup,
+  shareProfileBackup,
+  type BackupInfo,
+} from '../storage/backup'
 import { getProfile, saveProfile } from '../storage/repo'
 import { Button, Card, LoadingView, Modal, TopBar } from '../ui/components'
 
@@ -15,7 +25,7 @@ export function Settings() {
   useAppState((s) => s.soundVersion)
   const { data: profile } = useAsyncData(async () => (profileId ? ((await getProfile(profileId)) ?? null) : null), [profileId])
   const fileRef = useRef<HTMLInputElement | null>(null)
-  const [pendingImport, setPendingImport] = useState<string | null>(null)
+  const [pendingImport, setPendingImport] = useState<{ text: string; info: BackupInfo; sameProfileExists: boolean } | null>(null)
   const [busy, setBusy] = useState(false)
   const flags = getAppFlags()
 
@@ -34,15 +44,27 @@ export function Settings() {
   const onFile = async (f: File | null) => {
     if (!f) return
     const text = await f.text()
-    setPendingImport(text)
+    try {
+      const info = inspectBackup(text)
+      const sameProfileExists =
+        info.scope === 'profile' && info.profileId != null ? (await getProfile(info.profileId)) != null : false
+      setPendingImport({ text, info, sameProfileExists })
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'ファイルを読み取れません')
+    }
   }
 
   const doImport = async () => {
     if (!pendingImport) return
     setBusy(true)
     try {
-      const summary = await importAllData(pendingImport)
-      showToast(`よみこみ完了（${summary.records}けん）。さいよみこみします…`)
+      if (pendingImport.info.scope === 'profile') {
+        const summary = await importProfileData(pendingImport.text)
+        showToast(`「${summary.profileName}」のデータを よみこみました（${summary.records}けん）。さいよみこみします…`)
+      } else {
+        const summary = await importAllData(pendingImport.text)
+        showToast(`よみこみ完了（${summary.records}けん）。さいよみこみします…`)
+      }
       window.setTimeout(() => window.location.reload(), 1200)
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'よみこみに しっぱいしました')
@@ -132,6 +154,35 @@ export function Settings() {
               }}
             />
           </div>
+          <p className="tile-sub" style={{ marginTop: 12 }}>
+            <b>ひとりだけ移すには:</b> 下のボタンで「{profile.name}」のデータだけを送れます。読み込んだ端末では{' '}
+            <b>{profile.name}のデータだけが追加・上書き</b>され、ほかの人のデータはそのまま残ります（読み込みも上の「ファイルを読み込む」でOK。ファイルの種類は自動で見分けます）。
+            べつの人を送りたいときは、その人のプロフィールに切り替えてから押してください。
+          </p>
+          <div className="row gap wrap">
+            {canShareBackup() && (
+              <Button
+                variant="secondary"
+                onClick={() =>
+                  void shareProfileBackup(profile.id).then((ok) => {
+                    if (!ok) showToast('この端末では共有できません。「ファイルに書き出す」を使ってください')
+                  })
+                }
+              >
+                「{profile.name}」だけ AirDropで おくる
+              </Button>
+            )}
+            <Button
+              variant="secondary"
+              onClick={() =>
+                void downloadProfileBackup(profile.id).then((ok) => {
+                  if (!ok) showToast('プロフィールが みつかりませんでした')
+                })
+              }
+            >
+              「{profile.name}」だけ ファイルに書き出す
+            </Button>
+          </div>
         </Card>
 
         <Card>
@@ -151,11 +202,27 @@ export function Settings() {
               onChange={(e) => void setAllowTouchInk(e.target.checked)}
             />
             <span>
-              指でも書けるようにする（検証用）
+              指でも書けるようにする
               <br />
-              <small>通常はオフ。オフのとき、指や手のひらは線になりません（Apple Pencil専用）。</small>
+              <small>
+                オフのとき、指や手のひらは線になりません（Apple Pencil専用）。
+                オンにしても、Apple Pencilを使っている間は手のひら・指は線になりません（ペン優先）。
+              </small>
             </span>
           </label>
+        </Card>
+
+        <Card>
+          <h3>このアプリの りようじょうけん</h3>
+          <p className="tile-sub">
+            作者: 香村 恵介。コード・キャラクター・イラスト・手書きの問題文は{' '}
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" rel="noreferrer">
+              CC BY-NC-SA 4.0
+            </a>
+            （出典を示せば自由に使ってよい／<b>販売など営利目的での利用は不可</b>／改変版も同じ条件で公開）。
+            同梱している第三者データ（下記）は元のライセンスのままで、この非営利条件は付きません。
+            学習の補助を目的とした個人制作物のため、判定精度や提供の継続は保証しません。
+          </p>
         </Card>
 
         <Card>
@@ -176,16 +243,44 @@ export function Settings() {
       </div>
 
       <Modal open={pendingImport != null} onClose={() => !busy && setPendingImport(null)}>
-        <h2>バックアップを読み込む</h2>
-        <p className="danger-text">いまの ぜんいんの データを、ファイルの内容で <b>すべて置き換えます</b>。この操作は元に戻せません。</p>
-        <div className="row gap">
-          <Button variant="danger" onClick={() => void doImport()} disabled={busy}>
-            {busy ? 'よみこみちゅう…' : '置き換えて読み込む'}
-          </Button>
-          <Button variant="ghost" onClick={() => setPendingImport(null)} disabled={busy}>
-            やめる
-          </Button>
-        </div>
+        {pendingImport?.info.scope === 'profile' ? (
+          <>
+            <h2>「{pendingImport.info.profileName}」のデータを読み込む</h2>
+            <p>
+              ひとりぶんのバックアップです。<b>「{pendingImport.info.profileName}」のデータだけ</b>を この端末に入れます。ほかの人のデータは かわりません。
+            </p>
+            {pendingImport.sameProfileExists && (
+              <p className="danger-text">
+                この端末にも「{pendingImport.info.profileName}」がいます。その人のいまのデータは、ファイルの内容で <b>置き換わります</b>（元に戻せません）。
+              </p>
+            )}
+            <div className="row gap">
+              <Button
+                variant={pendingImport.sameProfileExists ? 'danger' : 'accent'}
+                onClick={() => void doImport()}
+                disabled={busy}
+              >
+                {busy ? 'よみこみちゅう…' : pendingImport.sameProfileExists ? '置き換えて読み込む' : 'この人を追加する'}
+              </Button>
+              <Button variant="ghost" onClick={() => setPendingImport(null)} disabled={busy}>
+                やめる
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <h2>バックアップを読み込む</h2>
+            <p className="danger-text">いまの ぜんいんの データを、ファイルの内容で <b>すべて置き換えます</b>。この操作は元に戻せません。</p>
+            <div className="row gap">
+              <Button variant="danger" onClick={() => void doImport()} disabled={busy}>
+                {busy ? 'よみこみちゅう…' : '置き換えて読み込む'}
+              </Button>
+              <Button variant="ghost" onClick={() => setPendingImport(null)} disabled={busy}>
+                やめる
+              </Button>
+            </div>
+          </>
+        )}
       </Modal>
     </div>
   )

@@ -6,6 +6,7 @@ import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
 import { listUnknown, type UnknownSource } from '../storage/repo'
 import { Button, Card, LoadingView, TopBar } from '../ui/components'
+import { useScrollMemory } from '../ui/scrollMemory'
 
 function Section({
   title,
@@ -59,12 +60,15 @@ export function UnknownList() {
     return { stage, term }
   }, [profileId])
 
+  // ふくしゅうから戻ってきたとき、直前に見ていた位置をそのまま表示する（2026-08-14 第31回）
+  const scrollRef = useScrollMemory(data ? `unknown:${profileId}` : null)
+
   if (!data) return <LoadingView />
 
   return (
     <div className="screen">
       <TopBar title="わからなかった漢字" back={{ name: 'home' }} />
-      <div className="map-scroll">
+      <div className="map-scroll" ref={scrollRef}>
         <Section
           title="５もんテストで わからなかった漢字"
           clearHint="ふくしゅうすると ここから きえるよ（５もんテストで せいかいしても きえるよ）"

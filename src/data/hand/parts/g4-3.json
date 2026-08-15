@@ -1,0 +1,322 @@
+[
+  {
+    "kanji": "議",
+    "questions": [
+      { "sentence": "学級会で ○題を 話し合う。", "reading": "ぎ" },
+      { "sentence": "児童会の 会○に 出席する。", "reading": "ぎ" },
+      { "sentence": "話し合いの ○長を つとめる。", "reading": "ぎ" },
+      { "sentence": "不思○な 出来事が 起きた。", "reading": "ぎ" },
+      { "sentence": "リレーの 順番を チームで 協○した。", "reading": "ぎ" }
+    ]
+  },
+  {
+    "kanji": "民",
+    "questions": [
+      { "sentence": "図書館で ○話の 本を 借りた。", "reading": "みん" },
+      { "sentence": "夏休みに 市○プールで およいだ。", "reading": "みん" },
+      { "sentence": "家族で 海の 近くの ○宿に とまった。", "reading": "みん" },
+      { "sentence": "国○の 祝日で 学校が 休みだった。", "reading": "みん" },
+      { "sentence": "住○の みんなで 公園を そうじした。", "reading": "みん" }
+    ]
+  },
+  {
+    "kanji": "連",
+    "questions": [
+      { "sentence": "犬を ○れて さんぽに 出かけた。", "reading": "つ" },
+      { "sentence": "○休に おばあちゃんの 家へ 行った。", "reading": "れん" },
+      { "sentence": "高い 山が ○なって 見える。", "reading": "つら" },
+      { "sentence": "オセロで 兄に 三○勝した。", "reading": "れん" },
+      { "sentence": "○らくちょうに あしたの 予定を 書く。", "reading": "れん" }
+    ]
+  },
+  {
+    "kanji": "選",
+    "questions": [
+      { "sentence": "すきな 本を 一さつ ○ぶ。", "reading": "えら" },
+      { "sentence": "リレーの ○手に なって 走った。", "reading": "せん" },
+      { "sentence": "クラス委員を ○挙で 決めた。", "reading": "せん" },
+      { "sentence": "水泳大会の 予○で 一位に なった。", "reading": "せん" },
+      { "sentence": "くじ引きで 当○して、けしゴムを もらった。", "reading": "せん" }
+    ]
+  },
+  {
+    "kanji": "関",
+    "questions": [
+      { "sentence": "家の げん○で くつを そろえる。", "reading": "かん" },
+      { "sentence": "理科で 天気と 気温の ○係を 調べた。", "reading": "かん" },
+      { "sentence": "昔の 旅人は ○所を 通った。", "reading": "せき" },
+      { "sentence": "博物館で 大きな 機○車を 見た。", "reading": "かん" },
+      { "sentence": "学芸会の じゅんびに すすんで ○わった。", "reading": "かか" }
+    ]
+  },
+  {
+    "kanji": "戦",
+    "questions": [
+      { "sentence": "サッカーの 試合で 強い チームと ○う。", "reading": "たたか" },
+      { "sentence": "バスケットボールの 決勝○に 進んだ。", "reading": "せん" },
+      { "sentence": "○国時代の 城を 見学した。", "reading": "せん" },
+      { "sentence": "リレーの 作○を チームで 考えた。", "reading": "せん" },
+      { "sentence": "となりの クラスと ドッジボールで 対○した。", "reading": "せん" }
+    ]
+  },
+  {
+    "kanji": "最",
+    "questions": [
+      { "sentence": "クラスで ○も せが 高い。", "reading": "もっと" },
+      { "sentence": "朝の 会で ○初に 手を 挙げた。", "reading": "さい" },
+      { "sentence": "○後まで あきらめずに 走った。", "reading": "さい" },
+      { "sentence": "マラソン大会で ○高記録を 出した。", "reading": "さい" },
+      { "sentence": "○新の ゲームが 発売された。", "reading": "さい" }
+    ]
+  },
+  {
+    "kanji": "氏",
+    "questions": [
+      { "sentence": "テストの 用紙に ○名を 書く。", "reading": "し" },
+      { "sentence": "村の ○神様の お祭りに 行った。", "reading": "うじ" },
+      { "sentence": "図書室で 源(げん)○物語の まんがを 読んだ。", "reading": "じ" },
+      { "sentence": "新聞で 発明家の 田中○の 記事を 読んだ。", "reading": "し" },
+      { "sentence": "「○より 育ち」と いう ことわざを 習った。", "reading": "うじ" }
+    ]
+  },
+  {
+    "kanji": "約",
+    "questions": [
+      { "sentence": "友だちと 遊ぶ ○束を した。", "reading": "やく" },
+      { "sentence": "学校まで 歩いて ○二十分 かかる。", "reading": "やく" },
+      { "sentence": "図書館の 本を 予○する。", "reading": "やく" },
+      { "sentence": "水を むだに しない ように 節○する。", "reading": "やく" },
+      { "sentence": "物語の あらすじを 百字で 要○した。", "reading": "やく" }
+    ]
+  },
+  {
+    "kanji": "法",
+    "questions": [
+      { "sentence": "野さいを 育てる 方○を 調べた。", "reading": "ほう" },
+      { "sentence": "くらしを 守る ○りつに ついて 学んだ。", "reading": "ほう" },
+      { "sentence": "お茶の 作○を 教わった。", "reading": "ほう" },
+      { "sentence": "理科の 実験で ○そくを 見つけた。", "reading": "ほう" },
+      { "sentence": "ま○使いが 出て くる 物語を 読んだ。", "reading": "ほう" }
+    ]
+  },
+  {
+    "kanji": "不",
+    "questions": [
+      { "sentence": "わすれ物を したのは ○注意だった。", "reading": "ふ" },
+      { "sentence": "手品の たねが 分からず ○思議に 思った。", "reading": "ふ" },
+      { "sentence": "バスの 本数が 少なくて ○便だ。", "reading": "ふ" },
+      { "sentence": "はじめての 発表で ○安に なった。", "reading": "ふ" },
+      { "sentence": "ぼくは 手先が ○器用だ。", "reading": "ぶ" }
+    ]
+  },
+  {
+    "kanji": "的",
+    "questions": [
+      { "sentence": "矢が ○の 真ん中に 当たった。", "reading": "まと" },
+      { "sentence": "旅行の 目○地に 着いた。", "reading": "てき" },
+      { "sentence": "明日の 天気の 予想が ○中した。", "reading": "てき" },
+      { "sentence": "話し合いで 積極○に 意見を 言った。", "reading": "てき" },
+      { "sentence": "休み時間に ○当てを して 遊んだ。", "reading": "まと" }
+    ]
+  },
+  {
+    "kanji": "要",
+    "questions": [
+      { "sentence": "工作に 必○な 道具を そろえる。", "reading": "よう" },
+      { "sentence": "説明文の ○点を 三つに まとめた。", "reading": "よう" },
+      { "sentence": "重○な お知らせを 家の 人に わたした。", "reading": "よう" },
+      { "sentence": "買い物には お金が ○る。", "reading": "い" },
+      { "sentence": "長い 話を みじかく ○約した。", "reading": "よう" }
+    ]
+  },
+  {
+    "kanji": "治",
+    "questions": [
+      { "sentence": "かぜが すっかり ○った。", "reading": "なお" },
+      { "sentence": "明○時代に 建てられた 学校を 見学した。", "reading": "じ" },
+      { "sentence": "昔の 人びとは 川の ○水工事を 行った。", "reading": "ち" },
+      { "sentence": "物語の 王様は 国を ○めて いた。", "reading": "おさ" },
+      { "sentence": "歯医者で 虫歯を ○して もらった。", "reading": "なお" }
+    ]
+  },
+  {
+    "kanji": "成",
+    "questions": [
+      { "sentence": "さか上がりに ○功した。", "reading": "せい" },
+      { "sentence": "赤ちゃんの ○長は とても 早い。", "reading": "せい" },
+      { "sentence": "ジグソーパズルが やっと 完○した。", "reading": "せい" },
+      { "sentence": "「ちりも 積もれば 山と ○る」と いう ことわざを 習った。", "reading": "な" },
+      { "sentence": "いとこの ○人式の 写真を 見た。", "reading": "せい" }
+    ]
+  },
+  {
+    "kanji": "協",
+    "questions": [
+      { "sentence": "みんなで ○力して 教室を そうじした。", "reading": "きょう" },
+      { "sentence": "サッカー○会が 大会を 開いた。", "reading": "きょう" },
+      { "sentence": "学級会で ○議して 係を 決めた。", "reading": "きょう" },
+      { "sentence": "合そうでは まわりとの ○調が 大切だ。", "reading": "きょう" },
+      { "sentence": "おかしを 半分こに する ○定を 弟と 結んだ。", "reading": "きょう" }
+    ]
+  },
+  {
+    "kanji": "以",
+    "questions": [
+      { "sentence": "十人○上の 友だちが 集まった。", "reading": "い" },
+      { "sentence": "三年生○下は 先に 下校した。", "reading": "い" },
+      { "sentence": "日曜日○外は 毎日 練習が ある。", "reading": "い" },
+      { "sentence": "百メートルを 二十秒○内で 走った。", "reading": "い" },
+      { "sentence": "○前、この 町に 住んで いた。", "reading": "い" }
+    ]
+  },
+  {
+    "kanji": "機",
+    "questions": [
+      { "sentence": "空港で 大きな 飛行○を 見た。", "reading": "き" },
+      { "sentence": "外国の 人と 話す ○会が あった。", "reading": "き" },
+      { "sentence": "せんたく○を 回すのを 手つだった。", "reading": "き" },
+      { "sentence": "つるが ○を おる 昔話を 読んだ。", "reading": "はた" },
+      { "sentence": "暑い 日は せんぷう○の 風に あたる。", "reading": "き" }
+    ]
+  },
+  {
+    "kanji": "加",
+    "questions": [
+      { "sentence": "おにごっこの なかまに ○わった。", "reading": "くわ" },
+      { "sentence": "スープに 塩を 少し ○えた。", "reading": "くわ" },
+      { "sentence": "町内会の もちつき大会に 参○した。", "reading": "か" },
+      { "sentence": "地いきの 野球チームに ○入した。", "reading": "か" },
+      { "sentence": "ぎゅうにゅうを ○工して チーズを 作る。", "reading": "か" }
+    ]
+  },
+  {
+    "kanji": "続",
+    "questions": [
+      { "sentence": "晴れの 日が 三日も ○いた。", "reading": "つづ" },
+      { "sentence": "毎朝の ランニングを ○けて いる。", "reading": "つづ" },
+      { "sentence": "なわとびを 百回 連○で とんだ。", "reading": "ぞく" },
+      { "sentence": "図書館で 本を 借りる 手○きを した。", "reading": "つづ" },
+      { "sentence": "人気の まんがの ○編(へん)が 出た。", "reading": "ぞく" }
+    ]
+  },
+  {
+    "kanji": "改",
+    "questions": [
+      { "sentence": "駅の ○札を 通って 電車に 乗った。", "reading": "かい" },
+      { "sentence": "夜ふかしの くせを ○めた。", "reading": "あらた" },
+      { "sentence": "四月に バスの 時こく表が ○正された。", "reading": "かい" },
+      { "sentence": "農家の 人は 米の 品種○良を 重ねて きた。", "reading": "かい" },
+      { "sentence": "作文で だん落の はじめは ○行する。", "reading": "かい" }
+    ]
+  },
+  {
+    "kanji": "初",
+    "questions": [
+      { "sentence": "○めて 一人で 電車に 乗った。", "reading": "はじ" },
+      { "sentence": "今年の ○雪が ふった。", "reading": "はつ" },
+      { "sentence": "マラソン大会の 最○は ゆっくり 走った。", "reading": "しょ" },
+      { "sentence": "元日に ○日の出を 見に 行った。", "reading": "はつ" },
+      { "sentence": "水泳教室の ○心者コースで 習って いる。", "reading": "しょ" }
+    ]
+  },
+  {
+    "kanji": "産",
+    "questions": [
+      { "sentence": "ニワトリが たまごを ○んだ。", "reading": "う" },
+      { "sentence": "北海道は じゃがいもの ○地として 有名だ。", "reading": "さん" },
+      { "sentence": "社会科で 愛知県の 特○品を 調べた。", "reading": "さん" },
+      { "sentence": "この 町は 漁業などの ○業が さかんだ。", "reading": "さん" },
+      { "sentence": "スーパーで 国○の 野さいを 買った。", "reading": "さん" }
+    ]
+  },
+  {
+    "kanji": "結",
+    "questions": [
+      { "sentence": "くつひもを しっかり ○ぶ。", "reading": "むす" },
+      { "sentence": "リレーの ○果を 発表した。", "reading": "けっ" },
+      { "sentence": "話し合いの ○ろんを ノートに まとめた。", "reading": "けつ" },
+      { "sentence": "運動会で クラスが 一つに 団(だん)○した。", "reading": "けつ" },
+      { "sentence": "七五三で かみを ○って もらった。", "reading": "ゆ" }
+    ]
+  },
+  {
+    "kanji": "共",
+    "questions": [
+      { "sentence": "家族と ○に 山に 登った。", "reading": "とも" },
+      { "sentence": "二つの 物語の ○通点を 見つけた。", "reading": "きょう" },
+      { "sentence": "友だちの 意見に ○感した。", "reading": "きょう" },
+      { "sentence": "図書館は みんなの 公○しせつだ。", "reading": "きょう" },
+      { "sentence": "調べた ことを タブレットで ○有した。", "reading": "きょう" }
+    ]
+  },
+  {
+    "kanji": "軍",
+    "questions": [
+      { "sentence": "昔の 将(しょう)○が 住んで いた 城に ついて 調べた。", "reading": "ぐん" },
+      { "sentence": "草むしりの ために ○手を はめた。", "reading": "ぐん" },
+      { "sentence": "すもうの 行司が ○配を 上げた。", "reading": "ぐん" },
+      { "sentence": "運動会の きば戦で 東○が 勝った。", "reading": "ぐん" },
+      { "sentence": "プロ野球の 二○の 試合を 見に 行った。", "reading": "ぐん" }
+    ]
+  },
+  {
+    "kanji": "利",
+    "questions": [
+      { "sentence": "学校の 帰りに 図書館を ○用した。", "reading": "り" },
+      { "sentence": "スマートフォンは とても 便○だ。", "reading": "り" },
+      { "sentence": "白組の 勝○で 運動会が 終わった。", "reading": "り" },
+      { "sentence": "ぼくの ○き手は 左手だ。", "reading": "き" },
+      { "sentence": "タブレット学習の ○点を 発表した。", "reading": "り" }
+    ]
+  },
+  {
+    "kanji": "案",
+    "questions": [
+      { "sentence": "学校たんけんで 一年生を ○内した。", "reading": "あん" },
+      { "sentence": "お楽しみ会の 遊びの ○を 考えた。", "reading": "あん" },
+      { "sentence": "新しい 係の 名前を 提(てい)○した。", "reading": "あん" },
+      { "sentence": "学級旗の 図○を くふうした。", "reading": "あん" },
+      { "sentence": "こまって いたら 友だちが 名○を 出して くれた。", "reading": "あん" }
+    ]
+  },
+  {
+    "kanji": "信",
+    "questions": [
+      { "sentence": "○号が 青に なってから 道路を わたる。", "reading": "しん" },
+      { "sentence": "友だちの 言葉を ○じる。", "reading": "しん" },
+      { "sentence": "毎日 練習を して 自○が ついた。", "reading": "しん" },
+      { "sentence": "うそを つくと ○用を なくして しまう。", "reading": "しん" },
+      { "sentence": "先生が 学級通○を 配って くれた。", "reading": "しん" }
+    ]
+  },
+  {
+    "kanji": "別",
+    "questions": [
+      { "sentence": "駅で 友だちと ○れて 家に 帰った。", "reading": "わか" },
+      { "sentence": "うまく いかないので ○の 方法を ためした。", "reading": "べつ" },
+      { "sentence": "たん生日は 一年で いちばん 特○な 日だ。", "reading": "べつ" },
+      { "sentence": "もえる ごみと もえない ごみを 区○する。", "reading": "べつ" },
+      { "sentence": "かみを 切ったら ○人の ように 見えた。", "reading": "べつ" }
+    ]
+  },
+  {
+    "kanji": "側",
+    "questions": [
+      { "sentence": "道の 右○を 一列に なって 歩く。", "reading": "がわ" },
+      { "sentence": "箱の 内○に 名前を 書いた。", "reading": "がわ" },
+      { "sentence": "川の 両○に 家が ならんで いる。", "reading": "がわ" },
+      { "sentence": "おばあちゃんの 家の えん○で すいかを 食べた。", "reading": "がわ" },
+      { "sentence": "バスの ○面に 大きな 絵が かかれて いた。", "reading": "そく" }
+    ]
+  },
+  {
+    "kanji": "求",
+    "questions": [
+      { "sentence": "算数で 長方形の 面積を ○める 問題を といた。", "reading": "もと" },
+      { "sentence": "弟が おやつの おかわりを 要○した。", "reading": "きゅう" },
+      { "sentence": "パンやさんの 入り口に ○人の はり紙が あった。", "reading": "きゅう" },
+      { "sentence": "クジャクは 羽を 広げて ○愛の ダンスを おどる。", "reading": "きゅう" },
+      { "sentence": "なくした ビー玉を 家中 さがし○めた。", "reading": "もと" }
+    ]
+  }
+]

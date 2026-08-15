@@ -1,0 +1,52 @@
+[
+ {
+  "kanji": "界",
+  "questions": [
+   { "sentence": "せ○じゅうの 国(くに)から せんしゅが あつまる。", "reading": "かい" },
+   { "sentence": "せ○地(ち)図(ず)を 見て 行きたい 国(くに)を さがす。", "reading": "かい" },
+   { "sentence": "せ○一(いち) 大きな どうぶつは シロナガスクジラだ。", "reading": "かい" },
+   { "sentence": "ずかんで こん虫(ちゅう)の せ○を のぞいて みる。", "reading": "かい" },
+   { "sentence": "せ○の めずらしい きってを あつめて いる。", "reading": "かい" }
+  ]
+ },
+ {
+  "kanji": "橋",
+  "questions": [
+   { "sentence": "川(かわ)に かかる ○を わたる。", "reading": "はし" },
+   { "sentence": "まるた○を そろそろと わたった。", "reading": "ばし" },
+   { "sentence": "歩(ほ)道(どう)○を わたって えきへ 行く。", "reading": "きょう" },
+   { "sentence": "石(いし)で できた ふるい ○を 見学した。", "reading": "はし" },
+   { "sentence": "てっ○を でん車(しゃ)が ガタンゴトンと わたる。", "reading": "きょう" }
+  ]
+ },
+ {
+  "kanji": "畑",
+  "questions": [
+   { "sentence": "○で トマトを そだてる。", "reading": "はたけ" },
+   { "sentence": "じゃがいも○の 花(はな)が さいた。", "reading": "ばたけ" },
+   { "sentence": "学校の ○に さつまいもを うえた。", "reading": "はたけ" },
+   { "sentence": "田(た)○の しごとを 手つだう。", "reading": "はた" },
+   { "sentence": "花(はな)○で ちょうちょが とんで いる。", "reading": "ばたけ" }
+  ]
+ },
+ {
+  "kanji": "豆",
+  "questions": [
+   { "sentence": "せつぶんに ○まきを した。", "reading": "まめ" },
+   { "sentence": "えだ○を ゆでて おやつに たべた。", "reading": "まめ" },
+   { "sentence": "○ふは だいずから できて いる。", "reading": "とう" },
+   { "sentence": "コーヒー○を ミルで ひく。", "reading": "まめ" },
+   { "sentence": "○でんきゅうの あかりが やさしく ひかる。", "reading": "まめ" }
+  ]
+ },
+ {
+  "kanji": "皿",
+  "questions": [
+   { "sentence": "おかずを ○に もりつける。", "reading": "さら" },
+   { "sentence": "ごはんの あとで お○を あらう。", "reading": "さら" },
+   { "sentence": "大(おお)○に くだものを のせる。", "reading": "ざら" },
+   { "sentence": "しょうゆを 小(こ)○に 入(い)れる。", "reading": "ざら" },
+   { "sentence": "われた ○の かけらに 気を つける。", "reading": "さら" }
+  ]
+ }
+]

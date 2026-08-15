@@ -1,19 +1,35 @@
 // プロフィール選択（起動画面）。最大5人、データは完全分離（仕様 §29）。
 import { useState } from 'react'
 import { setStrictnessRuntime } from '../config/judgeRuntime'
-import { GRADE_OPTIONS, gradeLabelOf } from '../data/curriculum'
+import { perfectStageIds, perfectTermTestIds, stageClearLevelLabel } from '../data/curriculum'
 import { useAsyncData } from '../state/hooks'
 import { bumpData, navigate, selectProfile } from '../state/store'
-import { MAX_PROFILES, createProfile, deleteProfileDeep, listProfiles, saveProfile } from '../storage/repo'
+import { MAX_PROFILES, createProfile, deleteProfileDeep, listProfiles, listTestResults, saveProfile } from '../storage/repo'
 import type { Profile } from '../storage/models'
 import { Button, LoadingView, Modal } from '../ui/components'
+import { RankChip } from '../ui/RankBadge'
 
 export function ProfileSelect() {
-  const { data: profiles } = useAsyncData(() => listProfiles(), [])
+  // 各プロフィールの称号（まとめテスト100点の数）と到達レベル（5問テスト100点。第44回）も一緒に読む
+  const { data } = useAsyncData(async () => {
+    const list = await listProfiles()
+    return Promise.all(
+      list.map(async (p) => {
+        const results = await listTestResults(p.id)
+        return {
+          profile: p,
+          perfectCount: perfectTermTestIds(results).size,
+          levelLabel: stageClearLevelLabel(perfectStageIds(results)),
+        }
+      })
+    )
+  }, [])
+  const profiles = data?.map((d) => d.profile) ?? null
+  const rankCountOf = new Map((data ?? []).map((d) => [d.profile.id, d.perfectCount]))
+  const levelOf = new Map((data ?? []).map((d) => [d.profile.id, d.levelLabel]))
   const [creating, setCreating] = useState(false)
   const [editing, setEditing] = useState<Profile | null>(null)
   const [name, setName] = useState('')
-  const [grade, setGrade] = useState(1)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   if (!profiles) return <LoadingView />
@@ -29,7 +45,8 @@ export function ProfileSelect() {
   const create = async () => {
     const n = name.trim()
     if (!n) return
-    const p = await createProfile(n, grade)
+    // 学年選択は第41回で廃止（学年は進捗から自動判定されるため意味を持たない）。内部値は1固定
+    const p = await createProfile(n, 1)
     setCreating(false)
     setName('')
     bumpData()
@@ -40,7 +57,6 @@ export function ProfileSelect() {
   const saveEdit = async () => {
     if (!editing) return
     editing.name = name.trim() || editing.name
-    editing.grade = grade
     await saveProfile(editing)
     setEditing(null)
     bumpData()
@@ -53,20 +69,6 @@ export function ProfileSelect() {
     setConfirmDelete(false)
     bumpData()
   }
-
-  const gradePicker = (
-    <div className="grade-picker">
-      {GRADE_OPTIONS.map((opt) => (
-        <button
-          key={opt.value}
-          className={`grade-btn ${grade === opt.value ? 'grade-btn-on' : ''}`}
-          onClick={() => setGrade(opt.value)}
-        >
-          {opt.label}
-        </button>
-      ))}
-    </div>
-  )
 
   return (
     <div className="screen profile-screen">
@@ -81,14 +83,16 @@ export function ProfileSelect() {
               {p.name.slice(0, 1)}
             </span>
             <span className="profile-name">{p.name}</span>
-            <span className="profile-grade">{gradeLabelOf(p.grade)}</span>
+            {/* 称号バッジ（第36回。第43回でLvバッジは称号に一本化） */}
+            <RankChip perfectCount={rankCountOf.get(p.id) ?? 0} />
+            {/* 到達レベル（5問テスト100点が ぜんぶ そろっている ところまで。第44回） */}
+            {levelOf.get(p.id) && <span className="badge profile-level level-chip">Lv {levelOf.get(p.id)}</span>}
             <button
               className="profile-edit"
               onClick={(e) => {
                 e.stopPropagation()
                 setEditing(p)
                 setName(p.name)
-                setGrade(p.grade)
                 setConfirmDelete(false)
               }}
             >
@@ -102,7 +106,6 @@ export function ProfileSelect() {
             onClick={() => {
               setCreating(true)
               setName('')
-              setGrade(1)
             }}
           >
             <span className="avatar avatar-add">＋</span>
@@ -115,8 +118,6 @@ export function ProfileSelect() {
         <h2>あたらしい プロフィール</h2>
         <label className="field-label">なまえ</label>
         <input className="text-input" value={name} onChange={(e) => setName(e.target.value)} placeholder="なまえを いれてね" />
-        <label className="field-label">がくねん</label>
-        {gradePicker}
         <div className="row gap">
           <Button onClick={() => void create()} disabled={!name.trim()}>
             はじめる！
@@ -131,8 +132,6 @@ export function ProfileSelect() {
         <h2>プロフィールを へんこう</h2>
         <label className="field-label">なまえ</label>
         <input className="text-input" value={name} onChange={(e) => setName(e.target.value)} />
-        <label className="field-label">がくねん</label>
-        {gradePicker}
         <div className="row gap">
           <Button onClick={() => void saveEdit()}>ほぞん</Button>
           <Button variant="ghost" onClick={() => setEditing(null)}>

@@ -1,0 +1,172 @@
+[
+ {
+  "kanji": "仕",
+  "questions": [
+   {"sentence": "父の ○事の ようすを 見学する。", "reading": "し"},
+   {"sentence": "図工の さくひんを ていねいに ○上げる。", "reading": "し"},
+   {"sentence": "おもちゃの ○組みを しらべる。", "reading": "し"},
+   {"sentence": "ごみを もえる物と もえない物に ○分けする。", "reading": "し"},
+   {"sentence": "おひめさまに ○える けらいが 出て くる 話を 読んだ。", "reading": "つか"}
+  ]
+ },
+ {
+  "kanji": "去",
+  "questions": [
+   {"sentence": "つばめが 南の 国へ ○って いく。", "reading": "さ"},
+   {"sentence": "○年の 夏休みは 海へ 行った。", "reading": "きょ"},
+   {"sentence": "たいふうが ○った あと、青空が 広がった。", "reading": "さ"},
+   {"sentence": "か○の ことを 思い出して 話す。", "reading": "こ"},
+   {"sentence": "引っこしで 住んでいた 町を ○る。", "reading": "さ"}
+  ]
+ },
+ {
+  "kanji": "味",
+  "questions": [
+   {"sentence": "あまい ○の おかしを えらぶ。", "reading": "あじ"},
+   {"sentence": "意○の わからない ことばを しらべる。", "reading": "み"},
+   {"sentence": "カレーの ○見を たのまれた。", "reading": "あじ"},
+   {"sentence": "きょう○の ある 本を 見つけた。", "reading": "み"},
+   {"sentence": "みそしるの ○つけを 手つだう。", "reading": "あじ"}
+  ]
+ },
+ {
+  "kanji": "負",
+  "questions": [
+   {"sentence": "じゃんけんで ○けて くやしかった。", "reading": "ま"},
+   {"sentence": "リレーの 勝○に 気合いが 入る。", "reading": "ぶ"},
+   {"sentence": "リュックを せ○って 山に のぼる。", "reading": "お"},
+   {"sentence": "おとうとは ○けずぎらいだ。", "reading": "ま"},
+   {"sentence": "やんちゃな 子ねこは 手に ○えない。", "reading": "お"}
+  ]
+ },
+ {
+  "kanji": "写",
+  "questions": [
+   {"sentence": "黒板の 字を ノートに ○す。", "reading": "うつ"},
+   {"sentence": "うんどうかいの ○真を とる。", "reading": "しゃ"},
+   {"sentence": "図工で 校庭の ○生を する。", "reading": "しゃ"},
+   {"sentence": "本の 大事な ところを 書き○す。", "reading": "うつ"},
+   {"sentence": "しゃしんに 家族 みんなが ○って いる。", "reading": "うつ"}
+  ]
+ },
+ {
+  "kanji": "守",
+  "questions": [
+   {"sentence": "サッカーで ゴールを ○る。", "reading": "まも"},
+   {"sentence": "電話を かけたが る○だった。", "reading": "す"},
+   {"sentence": "お○りを ランドセルに つける。", "reading": "まも"},
+   {"sentence": "野球で ○びの れんしゅうを する。", "reading": "しゅ"},
+   {"sentence": "子○り歌を うたって もらった。", "reading": "も"}
+  ]
+ },
+ {
+  "kanji": "美",
+  "questions": [
+   {"sentence": "山の 上から ○しい けしきを ながめる。", "reading": "うつく"},
+   {"sentence": "○じゅつかんで 絵を 見る。", "reading": "び"},
+   {"sentence": "○化委員が 教室を そうじする。", "reading": "び"},
+   {"sentence": "むかし話に ○人の おひめさまが 出て くる。", "reading": "び"},
+   {"sentence": "母は ○よういんへ かみを 切りに 行った。", "reading": "び"}
+  ]
+ },
+ {
+  "kanji": "命",
+  "questions": [
+   {"sentence": "小さな 虫にも ○が ある。", "reading": "いのち"},
+   {"sentence": "王さまが けらいに ○れいを 出す。", "reading": "めい"},
+   {"sentence": "いっしょうけん○い れんしゅうする。", "reading": "めい"},
+   {"sentence": "○びろいを した ねこの 話を 読む。", "reading": "いのち"},
+   {"sentence": "かぶと虫の じゅ○は 長くない。", "reading": "みょう"}
+  ]
+ },
+ {
+  "kanji": "福",
+  "questions": [
+   {"sentence": "せつ分に 「○は うち」と 豆まきを する。", "reading": "ふく"},
+   {"sentence": "お正月に ○ぶくろを 買う。", "reading": "ふく"},
+   {"sentence": "○岡(おか)県は 九州に ある。", "reading": "ふく"},
+   {"sentence": "あんこ入りの 大○を 食べる。", "reading": "ふく"},
+   {"sentence": "家族 そろって 幸○に くらす。", "reading": "ふく"}
+  ]
+ },
+ {
+  "kanji": "整",
+  "questions": [
+   {"sentence": "つくえの 中を ○理する。", "reading": "せい"},
+   {"sentence": "朝れいで れつを ○える。", "reading": "ととの"},
+   {"sentence": "たいいくの じゅぎょうで ○列する。", "reading": "せい"},
+   {"sentence": "テレビの 音りょうを 調○する。", "reading": "せい"},
+   {"sentence": "じてん車を ○びして もらう。", "reading": "せい"}
+  ]
+ },
+ {
+  "kanji": "横",
+  "questions": [
+   {"sentence": "○だんほどうを 手を 上げて わたる。", "reading": "おう"},
+   {"sentence": "ノートに ○線を 引く。", "reading": "よこ"},
+   {"sentence": "○づなの すもうを テレビで 見る。", "reading": "よこ"},
+   {"sentence": "本を ○むきに ならべる。", "reading": "よこ"},
+   {"sentence": "車の ○を 通る ときは 気を つける。", "reading": "よこ"}
+  ]
+ },
+ {
+  "kanji": "深",
+  "questions": [
+   {"sentence": "この 川は ○いので 気を つける。", "reading": "ふか"},
+   {"sentence": "○こきゅうを してから 歌う。", "reading": "しん"},
+   {"sentence": "○夜に 目が さめて しまった。", "reading": "しん"},
+   {"sentence": "プールの 水○を たしかめる。", "reading": "しん"},
+   {"sentence": "おく○い 山の 中に 湖が ある。", "reading": "ふか"}
+  ]
+ },
+ {
+  "kanji": "申",
+  "questions": [
+   {"sentence": "「田中と ○します」と あいさつを した。", "reading": "もう"},
+   {"sentence": "マラソン大会に ○しこむ。", "reading": "もう"},
+   {"sentence": "先生に わけを ○し出る。", "reading": "もう"},
+   {"sentence": "おじいちゃんは ○年(どし)生まれだ。", "reading": "さる"},
+   {"sentence": "おれいの ことばを ○し上げる。", "reading": "もう"}
+  ]
+ },
+ {
+  "kanji": "様",
+  "questions": [
+   {"sentence": "お客○を げんかんで むかえる。", "reading": "さま"},
+   {"sentence": "神○に おいのりを する。", "reading": "さま"},
+   {"sentence": "空の ○子を 見て かさを 持って いく。", "reading": "よう"},
+   {"sentence": "王○の おしろの おはなしを 読む。", "reading": "さま"},
+   {"sentence": "水玉も○の ハンカチを 持つ。", "reading": "よう"}
+  ]
+ },
+ {
+  "kanji": "港",
+  "questions": [
+   {"sentence": "大きな ふねが ○に つく。", "reading": "みなと"},
+   {"sentence": "空○から ひこうきが とび立つ。", "reading": "こう"},
+   {"sentence": "ぎょ○に 朝早く 船が もどって くる。", "reading": "こう"},
+   {"sentence": "○町の 市場で 魚を 買う。", "reading": "みなと"},
+   {"sentence": "入○する 船に 手を ふる。", "reading": "こう"}
+  ]
+ },
+ {
+  "kanji": "注",
+  "questions": [
+   {"sentence": "車に ○意して 道を わたる。", "reading": "ちゅう"},
+   {"sentence": "コップに ジュースを ○ぐ。", "reading": "そそ"},
+   {"sentence": "先生の 話に ○目する。", "reading": "ちゅう"},
+   {"sentence": "ピザを 電話で ○文する。", "reading": "ちゅう"},
+   {"sentence": "よぼう○しゃを がまんして えらかった。", "reading": "ちゅう"}
+  ]
+ },
+ {
+  "kanji": "階",
+  "questions": [
+   {"sentence": "二○の まどから 手を ふる。", "reading": "かい"},
+   {"sentence": "○だんを ゆっくり のぼる。", "reading": "かい"},
+   {"sentence": "ドレミの 音○を ピアノで ひく。", "reading": "かい"},
+   {"sentence": "一○に 下りて あさごはんを 食べる。", "reading": "かい"},
+   {"sentence": "マンションの 三○に 住んで いる。", "reading": "かい"}
+  ]
+ }
+]

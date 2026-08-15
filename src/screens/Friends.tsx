@@ -4,8 +4,8 @@
 // - 「つぎのレベルまで スター○こ」を明示。必要数に達するとレベルアップ（=姿が変わる）
 import { useRef, useState } from 'react'
 import { GAME_CONFIG } from '../config/gameConfig'
-import { MAX_LEVEL, getSpecies, nameForLevel, stageForLevel, starsNeededFor } from '../data/species'
-import { buyStars, feedStar } from '../game/logic'
+import { FINAL_FORM_LEVEL, MAX_LEVEL, getSpecies, nameForLevel, stageForLevel, starsNeededFor } from '../data/species'
+import { buyStars, feedStars } from '../game/logic'
 import { CharacterSprite } from '../game/sprites'
 import { playEat, playStarGet } from '../sound/sound'
 import { useAsyncData } from '../state/hooks'
@@ -56,14 +56,16 @@ export function Friends() {
     }
   }
 
-  // 次のレベルのわくわく予告（L2→3, L4→5が大変身。L5→6は最終形態）
+  // 次のレベルのわくわく予告（L2→3, L4→5が大変身。L5→6は最終形態。L6以降はレベル99を目指す）
   const nextTease = (level: number): string | null => {
-    if (level >= MAX_LEVEL) return null
-    if (level === MAX_LEVEL - 1) return 'つぎは さいごの すがた…！ でんせつに なりそう！'
+    if (level >= MAX_LEVEL) return `レベル${MAX_LEVEL}！ さいきょうの なかまだ！`
+    if (level >= FINAL_FORM_LEVEL) return null
+    if (level === FINAL_FORM_LEVEL - 1) return 'つぎは さいごの すがた…！ でんせつに なりそう！'
     return level % 2 === 0 ? 'つぎのレベルで おおきく へんしんしそう…！' : 'つぎのレベルで ちょっと おしゃれに なるよ'
   }
 
-  const onFeedStar = async (ownedId: number) => {
+  // count=1で1こ、count=5でまとめて（スター切れ・最大レベルで自動停止。第37回）
+  const onFeedStar = async (ownedId: number, count: number) => {
     if (busyRef.current || feedingId != null) return
     if (profile.stars <= 0) {
       showToast('スターを もっていないよ。まず「スターを かう」！')
@@ -76,7 +78,7 @@ export function Friends() {
     window.setTimeout(() => {
       void (async () => {
         try {
-          const res = await feedStar(profile.id, ownedId)
+          const res = await feedStars(profile.id, ownedId, count)
           if (!res.ok) {
             if (res.reason === 'max') showToast('もう レベルMAXだよ！')
             else if (res.reason === 'noStars') showToast('スターを もっていないよ')
@@ -88,7 +90,9 @@ export function Friends() {
             const rec = owned.find((o) => o.id === ownedId)
             if (rec) queueLevelUp(rec.speciesId, res.fromLevel, res.newLevel)
           } else {
-            showToast(`もぐもぐ…！ つぎのレベルまで あとスター${res.starsNeeded != null ? res.starsNeeded - res.starsFed : 0}こ`)
+            showToast(
+              `もぐもぐ…！ スターを${res.fed}こ たべたよ。つぎのレベルまで あとスター${res.starsNeeded != null ? res.starsNeeded - res.starsFed : 0}こ`
+            )
           }
           setFeedingId(null)
           bumpData()
@@ -155,7 +159,7 @@ export function Friends() {
                     <p className="friend-name">{nameForLevel(o.speciesId, o.level)}</p>
                     <p className="friend-line">
                       {sp.lineName}　<b>レベル {o.level}</b>
-                      {o.level >= MAX_LEVEL ? '（MAX）' : ` / ${MAX_LEVEL}`}
+                      {o.level >= MAX_LEVEL ? '（MAX）' : ''}
                     </p>
                     <p className="friend-desc">{sp.stages[stageForLevel(o.level)].desc}</p>
                     {nextTease(o.level) && <p className="friend-tease">{nextTease(o.level)}</p>}
@@ -164,10 +168,18 @@ export function Friends() {
                       <Button
                         size="sm"
                         variant="accent"
-                        onClick={() => void onFeedStar(o.id!)}
+                        onClick={() => void onFeedStar(o.id!, 1)}
                         disabled={profile.stars <= 0 || o.level >= MAX_LEVEL || feedingId != null}
                       >
                         スターを あげる
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="accent"
+                        onClick={() => void onFeedStar(o.id!, 5)}
+                        disabled={profile.stars < 5 || o.level >= MAX_LEVEL || feedingId != null}
+                      >
+                        5こ まとめて
                       </Button>
                       {isBuddy ? (
                         <span className="buddy-mark">いっしょに べんきょうちゅう</span>

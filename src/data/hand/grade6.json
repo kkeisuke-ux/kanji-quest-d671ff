@@ -1,0 +1,4777 @@
+[
+ {
+  "kanji": "党",
+  "questions": [
+   {
+    "sentence": "政○の リーダーを 選ぶ。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "野○の 議員が 質問する。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "○首どうしが 討論する。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "選挙で 二つの ○が 争う。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "物語に 悪○が 登場する。",
+    "reading": "とう"
+   }
+  ]
+ },
+ {
+  "kanji": "権",
+  "questions": [
+   {
+    "sentence": "十八さいから 選挙○を もつ。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "人○を 守る 活動を 知る。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "○利と 義務に ついて 学ぶ。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "国の 主○は 国民に ある。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "マラソンの とちゅうで き○する。",
+    "reading": "けん"
+   }
+  ]
+ },
+ {
+  "kanji": "派",
+  "questions": [
+   {
+    "sentence": "立○な 建物が 完成した。",
+    "reading": "ぱ"
+   },
+   {
+    "sentence": "○手な 色の シャツを 着る。",
+    "reading": "は"
+   },
+   {
+    "sentence": "書道には いろいろな 流○が ある。",
+    "reading": "は"
+   },
+   {
+    "sentence": "多数○の 意見だけで 決めない。",
+    "reading": "は"
+   },
+   {
+    "sentence": "海外に ○けんされる 医師。",
+    "reading": "は"
+   }
+  ]
+ },
+ {
+  "kanji": "済",
+  "questions": [
+   {
+    "sentence": "宿題を ○ませてから 遊ぶ。",
+    "reading": "す"
+   },
+   {
+    "sentence": "用事が ○んだら 帰ろう。",
+    "reading": "す"
+   },
+   {
+    "sentence": "経○の ニュースが 流れる。",
+    "reading": "ざい"
+   },
+   {
+    "sentence": "こまった 人を 救○する。",
+    "reading": "さい"
+   },
+   {
+    "sentence": "借りた お金を 返○する。",
+    "reading": "さい"
+   }
+  ]
+ },
+ {
+  "kanji": "認",
+  "questions": [
+   {
+    "sentence": "自分の まちがいを ○める。",
+    "reading": "みと"
+   },
+   {
+    "sentence": "先生が 入部を ○めて くれた。",
+    "reading": "みと"
+   },
+   {
+    "sentence": "友だちの 努力を ○める。",
+    "reading": "みと"
+   },
+   {
+    "sentence": "わすれものが ないか 確○する。",
+    "reading": "にん"
+   },
+   {
+    "sentence": "大会で 新記録と ○定される。",
+    "reading": "にん"
+   }
+  ]
+ },
+ {
+  "kanji": "策",
+  "questions": [
+   {
+    "sentence": "暑さ対○を しっかり する。",
+    "reading": "さく"
+   },
+   {
+    "sentence": "国の 政○に ついて 学ぶ。",
+    "reading": "さく"
+   },
+   {
+    "sentence": "みんなで 解決○を 話し合う。",
+    "reading": "さく"
+   },
+   {
+    "sentence": "公園を ゆっくり 散○する。",
+    "reading": "さく"
+   },
+   {
+    "sentence": "けがを ふせぐ 安全○を 考える。",
+    "reading": "さく"
+   }
+  ]
+ },
+ {
+  "kanji": "論",
+  "questions": [
+   {
+    "sentence": "クラスで 討○会を 開く。",
+    "reading": "ろん"
+   },
+   {
+    "sentence": "話し合いの 結○が 出た。",
+    "reading": "ろん"
+   },
+   {
+    "sentence": "友だちの 意見に 反○する。",
+    "reading": "ろん"
+   },
+   {
+    "sentence": "博士が ○文を 発表する。",
+    "reading": "ろん"
+   },
+   {
+    "sentence": "机の ならべ方で 議○に なる。",
+    "reading": "ろん"
+   }
+  ]
+ },
+ {
+  "kanji": "私",
+  "questions": [
+   {
+    "sentence": "○は 毎朝 六時に 起きる。",
+    "reading": "わたし"
+   },
+   {
+    "sentence": "○の ゆめを 作文に 書く。",
+    "reading": "わたし"
+   },
+   {
+    "sentence": "○たちの 学校は 山の 近くに ある。",
+    "reading": "わたし"
+   },
+   {
+    "sentence": "○立の 中学校を 受験する。",
+    "reading": "し"
+   },
+   {
+    "sentence": "休日は ○服で 過ごす。",
+    "reading": "し"
+   }
+  ]
+ },
+ {
+  "kanji": "革",
+  "questions": [
+   {
+    "sentence": "○ぐつを ぴかぴかに みがく。",
+    "reading": "かわ"
+   },
+   {
+    "sentence": "○の ベルトを しめる。",
+    "reading": "かわ"
+   },
+   {
+    "sentence": "政治の 改○を 求める。",
+    "reading": "かく"
+   },
+   {
+    "sentence": "フランス○命に ついて 学ぶ。",
+    "reading": "かく"
+   },
+   {
+    "sentence": "技術○新の ニュースを 見る。",
+    "reading": "かく"
+   }
+  ]
+ },
+ {
+  "kanji": "疑",
+  "questions": [
+   {
+    "sentence": "話が 本当か どうか ○う。",
+    "reading": "うたが"
+   },
+   {
+    "sentence": "耳を ○う ような 記録が 出た。",
+    "reading": "うたが"
+   },
+   {
+    "sentence": "○問に 思った ことを 質問する。",
+    "reading": "ぎ"
+   },
+   {
+    "sentence": "質○応答の 時間に 手を あげる。",
+    "reading": "ぎ"
+   },
+   {
+    "sentence": "○わしい メールは 開かない。",
+    "reading": "うたが"
+   }
+  ]
+ },
+ {
+  "kanji": "裁",
+  "questions": [
+   {
+    "sentence": "○判の しくみを 学ぶ。",
+    "reading": "さい"
+   },
+   {
+    "sentence": "○判所を 見学する。",
+    "reading": "さい"
+   },
+   {
+    "sentence": "○判官が 判決を 言いわたす。",
+    "reading": "さい"
+   },
+   {
+    "sentence": "もめごとを 公平に ○く。",
+    "reading": "さば"
+   },
+   {
+    "sentence": "布を ○って バッグを 作る。",
+    "reading": "た"
+   }
+  ]
+ },
+ {
+  "kanji": "供",
+  "questions": [
+   {
+    "sentence": "仏だんに 花を ○える。",
+    "reading": "そな"
+   },
+   {
+    "sentence": "子○たちが 公園で 遊ぶ。",
+    "reading": "ども"
+   },
+   {
+    "sentence": "ニュースに 情報を 提○する。",
+    "reading": "きょう"
+   },
+   {
+    "sentence": "電気を 安定して ○給する。",
+    "reading": "きょう"
+   },
+   {
+    "sentence": "父の 買い物の お○を する。",
+    "reading": "とも"
+   }
+  ]
+ },
+ {
+  "kanji": "割",
+  "questions": [
+   {
+    "sentence": "コップを ○って しまった。",
+    "reading": "わ"
+   },
+   {
+    "sentence": "スイカを ○って みんなで 食べる。",
+    "reading": "わ"
+   },
+   {
+    "sentence": "そうじの 役○を 決める。",
+    "reading": "わり"
+   },
+   {
+    "sentence": "めがねの 人の ○合を 調べる。",
+    "reading": "わり"
+   },
+   {
+    "sentence": "読書に 時間を ○く。",
+    "reading": "さ"
+   }
+  ]
+ },
+ {
+  "kanji": "難",
+  "questions": [
+   {
+    "sentence": "この 問題は とても ○しい。",
+    "reading": "むずか"
+   },
+   {
+    "sentence": "テストに ○問が 出た。",
+    "reading": "なん"
+   },
+   {
+    "sentence": "ひ○訓練で 校庭に 出る。",
+    "reading": "なん"
+   },
+   {
+    "sentence": "困○を のりこえて 成長する。",
+    "reading": "なん"
+   },
+   {
+    "sentence": "登山の ○所を ゆっくり 進む。",
+    "reading": "なん"
+   }
+  ]
+ },
+ {
+  "kanji": "補",
+  "questions": [
+   {
+    "sentence": "説明を 図で ○う。",
+    "reading": "おぎな"
+   },
+   {
+    "sentence": "ビタミンを 野菜で ○う。",
+    "reading": "おぎな"
+   },
+   {
+    "sentence": "放課後に ○習を 受ける。",
+    "reading": "ほ"
+   },
+   {
+    "sentence": "委員長に 立候○する。",
+    "reading": "ほ"
+   },
+   {
+    "sentence": "○欠として 試合に そなえる。",
+    "reading": "ほ"
+   }
+  ]
+ },
+ {
+  "kanji": "優",
+  "questions": [
+   {
+    "sentence": "だれにでも ○しく 接する。",
+    "reading": "やさ"
+   },
+   {
+    "sentence": "リレーで ○勝を 目指す。",
+    "reading": "ゆう"
+   },
+   {
+    "sentence": "安全を 最○先に 考える。",
+    "reading": "ゆう"
+   },
+   {
+    "sentence": "○れた 作品が 賞を とる。",
+    "reading": "すぐ"
+   },
+   {
+    "sentence": "俳○が ドラマに 出演する。",
+    "reading": "ゆう"
+   }
+  ]
+ },
+ {
+  "kanji": "収",
+  "questions": [
+   {
+    "sentence": "畑で いもを ○かくする。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "資源ごみを 回○する。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "○入と 支出に ついて 学ぶ。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "スポンジが 水を 吸○する。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "試合で 勝利を ○める。",
+    "reading": "おさ"
+   }
+  ]
+ },
+ {
+  "kanji": "展",
+  "questions": [
+   {
+    "sentence": "図工の 作品を ○覧会に 出す。",
+    "reading": "てん"
+   },
+   {
+    "sentence": "町が 大きく 発○する。",
+    "reading": "てん"
+   },
+   {
+    "sentence": "試合が おもしろい ○開に なる。",
+    "reading": "てん"
+   },
+   {
+    "sentence": "博物館の ○示を 見る。",
+    "reading": "てん"
+   },
+   {
+    "sentence": "○望台から 町を ながめる。",
+    "reading": "てん"
+   }
+  ]
+ },
+ {
+  "kanji": "宅",
+  "questions": [
+   {
+    "sentence": "五時までに 帰○する。",
+    "reading": "たく"
+   },
+   {
+    "sentence": "自○で 宿題を する。",
+    "reading": "たく"
+   },
+   {
+    "sentence": "住○が ならぶ 通りを 歩く。",
+    "reading": "たく"
+   },
+   {
+    "sentence": "○配便で 荷物が とどく。",
+    "reading": "たく"
+   },
+   {
+    "sentence": "友だちの お○に おじゃまする。",
+    "reading": "たく"
+   }
+  ]
+ },
+ {
+  "kanji": "視",
+  "questions": [
+   {
+    "sentence": "健康しんだんで ○力を 調べる。",
+    "reading": "し"
+   },
+   {
+    "sentence": "きりで ○界が 悪く なる。",
+    "reading": "し"
+   },
+   {
+    "sentence": "結果より 過程を 重○する。",
+    "reading": "し"
+   },
+   {
+    "sentence": "別の ○点から 考えて みる。",
+    "reading": "し"
+   },
+   {
+    "sentence": "ねこの ○線の 先に 鳥が いた。",
+    "reading": "し"
+   }
+  ]
+ },
+ {
+  "kanji": "警",
+  "questions": [
+   {
+    "sentence": "○察官に 道を たずねる。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "○察署の 見学に 行く。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "大雨○報が 発表された。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "会場を ○備員が 見回る。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "電車が ○笛を 鳴らす。",
+    "reading": "けい"
+   }
+  ]
+ },
+ {
+  "kanji": "訪",
+  "questions": [
+   {
+    "sentence": "祖父の 家を ○ねる。",
+    "reading": "たず"
+   },
+   {
+    "sentence": "老人ホームを ○問して 交流する。",
+    "reading": "ほう"
+   },
+   {
+    "sentence": "山にも 春が ○れる。",
+    "reading": "おとず"
+   },
+   {
+    "sentence": "首相が 外国を ○問する。",
+    "reading": "ほう"
+   },
+   {
+    "sentence": "旅行で 京都を ○れる。",
+    "reading": "おとず"
+   }
+  ]
+ },
+ {
+  "kanji": "域",
+  "questions": [
+   {
+    "sentence": "地○の おまつりに 参加する。",
+    "reading": "いき"
+   },
+   {
+    "sentence": "地○の 図書館で 本を 借りる。",
+    "reading": "いき"
+   },
+   {
+    "sentence": "立ち入り禁止の 区○に 入らない。",
+    "reading": "いき"
+   },
+   {
+    "sentence": "川の 流○に 田畑が 広がる。",
+    "reading": "いき"
+   },
+   {
+    "sentence": "台風で 県の 全○に 雨が ふる。",
+    "reading": "いき"
+   }
+  ]
+ },
+ {
+  "kanji": "映",
+  "questions": [
+   {
+    "sentence": "家族で ○画を 見に 行く。",
+    "reading": "えい"
+   },
+   {
+    "sentence": "かがみに すがたが ○る。",
+    "reading": "うつ"
+   },
+   {
+    "sentence": "スクリーンに 資料を ○す。",
+    "reading": "うつ"
+   },
+   {
+    "sentence": "テレビで 台風の ○像を 見る。",
+    "reading": "えい"
+   },
+   {
+    "sentence": "もみじが 夕日に ○える。",
+    "reading": "は"
+   }
+  ]
+ },
+ {
+  "kanji": "担",
+  "questions": [
+   {
+    "sentence": "○任の 先生に 相談する。",
+    "reading": "たん"
+   },
+   {
+    "sentence": "係の 仕事を ○当する。",
+    "reading": "たん"
+   },
+   {
+    "sentence": "祭りで おみこしを ○ぐ。",
+    "reading": "かつ"
+   },
+   {
+    "sentence": "未来を ○う 子どもたち。",
+    "reading": "にな"
+   },
+   {
+    "sentence": "仕事の 分○を 決める。",
+    "reading": "たん"
+   }
+  ]
+ },
+ {
+  "kanji": "退",
+  "questions": [
+   {
+    "sentence": "けがが 治って ○院する。",
+    "reading": "たい"
+   },
+   {
+    "sentence": "熱が 出て 早○する。",
+    "reading": "たい"
+   },
+   {
+    "sentence": "反則で 選手が ○場する。",
+    "reading": "たい"
+   },
+   {
+    "sentence": "一歩 ○いて 考える。",
+    "reading": "しりぞ"
+   },
+   {
+    "sentence": "有名な 選手が 引○する。",
+    "reading": "たい"
+   }
+  ]
+ },
+ {
+  "kanji": "株",
+  "questions": [
+   {
+    "sentence": "木の 切り○に こしかける。",
+    "reading": "かぶ"
+   },
+   {
+    "sentence": "○式会社の しくみを 学ぶ。",
+    "reading": "かぶ"
+   },
+   {
+    "sentence": "会社の ○主に なる。",
+    "reading": "かぶ"
+   },
+   {
+    "sentence": "あじさいの ○分けを する。",
+    "reading": "かぶ"
+   },
+   {
+    "sentence": "○価の 動きを ニュースで 見る。",
+    "reading": "かぶ"
+   }
+  ]
+ },
+ {
+  "kanji": "姿",
+  "questions": [
+   {
+    "sentence": "かがみに うつる 自分の ○を 見る。",
+    "reading": "すがた"
+   },
+   {
+    "sentence": "○勢を 正して いすに すわる。",
+    "reading": "し"
+   },
+   {
+    "sentence": "富士山の 美しい ○を ながめる。",
+    "reading": "すがた"
+   },
+   {
+    "sentence": "着物○で 七五三の 写真を とる。",
+    "reading": "すがた"
+   },
+   {
+    "sentence": "練習に はげむ ○に 心を 打たれる。",
+    "reading": "すがた"
+   }
+  ]
+ },
+ {
+  "kanji": "閣",
+  "questions": [
+   {
+    "sentence": "内○総理大臣が 選ばれる。",
+    "reading": "かく"
+   },
+   {
+    "sentence": "内○が 新しい 方針を 発表する。",
+    "reading": "かく"
+   },
+   {
+    "sentence": "総理大臣が ○議を 開く。",
+    "reading": "かく"
+   },
+   {
+    "sentence": "おしろの 天守○に のぼる。",
+    "reading": "かく"
+   },
+   {
+    "sentence": "京都で 金○寺を 見学する。",
+    "reading": "かく"
+   }
+  ]
+ },
+ {
+  "kanji": "衆",
+  "questions": [
+   {
+    "sentence": "○議院の 選挙が 行われる。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "国会には ○議院と 参議院が ある。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "スタジアムの 観○が わく。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "歴史で 民○の くらしを 学ぶ。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "公○電話の 使い方を 覚える。",
+    "reading": "しゅう"
+   }
+  ]
+ },
+ {
+  "kanji": "若",
+  "questions": [
+   {
+    "sentence": "○い 選手が 大かつやくする。",
+    "reading": "わか"
+   },
+   {
+    "sentence": "母の ○いころの 写真を 見る。",
+    "reading": "わか"
+   },
+   {
+    "sentence": "町の 行事に ○者が 集まる。",
+    "reading": "わか"
+   },
+   {
+    "sentence": "○葉の 季節に 遠足に 行く。",
+    "reading": "わか"
+   },
+   {
+    "sentence": "老○男女が 祭りを 楽しむ。",
+    "reading": "にゃく"
+   }
+  ]
+ },
+ {
+  "kanji": "脳",
+  "questions": [
+   {
+    "sentence": "○は 体に 命令を 出す。",
+    "reading": "のう"
+   },
+   {
+    "sentence": "各国の 首○が 会議に 集まる。",
+    "reading": "のう"
+   },
+   {
+    "sentence": "頭○を つかう ゲームが 好きだ。",
+    "reading": "のう"
+   },
+   {
+    "sentence": "病院で ○波を 調べる。",
+    "reading": "のう"
+   },
+   {
+    "sentence": "よく ねむると ○が 休まる。",
+    "reading": "のう"
+   }
+  ]
+ },
+ {
+  "kanji": "蔵",
+  "questions": [
+   {
+    "sentence": "古い ○から 昔の 道具が 出て きた。",
+    "reading": "くら"
+   },
+   {
+    "sentence": "牛乳を 冷○庫に 入れる。",
+    "reading": "ぞう"
+   },
+   {
+    "sentence": "とれた いもを 貯○する。",
+    "reading": "ぞう"
+   },
+   {
+    "sentence": "図書館の ○書の 数に おどろく。",
+    "reading": "ぞう"
+   },
+   {
+    "sentence": "道ばたの お地○さんに 手を 合わせる。",
+    "reading": "ぞう"
+   }
+  ]
+ },
+ {
+  "kanji": "段",
+  "questions": [
+   {
+    "sentence": "階○を ゆっくり 上る。",
+    "reading": "だん"
+   },
+   {
+    "sentence": "文章を ○落に 分けて 読む。",
+    "reading": "だん"
+   },
+   {
+    "sentence": "野菜の 値○を くらべる。",
+    "reading": "だん"
+   },
+   {
+    "sentence": "目的地までの 交通手○を 調べる。",
+    "reading": "だん"
+   },
+   {
+    "sentence": "○ボールで 工作を する。",
+    "reading": "だん"
+   }
+  ]
+ },
+ {
+  "kanji": "呼",
+  "questions": [
+   {
+    "sentence": "遠くから 名前を ○ばれる。",
+    "reading": "よ"
+   },
+   {
+    "sentence": "急いで 救急車を ○ぶ。",
+    "reading": "よ"
+   },
+   {
+    "sentence": "深○吸を して 気持ちを 落ち着ける。",
+    "reading": "こ"
+   },
+   {
+    "sentence": "友だちを あだ名で ○ぶ。",
+    "reading": "よ"
+   },
+   {
+    "sentence": "キャンプで 点○を とる。",
+    "reading": "こ"
+   }
+  ]
+ },
+ {
+  "kanji": "針",
+  "questions": [
+   {
+    "sentence": "○に 糸を 通す。",
+    "reading": "はり"
+   },
+   {
+    "sentence": "はちの ○に 注意する。",
+    "reading": "はり"
+   },
+   {
+    "sentence": "時計の 秒○が 動く。",
+    "reading": "しん"
+   },
+   {
+    "sentence": "チームの 方○を 話し合う。",
+    "reading": "しん"
+   },
+   {
+    "sentence": "○葉樹の 森が 広がる。",
+    "reading": "しん"
+   }
+  ]
+ },
+ {
+  "kanji": "専",
+  "questions": [
+   {
+    "sentence": "○門家の 話を 聞く。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "ケーキの ○門店に 行く。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "自転車○用の 道路を 走る。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "ここは 関係者○用の 入り口だ。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "今週は テスト勉強に ○念する。",
+    "reading": "せん"
+   }
+  ]
+ },
+ {
+  "kanji": "推",
+  "questions": [
+   {
+    "sentence": "たんていが 事件を ○理する。",
+    "reading": "すい"
+   },
+   {
+    "sentence": "グラフから 気温の 変化を ○測する。",
+    "reading": "すい"
+   },
+   {
+    "sentence": "児童会長に ○せんされる。",
+    "reading": "すい"
+   },
+   {
+    "sentence": "委員に 友だちを ○す。",
+    "reading": "お"
+   },
+   {
+    "sentence": "きょうりゅうの 大きさを ○定する。",
+    "reading": "すい"
+   }
+  ]
+ },
+ {
+  "kanji": "値",
+  "questions": [
+   {
+    "sentence": "本の ○段を 確かめる。",
+    "reading": "ね"
+   },
+   {
+    "sentence": "体温計の 数○を 読む。",
+    "reading": "ち"
+   },
+   {
+    "sentence": "古い 切手に 高い 価○が つく。",
+    "reading": "ち"
+   },
+   {
+    "sentence": "野菜の ○上がりが 続く。",
+    "reading": "ね"
+   },
+   {
+    "sentence": "賞に ○する 作品だ。",
+    "reading": "あたい"
+   }
+  ]
+ },
+ {
+  "kanji": "討",
+  "questions": [
+   {
+    "sentence": "○論会で 意見を 出し合う。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "学級会で ○議を 行う。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "遠足の 行き先を 検○する。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "時代劇で 敵を ○つ 場面を 見る。",
+    "reading": "う"
+   },
+   {
+    "sentence": "おにを ○つ 昔話を 読む。",
+    "reading": "う"
+   }
+  ]
+ },
+ {
+  "kanji": "処",
+  "questions": [
+   {
+    "sentence": "ごみを 正しく ○理する。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "トラブルに 落ち着いて 対○する。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "医者が くすりを ○方する。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "いらない 物を ○分する。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "保健室で きずの ○置を 受ける。",
+    "reading": "しょ"
+   }
+  ]
+ },
+ {
+  "kanji": "憲",
+  "questions": [
+   {
+    "sentence": "日本国○法に ついて 学ぶ。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "○法記念日は 五月三日だ。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "○法は 国の 最高法規だ。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "児童○章に ついて 知る。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "○法で 国民の 権利が 守られる。",
+    "reading": "けん"
+   }
+  ]
+ },
+ {
+  "kanji": "激",
+  "questions": [
+   {
+    "sentence": "雨が ○しく ふり出す。",
+    "reading": "はげ"
+   },
+   {
+    "sentence": "○しい 運動の あとは 水分を とる。",
+    "reading": "はげ"
+   },
+   {
+    "sentence": "プロの 演奏に 感○する。",
+    "reading": "げき"
+   },
+   {
+    "sentence": "観光客が ○増する。",
+    "reading": "げき"
+   },
+   {
+    "sentence": "明治は ○動の 時代だった。",
+    "reading": "げき"
+   }
+  ]
+ },
+ {
+  "kanji": "否",
+  "questions": [
+   {
+    "sentence": "うわさを ○定する。",
+    "reading": "ひ"
+   },
+   {
+    "sentence": "ひなんした 人の 安○を 確かめる。",
+    "reading": "ぴ"
+   },
+   {
+    "sentence": "学級会で 賛○を 問う。",
+    "reading": "ぴ"
+   },
+   {
+    "sentence": "提案が ○決される。",
+    "reading": "ひ"
+   },
+   {
+    "sentence": "出席するか ○かを 答える。",
+    "reading": "いな"
+   }
+  ]
+ },
+ {
+  "kanji": "系",
+  "questions": [
+   {
+    "sentence": "太陽○の わく星を おぼえる。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "地球は 銀河○の 中に ある。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "兄は 理○の 大学に 進んだ。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "家○図で 先祖を 調べる。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "日○人の 歴史を 学ぶ。",
+    "reading": "けい"
+   }
+  ]
+ },
+ {
+  "kanji": "批",
+  "questions": [
+   {
+    "sentence": "意見を ○判する ときは 理由を 言う。",
+    "reading": "ひ"
+   },
+   {
+    "sentence": "ニュースを ○判的に 見る 力を つける。",
+    "reading": "ひ"
+   },
+   {
+    "sentence": "政治への ○判が 高まる。",
+    "reading": "ひ"
+   },
+   {
+    "sentence": "本の ○評を 書く。",
+    "reading": "ひ"
+   },
+   {
+    "sentence": "映画の ○評を 読む。",
+    "reading": "ひ"
+   }
+  ]
+ },
+ {
+  "kanji": "存",
+  "questions": [
+   {
+    "sentence": "宇宙人は ○在するのだろうか。",
+    "reading": "そん"
+   },
+   {
+    "sentence": "写真の データを 保○する。",
+    "reading": "ぞん"
+   },
+   {
+    "sentence": "食べ物を 冷蔵庫で 保○する。",
+    "reading": "ぞん"
+   },
+   {
+    "sentence": "その ニュースを ご○じですか。",
+    "reading": "ぞん"
+   },
+   {
+    "sentence": "さばくで 生○できる 植物。",
+    "reading": "ぞん"
+   }
+  ]
+ },
+ {
+  "kanji": "券",
+  "questions": [
+   {
+    "sentence": "駅で 乗車○を 買う。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "コンサートの 入場○を 手に 入れる。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "お祝いに 商品○を もらう。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "バスの 回数○を 使う。",
+    "reading": "けん"
+   },
+   {
+    "sentence": "お店の 割引○を 利用する。",
+    "reading": "けん"
+   }
+  ]
+ },
+ {
+  "kanji": "盟",
+  "questions": [
+   {
+    "sentence": "二つの 国が 同○を 結ぶ。",
+    "reading": "めい"
+   },
+   {
+    "sentence": "国連に 加○する 国が ふえる。",
+    "reading": "めい"
+   },
+   {
+    "sentence": "戦国大名どうしが 同○を 組む。",
+    "reading": "めい"
+   },
+   {
+    "sentence": "サッカー連○の 大会に 出場する。",
+    "reading": "めい"
+   },
+   {
+    "sentence": "水泳連○が 記録を 発表する。",
+    "reading": "めい"
+   }
+  ]
+ },
+ {
+  "kanji": "座",
+  "questions": [
+   {
+    "sentence": "いすに 深く ○る。",
+    "reading": "すわ"
+   },
+   {
+    "sentence": "たたみの へやで 正○を する。",
+    "reading": "ざ"
+   },
+   {
+    "sentence": "冬の 星○を さがす。",
+    "reading": "ざ"
+   },
+   {
+    "sentence": "飛行機の ○席番号を 確かめる。",
+    "reading": "ざ"
+   },
+   {
+    "sentence": "夏休みの 科学講○に 申しこむ。",
+    "reading": "ざ"
+   }
+  ]
+ },
+ {
+  "kanji": "除",
+  "questions": [
+   {
+    "sentence": "教室を そう○する。",
+    "reading": "じ"
+   },
+   {
+    "sentence": "○雪車が 道の 雪を どける。",
+    "reading": "じょ"
+   },
+   {
+    "sentence": "こわれた おもちゃを 取り○く。",
+    "reading": "のぞ"
+   },
+   {
+    "sentence": "服の よごれを ○去する。",
+    "reading": "じょ"
+   },
+   {
+    "sentence": "日曜日を ○いて 毎日 練習する。",
+    "reading": "のぞ"
+   }
+  ]
+ },
+ {
+  "kanji": "降",
+  "questions": [
+   {
+    "sentence": "朝から 雪が ○って いる。",
+    "reading": "ふ"
+   },
+   {
+    "sentence": "次の 駅で 電車を ○りる。",
+    "reading": "お"
+   },
+   {
+    "sentence": "○水確率を 天気予報で 確かめる。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "飛行機が 下○を 始める。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "三時以○なら 家に いる。",
+    "reading": "こう"
+   }
+  ]
+ },
+ {
+  "kanji": "並",
+  "questions": [
+   {
+    "sentence": "レジの 前に ○んで 待つ。",
+    "reading": "なら"
+   },
+   {
+    "sentence": "本を 高さの 順に ○べる。",
+    "reading": "なら"
+   },
+   {
+    "sentence": "いちょう○木の 道を 歩く。",
+    "reading": "なみ"
+   },
+   {
+    "sentence": "かん電池を ○列に つなぐ。",
+    "reading": "へい"
+   },
+   {
+    "sentence": "テーブルに 料理が ○ぶ。",
+    "reading": "なら"
+   }
+  ]
+ },
+ {
+  "kanji": "従",
+  "questions": [
+   {
+    "sentence": "先生の 指示に ○う。",
+    "reading": "したが"
+   },
+   {
+    "sentence": "交通ルールに ○う。",
+    "reading": "したが"
+   },
+   {
+    "sentence": "お店の ○業員に たずねる。",
+    "reading": "じゅう"
+   },
+   {
+    "sentence": "○来の やり方を 見直す。",
+    "reading": "じゅう"
+   },
+   {
+    "sentence": "王さまが 家来を ○えて 行進する。",
+    "reading": "したが"
+   }
+  ]
+ },
+ {
+  "kanji": "危",
+  "questions": [
+   {
+    "sentence": "ぬれた ろうかは すべって ○ない。",
+    "reading": "あぶ"
+   },
+   {
+    "sentence": "○険な 場所には 近づかない。",
+    "reading": "き"
+   },
+   {
+    "sentence": "川の 増水は ○険だ。",
+    "reading": "き"
+   },
+   {
+    "sentence": "○うく ころぶ ところだった。",
+    "reading": "あや"
+   },
+   {
+    "sentence": "防災には ○機感が 大切だ。",
+    "reading": "き"
+   }
+  ]
+ },
+ {
+  "kanji": "拡",
+  "questions": [
+   {
+    "sentence": "虫めがねで 字を ○大する。",
+    "reading": "かく"
+   },
+   {
+    "sentence": "地図を ○大コピーする。",
+    "reading": "かく"
+   },
+   {
+    "sentence": "道路の ○張工事が 始まる。",
+    "reading": "かく"
+   },
+   {
+    "sentence": "デマを ○散しない。",
+    "reading": "かく"
+   },
+   {
+    "sentence": "運動会で ○声器を 使う。",
+    "reading": "かく"
+   }
+  ]
+ },
+ {
+  "kanji": "就",
+  "questions": [
+   {
+    "sentence": "姉が ○職して 社会人に なる。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "あこがれの 仕事に ○く。",
+    "reading": "つ"
+   },
+   {
+    "sentence": "新しい 会長が ○任する。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "王の 位に ○く。",
+    "reading": "つ"
+   },
+   {
+    "sentence": "六さいで 小学校に ○学する。",
+    "reading": "しゅう"
+   }
+  ]
+ },
+ {
+  "kanji": "異",
+  "questions": [
+   {
+    "sentence": "国に よって 文化が ○なる。",
+    "reading": "こと"
+   },
+   {
+    "sentence": "○国の 料理を 味わう。",
+    "reading": "い"
+   },
+   {
+    "sentence": "○常な 暑さが 続く。",
+    "reading": "い"
+   },
+   {
+    "sentence": "「○議あり」と 声を 上げる。",
+    "reading": "い"
+   },
+   {
+    "sentence": "兄弟でも 性格は ○なる。",
+    "reading": "こと"
+   }
+  ]
+ },
+ {
+  "kanji": "将",
+  "questions": [
+   {
+    "sentence": "○来の ゆめを 発表する。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "祖父と ○ぎを さす。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "戦国武○に ついて 調べる。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "すし屋の 大○が すしを にぎる。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "サッカー部の 主○に 選ばれる。",
+    "reading": "しょう"
+   }
+  ]
+ },
+ {
+  "kanji": "厳",
+  "questions": [
+   {
+    "sentence": "冬の 寒さが ○しい。",
+    "reading": "きび"
+   },
+   {
+    "sentence": "○しい 練習に たえる。",
+    "reading": "きび"
+   },
+   {
+    "sentence": "集合時刻を ○守する。",
+    "reading": "げん"
+   },
+   {
+    "sentence": "○重に かぎを かける。",
+    "reading": "げん"
+   },
+   {
+    "sentence": "○かな 空気の 中で 式が 始まる。",
+    "reading": "おごそ"
+   }
+  ]
+ },
+ {
+  "kanji": "遺",
+  "questions": [
+   {
+    "sentence": "古代の ○せきを 発くつする。",
+    "reading": "い"
+   },
+   {
+    "sentence": "富士山は 世界○産だ。",
+    "reading": "い"
+   },
+   {
+    "sentence": "親から 子へ ○伝する。",
+    "reading": "い"
+   },
+   {
+    "sentence": "落とし物を ○失物として 届ける。",
+    "reading": "い"
+   },
+   {
+    "sentence": "文化○産を 大切に 守る。",
+    "reading": "い"
+   }
+  ]
+ },
+ {
+  "kanji": "装",
+  "questions": [
+   {
+    "sentence": "天気に 合った 服○を 選ぶ。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "実験○置を 組み立てる。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "ハロウィンで 仮○を 楽しむ。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "発表会の 衣○を 着る。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "ころんでも 平気を ○う。",
+    "reading": "よそお"
+   }
+  ]
+ },
+ {
+  "kanji": "諸",
+  "questions": [
+   {
+    "sentence": "世界の ○国を 旅する。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "ヨーロッパ○国の 文化を 学ぶ。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "ハワイ○島は 火山で できた。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "○外国と 貿易を 行う。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "かんきょうの ○問題に ついて 考える。",
+    "reading": "しょ"
+   }
+  ]
+ },
+ {
+  "kanji": "亡",
+  "questions": [
+   {
+    "sentence": "作家の ○くなった 年を 調べる。",
+    "reading": "な"
+   },
+   {
+    "sentence": "○き 祖父の 思い出を 聞く。",
+    "reading": "な"
+   },
+   {
+    "sentence": "古代の 国が めつ○した 理由を 学ぶ。",
+    "reading": "ぼう"
+   },
+   {
+    "sentence": "国が さかえたり ほろびたり する ことを 興○と いう。",
+    "reading": "ぼう"
+   },
+   {
+    "sentence": "自分の 国を はなれて 外国へ ○命する。",
+    "reading": "ぼう"
+   }
+  ]
+ },
+ {
+  "kanji": "劇",
+  "questions": [
+   {
+    "sentence": "学芸会で ○を 演じる。",
+    "reading": "げき"
+   },
+   {
+    "sentence": "○場へ ミュージカルを 見に 行く。",
+    "reading": "げき"
+   },
+   {
+    "sentence": "演○クラブに 入る。",
+    "reading": "げき"
+   },
+   {
+    "sentence": "○的な 逆転で 試合に 勝つ。",
+    "reading": "げき"
+   },
+   {
+    "sentence": "祖父と 時代○を 見る。",
+    "reading": "げき"
+   }
+  ]
+ },
+ {
+  "kanji": "模",
+  "questions": [
+   {
+    "sentence": "飛行機の ○型を 作る。",
+    "reading": "も"
+   },
+   {
+    "sentence": "水玉○様の ハンカチ。",
+    "reading": "も"
+   },
+   {
+    "sentence": "大規○な 祭りが 開かれる。",
+    "reading": "ぼ"
+   },
+   {
+    "sentence": "クラスの ○はんに なる 行動を とる。",
+    "reading": "も"
+   },
+   {
+    "sentence": "有名な 絵を ○写する。",
+    "reading": "も"
+   }
+  ]
+ },
+ {
+  "kanji": "宣",
+  "questions": [
+   {
+    "sentence": "オリンピックの 開会を ○言する。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "優勝するぞと ○言する。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "新しい おかしを ○伝する。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "テレビで 新番組を ○伝する。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "ザビエルは ○教師として 来日した。",
+    "reading": "せん"
+   }
+  ]
+ },
+ {
+  "kanji": "背",
+  "questions": [
+   {
+    "sentence": "○中を まっすぐに のばす。",
+    "reading": "せ"
+   },
+   {
+    "sentence": "絵の ○景を 青で ぬる。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "水泳で ○泳ぎの 練習を する。",
+    "reading": "せ"
+   },
+   {
+    "sentence": "ルールに ○く 行いを しない。",
+    "reading": "そむ"
+   },
+   {
+    "sentence": "弟と ○くらべを する。",
+    "reading": "せい"
+   }
+  ]
+ },
+ {
+  "kanji": "盛",
+  "questions": [
+   {
+    "sentence": "ごはんを 茶わんに ○る。",
+    "reading": "も"
+   },
+   {
+    "sentence": "祭りが ○り上がる。",
+    "reading": "も"
+   },
+   {
+    "sentence": "この 地域は 農業が ○んだ。",
+    "reading": "さか"
+   },
+   {
+    "sentence": "公園の さくらは 今が ○りだ。",
+    "reading": "さか"
+   },
+   {
+    "sentence": "○大な はくしゅが おこる。",
+    "reading": "せい"
+   }
+  ]
+ },
+ {
+  "kanji": "皇",
+  "questions": [
+   {
+    "sentence": "天○陛下が 式典に 出席する。",
+    "reading": "のう"
+   },
+   {
+    "sentence": "聖武(しょうむ)天○が 大仏を 作らせた。",
+    "reading": "のう"
+   },
+   {
+    "sentence": "○后陛下が 花束を 受け取る。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "東京の ○居を 見学する。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "○太子が 外国を 訪問する。",
+    "reading": "こう"
+   }
+  ]
+ },
+ {
+  "kanji": "臨",
+  "questions": [
+   {
+    "sentence": "○時ニュースが 流れる。",
+    "reading": "りん"
+   },
+   {
+    "sentence": "○時休校の お知らせが とどく。",
+    "reading": "りん"
+   },
+   {
+    "sentence": "○海学校で 海の 生き物を 観察する。",
+    "reading": "りん"
+   },
+   {
+    "sentence": "本番に 全力で ○む。",
+    "reading": "のぞ"
+   },
+   {
+    "sentence": "○場感の ある 映像を 楽しむ。",
+    "reading": "りん"
+   }
+  ]
+ },
+ {
+  "kanji": "署",
+  "questions": [
+   {
+    "sentence": "消防○の 見学に 行く。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "交番と 警察○の ちがいを 知る。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "○名を 集めて 市に 提出する。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "税務○の 仕事を 調べる。",
+    "reading": "しょ"
+   },
+   {
+    "sentence": "父の 会社には いろいろな 部○が ある。",
+    "reading": "しょ"
+   }
+  ]
+ },
+ {
+  "kanji": "源",
+  "questions": [
+   {
+    "sentence": "かぎりある 資○を 大切に する。",
+    "reading": "げん"
+   },
+   {
+    "sentence": "テレビの 電○を 切る。",
+    "reading": "げん"
+   },
+   {
+    "sentence": "山おくの 水○から 水を 引く。",
+    "reading": "げん"
+   },
+   {
+    "sentence": "元気の ○は 朝ごはんだ。",
+    "reading": "みなもと"
+   },
+   {
+    "sentence": "○氏物語に ついて 知る。",
+    "reading": "げん"
+   }
+  ]
+ },
+ {
+  "kanji": "創",
+  "questions": [
+   {
+    "sentence": "学校の ○立記念日を 祝う。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "○作ダンスを 発表する。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "○意工夫を こらして 作品を 作る。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "駅前に ○業百年の 店が ある。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "新しい 雑誌が ○刊される。",
+    "reading": "そう"
+   }
+  ]
+ },
+ {
+  "kanji": "障",
+  "questions": [
+   {
+    "sentence": "エレベーターが 故○する。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "○子の 紙を はりかえる。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "運動会の ○害物競走に 出る。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "社会保○の しくみを 学ぶ。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "人の 気に ○る 言い方を しない。",
+    "reading": "さわ"
+   }
+  ]
+ },
+ {
+  "kanji": "筋",
+  "questions": [
+   {
+    "sentence": "運動で ○肉を きたえる。",
+    "reading": "きん"
+   },
+   {
+    "sentence": "腹○運動を 十回 する。",
+    "reading": "きん"
+   },
+   {
+    "sentence": "物語の ○を 説明する。",
+    "reading": "すじ"
+   },
+   {
+    "sentence": "○道を 立てて 考える。",
+    "reading": "すじ"
+   },
+   {
+    "sentence": "鉄○コンクリートの ビルが 建つ。",
+    "reading": "きん"
+   }
+  ]
+ },
+ {
+  "kanji": "延",
+  "questions": [
+   {
+    "sentence": "遠足が 雨で ○期に なる。",
+    "reading": "えん"
+   },
+   {
+    "sentence": "試合が ○長戦に なる。",
+    "reading": "えん"
+   },
+   {
+    "sentence": "しめ切りが 三日 ○びる。",
+    "reading": "の"
+   },
+   {
+    "sentence": "出発の 時間を ○ばす。",
+    "reading": "の"
+   },
+   {
+    "sentence": "○べ 千人が 大会に 参加した。",
+    "reading": "の"
+   }
+  ]
+ },
+ {
+  "kanji": "乱",
+  "questions": [
+   {
+    "sentence": "風で かみの毛が ○れる。",
+    "reading": "みだ"
+   },
+   {
+    "sentence": "列を ○さずに 歩く。",
+    "reading": "みだ"
+   },
+   {
+    "sentence": "停電で 駅が 混○する。",
+    "reading": "らん"
+   },
+   {
+    "sentence": "物を ○暴に あつかわない。",
+    "reading": "らん"
+   },
+   {
+    "sentence": "応仁(おうにん)の ○で 京都が あれた。",
+    "reading": "らん"
+   }
+  ]
+ },
+ {
+  "kanji": "善",
+  "questions": [
+   {
+    "sentence": "生活リズムを 改○する。",
+    "reading": "ぜん"
+   },
+   {
+    "sentence": "○悪を 判断する 力を つける。",
+    "reading": "ぜん"
+   },
+   {
+    "sentence": "外国との 親○試合が 行われる。",
+    "reading": "ぜん"
+   },
+   {
+    "sentence": "人の ○意に 感謝する。",
+    "reading": "ぜん"
+   },
+   {
+    "sentence": "最後まで 最○を つくす。",
+    "reading": "ぜん"
+   }
+  ]
+ },
+ {
+  "kanji": "承",
+  "questions": [
+   {
+    "sentence": "「○知しました」と 返事を する。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "計画が 委員会で ○認される。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "母の りょう○を 得て 出かける。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "地域の 祭りが 伝○されて きた。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "「ご注文を ○ります」と 店員が 言う。",
+    "reading": "うけたまわ"
+   }
+  ]
+ },
+ {
+  "kanji": "庁",
+  "questions": [
+   {
+    "sentence": "気象○が 台風情報を 発表する。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "社会見学で 県○を たずねる。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "スポーツ○が 運動を すすめて いる。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "東京都○の 展望台に のぼる。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "国の 官○が 集まる 町。",
+    "reading": "ちょう"
+   }
+  ]
+ },
+ {
+  "kanji": "層",
+  "questions": [
+   {
+    "sentence": "がけの 地○を 観察する。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "高○ビルが 立ち ならぶ。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "パイの きじが 何○にも 重なる。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "オゾン○を 守る 取り組みを 知る。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "地しんと 断○の 関係を 学ぶ。",
+    "reading": "そう"
+   }
+  ]
+ },
+ {
+  "kanji": "裏",
+  "questions": [
+   {
+    "sentence": "答えを 紙の ○に 書く。",
+    "reading": "うら"
+   },
+   {
+    "sentence": "家の ○に 小さな 畑が ある。",
+    "reading": "うら"
+   },
+   {
+    "sentence": "○口から 校舎に 入る。",
+    "reading": "うら"
+   },
+   {
+    "sentence": "月の ○側は 地球から 見えない。",
+    "reading": "うら"
+   },
+   {
+    "sentence": "シャツを ○返しに 着て いた。",
+    "reading": "うら"
+   }
+  ]
+ },
+ {
+  "kanji": "密",
+  "questions": [
+   {
+    "sentence": "秘○の きちを 作って 遊ぶ。",
+    "reading": "みつ"
+   },
+   {
+    "sentence": "運動と 健康には ○接な 関係が ある。",
+    "reading": "みつ"
+   },
+   {
+    "sentence": "綿○な 計画を 立てる。",
+    "reading": "みつ"
+   },
+   {
+    "sentence": "家が ○集して いる 地域。",
+    "reading": "みつ"
+   },
+   {
+    "sentence": "人口○度の 高い 都市。",
+    "reading": "みつ"
+   }
+  ]
+ },
+ {
+  "kanji": "我",
+  "questions": [
+   {
+    "sentence": "子どもたちが ○先にと かけ出す。",
+    "reading": "われ"
+   },
+   {
+    "sentence": "○を わすれて 夢中に なる。",
+    "reading": "われ"
+   },
+   {
+    "sentence": "○が家の カレーは 少し あまい。",
+    "reading": "わ"
+   },
+   {
+    "sentence": "○が国の 歴史を 学ぶ。",
+    "reading": "わ"
+   },
+   {
+    "sentence": "ねむいのを ○まんして 勉強する。",
+    "reading": "が"
+   }
+  ]
+ },
+ {
+  "kanji": "勤",
+  "questions": [
+   {
+    "sentence": "父は 銀行に ○めて いる。",
+    "reading": "つと"
+   },
+   {
+    "sentence": "電車で 通○する 人が 多い。",
+    "reading": "きん"
+   },
+   {
+    "sentence": "母の ○務先に 電話を かける。",
+    "reading": "きん"
+   },
+   {
+    "sentence": "十一月に ○労感謝の日が ある。",
+    "reading": "きん"
+   },
+   {
+    "sentence": "転○で 別の 町に 引っこす。",
+    "reading": "きん"
+   }
+  ]
+ },
+ {
+  "kanji": "幕",
+  "questions": [
+   {
+    "sentence": "劇の ○が 上がる。",
+    "reading": "まく"
+   },
+   {
+    "sentence": "江戸(えど)○府に ついて 学ぶ。",
+    "reading": "ばく"
+   },
+   {
+    "sentence": "プロ野球が 開○する。",
+    "reading": "まく"
+   },
+   {
+    "sentence": "外国映画を 字○で 見る。",
+    "reading": "まく"
+   },
+   {
+    "sentence": "○末の 歴史が 好きだ。",
+    "reading": "ばく"
+   }
+  ]
+ },
+ {
+  "kanji": "染",
+  "questions": [
+   {
+    "sentence": "布を あい色に ○める。",
+    "reading": "そ"
+   },
+   {
+    "sentence": "草木で 糸を ○色する。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "手あらいで 感○を ふせぐ。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "しょうゆの 味が ○みた 大根。",
+    "reading": "し"
+   },
+   {
+    "sentence": "夕日で 空が 赤く ○まる。",
+    "reading": "そ"
+   }
+  ]
+ },
+ {
+  "kanji": "困",
+  "questions": [
+   {
+    "sentence": "道に まよって ○る。",
+    "reading": "こま"
+   },
+   {
+    "sentence": "わすれものを して ○った。",
+    "reading": "こま"
+   },
+   {
+    "sentence": "○って いる 人に 声を かける。",
+    "reading": "こま"
+   },
+   {
+    "sentence": "水不足で 農家が ○る。",
+    "reading": "こま"
+   },
+   {
+    "sentence": "○難を のりこえる。",
+    "reading": "こん"
+   }
+  ]
+ },
+ {
+  "kanji": "傷",
+  "questions": [
+   {
+    "sentence": "ひざの ○に ばんそうこうを はる。",
+    "reading": "きず"
+   },
+   {
+    "sentence": "○口を 水で あらう。",
+    "reading": "きず"
+   },
+   {
+    "sentence": "本だなに 小さな ○が つく。",
+    "reading": "きず"
+   },
+   {
+    "sentence": "夏は 食べ物が ○みやすい。",
+    "reading": "いた"
+   },
+   {
+    "sentence": "負○した 選手が 交代する。",
+    "reading": "しょう"
+   }
+  ]
+ },
+ {
+  "kanji": "著",
+  "questions": [
+   {
+    "sentence": "この 本の ○者を 調べる。",
+    "reading": "ちょ"
+   },
+   {
+    "sentence": "○作権に 気を つけて 引用する。",
+    "reading": "ちょ"
+   },
+   {
+    "sentence": "先生が 名○を しょうかいして くれた。",
+    "reading": "ちょ"
+   },
+   {
+    "sentence": "博士が 研究を まとめた 本を ○す。",
+    "reading": "あらわ"
+   },
+   {
+    "sentence": "記録が ○しく のびる。",
+    "reading": "いちじる"
+   }
+  ]
+ },
+ {
+  "kanji": "誌",
+  "questions": [
+   {
+    "sentence": "書店で 雑○を 買う。",
+    "reading": "し"
+   },
+   {
+    "sentence": "図書室の 雑○コーナーが 好きだ。",
+    "reading": "し"
+   },
+   {
+    "sentence": "学級日○に 今日の できごとを 書く。",
+    "reading": "し"
+   },
+   {
+    "sentence": "週刊○が 発売される。",
+    "reading": "し"
+   },
+   {
+    "sentence": "科学○に のった 記事を 読む。",
+    "reading": "し"
+   }
+  ]
+ },
+ {
+  "kanji": "秘",
+  "questions": [
+   {
+    "sentence": "二人だけの ○密を 守る。",
+    "reading": "ひ"
+   },
+   {
+    "sentence": "オーロラは 神○的だ。",
+    "reading": "ぴ"
+   },
+   {
+    "sentence": "○境を たんけんする 番組を 見る。",
+    "reading": "ひ"
+   },
+   {
+    "sentence": "○伝の たれで 焼き鳥を 作る。",
+    "reading": "ひ"
+   },
+   {
+    "sentence": "決意を むねに ○める。",
+    "reading": "ひ"
+   }
+  ]
+ },
+ {
+  "kanji": "刻",
+  "questions": [
+   {
+    "sentence": "ねぎを 細かく ○む。",
+    "reading": "きざ"
+   },
+   {
+    "sentence": "電車の 発車時○を 確かめる。",
+    "reading": "こく"
+   },
+   {
+    "sentence": "ねぼうして ち○しそうに なる。",
+    "reading": "こく"
+   },
+   {
+    "sentence": "深○な 顔で 考えこむ。",
+    "reading": "こく"
+   },
+   {
+    "sentence": "公園に ちょう○の 作品が ならぶ。",
+    "reading": "こく"
+   }
+  ]
+ },
+ {
+  "kanji": "宇",
+  "questions": [
+   {
+    "sentence": "○宙飛行士に あこがれる。",
+    "reading": "う"
+   },
+   {
+    "sentence": "ロケットが ○宙へ 飛び立つ。",
+    "reading": "う"
+   },
+   {
+    "sentence": "○宙から 見た 地球は 青い。",
+    "reading": "う"
+   },
+   {
+    "sentence": "○宙ステーションで 実験を 行う。",
+    "reading": "う"
+   },
+   {
+    "sentence": "○宙には 数え切れない 星が ある。",
+    "reading": "う"
+   }
+  ]
+ },
+ {
+  "kanji": "欲",
+  "questions": [
+   {
+    "sentence": "新しい 自転車が ○しい。",
+    "reading": "ほ"
+   },
+   {
+    "sentence": "ゲームソフトを ○しがる 弟。",
+    "reading": "ほ"
+   },
+   {
+    "sentence": "食○の 秋と いわれる。",
+    "reading": "よく"
+   },
+   {
+    "sentence": "練習に 取り組む 意○が 高まる。",
+    "reading": "よく"
+   },
+   {
+    "sentence": "○張らずに 半分ずつ 分ける。",
+    "reading": "よく"
+   }
+  ]
+ },
+ {
+  "kanji": "痛",
+  "questions": [
+   {
+    "sentence": "ころんで ひざが ○い。",
+    "reading": "いた"
+   },
+   {
+    "sentence": "歯が ○くて 歯医者に 行く。",
+    "reading": "いた"
+   },
+   {
+    "sentence": "頭○が して 保健室で 休んだ。",
+    "reading": "つう"
+   },
+   {
+    "sentence": "運動の 次の日は きん肉○に なる。",
+    "reading": "つう"
+   },
+   {
+    "sentence": "指を ドアに はさんで ○かった。",
+    "reading": "いた"
+   }
+  ]
+ },
+ {
+  "kanji": "縮",
+  "questions": [
+   {
+    "sentence": "洗ったら セーターが ○んだ。",
+    "reading": "ちぢ"
+   },
+   {
+    "sentence": "地図の ○尺を たしかめる。",
+    "reading": "しゅく"
+   },
+   {
+    "sentence": "寒くて 体が ○こまる。",
+    "reading": "ちぢ"
+   },
+   {
+    "sentence": "図を ○小して コピーする。",
+    "reading": "しゅく"
+   },
+   {
+    "sentence": "ゴムは のび○みする。",
+    "reading": "ちぢ"
+   }
+  ]
+ },
+ {
+  "kanji": "枚",
+  "questions": [
+   {
+    "sentence": "画用紙を 一○ もらう。",
+    "reading": "まい"
+   },
+   {
+    "sentence": "折り紙の ○数を 数える。",
+    "reading": "まい"
+   },
+   {
+    "sentence": "クッキーを 二○ 食べた。",
+    "reading": "まい"
+   },
+   {
+    "sentence": "遠足の 写真を 三○ とった。",
+    "reading": "まい"
+   },
+   {
+    "sentence": "百円玉が 五○ ある。",
+    "reading": "まい"
+   }
+  ]
+ },
+ {
+  "kanji": "郵",
+  "questions": [
+   {
+    "sentence": "○便局で 切手を 買う。",
+    "reading": "ゆう"
+   },
+   {
+    "sentence": "はがきに ○便番号を 書く。",
+    "reading": "ゆう"
+   },
+   {
+    "sentence": "手紙を ○便で 送る。",
+    "reading": "ゆう"
+   },
+   {
+    "sentence": "家の ○便受けを のぞく。",
+    "reading": "ゆう"
+   },
+   {
+    "sentence": "○便配達の 車が 通る。",
+    "reading": "ゆう"
+   }
+  ]
+ },
+ {
+  "kanji": "探",
+  "questions": [
+   {
+    "sentence": "四つ葉の クローバーを ○す。",
+    "reading": "さが"
+   },
+   {
+    "sentence": "どうくつを ○検する。",
+    "reading": "たん"
+   },
+   {
+    "sentence": "ポケットの 中を ○る。",
+    "reading": "さぐ"
+   },
+   {
+    "sentence": "読みたい 本を 図書室で ○す。",
+    "reading": "さが"
+   },
+   {
+    "sentence": "宇宙○査機の ニュースを 見る。",
+    "reading": "たん"
+   }
+  ]
+ },
+ {
+  "kanji": "骨",
+  "questions": [
+   {
+    "sentence": "魚の ○を 上手に 取る。",
+    "reading": "ほね"
+   },
+   {
+    "sentence": "転んで うでを ○折した。",
+    "reading": "こっ"
+   },
+   {
+    "sentence": "体には 多くの ○が ある。",
+    "reading": "ほね"
+   },
+   {
+    "sentence": "きょうりゅうの ○の 化石。",
+    "reading": "ほね"
+   },
+   {
+    "sentence": "○組みの しっかりした 建物。",
+    "reading": "ほね"
+   }
+  ]
+ },
+ {
+  "kanji": "射",
+  "questions": [
+   {
+    "sentence": "病院で 注○を して もらう。",
+    "reading": "しゃ"
+   },
+   {
+    "sentence": "弓で 矢を ○る。",
+    "reading": "い"
+   },
+   {
+    "sentence": "かがみは 光を 反○する。",
+    "reading": "しゃ"
+   },
+   {
+    "sentence": "ロケットが 発○された。",
+    "reading": "しゃ"
+   },
+   {
+    "sentence": "予防注○を 受ける。",
+    "reading": "しゃ"
+   }
+  ]
+ },
+ {
+  "kanji": "届",
+  "questions": [
+   {
+    "sentence": "友だちから 手紙が ○く。",
+    "reading": "とど"
+   },
+   {
+    "sentence": "たなの 上まで 手が ○かない。",
+    "reading": "とど"
+   },
+   {
+    "sentence": "忘れ物を 学校に ○ける。",
+    "reading": "とど"
+   },
+   {
+    "sentence": "欠席○を 先生に 出す。",
+    "reading": "とどけ"
+   },
+   {
+    "sentence": "たのんだ 荷物が ○いた。",
+    "reading": "とど"
+   }
+  ]
+ },
+ {
+  "kanji": "巻",
+  "questions": [
+   {
+    "sentence": "首に マフラーを ○く。",
+    "reading": "ま"
+   },
+   {
+    "sentence": "平安時代の 絵○物を 見る。",
+    "reading": "まき"
+   },
+   {
+    "sentence": "のりを ○いた おにぎり。",
+    "reading": "ま"
+   },
+   {
+    "sentence": "全部で 十○ある 物語。",
+    "reading": "かん"
+   },
+   {
+    "sentence": "海辺で ○き貝を 拾う。",
+    "reading": "ま"
+   }
+  ]
+ },
+ {
+  "kanji": "揮",
+  "questions": [
+   {
+    "sentence": "合唱の 指○を する。",
+    "reading": "き"
+   },
+   {
+    "sentence": "オーケストラの 指○者。",
+    "reading": "き"
+   },
+   {
+    "sentence": "本番で 実力を 発○する。",
+    "reading": "き"
+   },
+   {
+    "sentence": "リレーで 力を 発○した。",
+    "reading": "き"
+   },
+   {
+    "sentence": "チームを 指○する キャプテン。",
+    "reading": "き"
+   }
+  ]
+ },
+ {
+  "kanji": "閉",
+  "questions": [
+   {
+    "sentence": "窓を ○めて 出かける。",
+    "reading": "し"
+   },
+   {
+    "sentence": "本を ○じて 目を 休める。",
+    "reading": "と"
+   },
+   {
+    "sentence": "その 店は 五時に ○店する。",
+    "reading": "へい"
+   },
+   {
+    "sentence": "オリンピックの ○会式を 見る。",
+    "reading": "へい"
+   },
+   {
+    "sentence": "エレベーターの とびらが ○まる。",
+    "reading": "し"
+   }
+  ]
+ },
+ {
+  "kanji": "賃",
+  "questions": [
+   {
+    "sentence": "電車の 運○を はらう。",
+    "reading": "ちん"
+   },
+   {
+    "sentence": "バスの 運○は 二百円だ。",
+    "reading": "ちん"
+   },
+   {
+    "sentence": "アパートの 家○を はらう。",
+    "reading": "ちん"
+   },
+   {
+    "sentence": "働いて ○金を 受け取る。",
+    "reading": "ちん"
+   },
+   {
+    "sentence": "子ども運○は 半額だ。",
+    "reading": "ちん"
+   }
+  ]
+ },
+ {
+  "kanji": "貴",
+  "questions": [
+   {
+    "sentence": "○重な 体験を した。",
+    "reading": "き"
+   },
+   {
+    "sentence": "平安時代の ○族の くらし。",
+    "reading": "き"
+   },
+   {
+    "sentence": "金や 銀は ○金属と よばれる。",
+    "reading": "き"
+   },
+   {
+    "sentence": "○重品を ロッカーに 預ける。",
+    "reading": "き"
+   },
+   {
+    "sentence": "博物館で ○重な 資料を 見た。",
+    "reading": "き"
+   }
+  ]
+ },
+ {
+  "kanji": "暮",
+  "questions": [
+   {
+    "sentence": "日が ○れて 空が 暗く なる。",
+    "reading": "く"
+   },
+   {
+    "sentence": "祖父母は いなかで ○らして いる。",
+    "reading": "く"
+   },
+   {
+    "sentence": "年の ○れに 大そうじを する。",
+    "reading": "く"
+   },
+   {
+    "sentence": "家族 四人で 楽しく ○らす。",
+    "reading": "く"
+   },
+   {
+    "sentence": "夕○れの 空が 赤い。",
+    "reading": "ぐ"
+   }
+  ]
+ },
+ {
+  "kanji": "預",
+  "questions": [
+   {
+    "sentence": "銀行に お金を ○ける。",
+    "reading": "あず"
+   },
+   {
+    "sentence": "お年玉を ○金する。",
+    "reading": "よ"
+   },
+   {
+    "sentence": "駅で 大きな 荷物を ○ける。",
+    "reading": "あず"
+   },
+   {
+    "sentence": "となりの 家の 犬を ○かる。",
+    "reading": "あず"
+   },
+   {
+    "sentence": "○金通帳を 大切に しまう。",
+    "reading": "よ"
+   }
+  ]
+ },
+ {
+  "kanji": "簡",
+  "questions": [
+   {
+    "sentence": "○単な 問題から 解く。",
+    "reading": "かん"
+   },
+   {
+    "sentence": "作り方は とても ○単だ。",
+    "reading": "かん"
+   },
+   {
+    "sentence": "理由を ○潔に 説明する。",
+    "reading": "かん"
+   },
+   {
+    "sentence": "○単な 実験を して みる。",
+    "reading": "かん"
+   },
+   {
+    "sentence": "文章を ○潔に まとめる。",
+    "reading": "かん"
+   }
+  ]
+ },
+ {
+  "kanji": "納",
+  "questions": [
+   {
+    "sentence": "税金を ○める。",
+    "reading": "おさ"
+   },
+   {
+    "sentence": "○税は 国民の 義務だ。",
+    "reading": "のう"
+   },
+   {
+    "sentence": "朝ごはんに ○豆を 食べる。",
+    "reading": "なっ"
+   },
+   {
+    "sentence": "会費を 期日までに ○める。",
+    "reading": "おさ"
+   },
+   {
+    "sentence": "習い事の 月謝を ○める。",
+    "reading": "おさ"
+   }
+  ]
+ },
+ {
+  "kanji": "樹",
+  "questions": [
+   {
+    "sentence": "公園の ○木を 観察する。",
+    "reading": "じゅ"
+   },
+   {
+    "sentence": "カブトムシが ○液に 集まる。",
+    "reading": "じゅ"
+   },
+   {
+    "sentence": "道路ぞいの 街路○。",
+    "reading": "じゅ"
+   },
+   {
+    "sentence": "りんごの 果○園が 広がる。",
+    "reading": "じゅ"
+   },
+   {
+    "sentence": "○齢(れい) 千年の 大木。",
+    "reading": "じゅ"
+   }
+  ]
+ },
+ {
+  "kanji": "臓",
+  "questions": [
+   {
+    "sentence": "走ると 心○が どきどきする。",
+    "reading": "ぞう"
+   },
+   {
+    "sentence": "心○は 血液を 送り出す。",
+    "reading": "ぞう"
+   },
+   {
+    "sentence": "内○の 働きを 学ぶ。",
+    "reading": "ぞう"
+   },
+   {
+    "sentence": "かん○は 栄養を たくわえる。",
+    "reading": "ぞう"
+   },
+   {
+    "sentence": "○器の しくみを 調べる。",
+    "reading": "ぞう"
+   }
+  ]
+ },
+ {
+  "kanji": "律",
+  "questions": [
+   {
+    "sentence": "国会で 法○が 作られる。",
+    "reading": "りつ"
+   },
+   {
+    "sentence": "法○を 守って くらす。",
+    "reading": "りつ"
+   },
+   {
+    "sentence": "規○正しい 生活を 送る。",
+    "reading": "りつ"
+   },
+   {
+    "sentence": "○令に もとづく 政治が 行われた。",
+    "reading": "りつ"
+   },
+   {
+    "sentence": "規○を 守って 行動する。",
+    "reading": "りつ"
+   }
+  ]
+ },
+ {
+  "kanji": "至",
+  "questions": [
+   {
+    "sentence": "冬○の 日に ゆず湯に 入る。",
+    "reading": "じ"
+   },
+   {
+    "sentence": "夏○は 一年で 昼が 最も 長い。",
+    "reading": "し"
+   },
+   {
+    "sentence": "駅から 公園に ○る 道。",
+    "reading": "いた"
+   },
+   {
+    "sentence": "○急の 用事で 出かける。",
+    "reading": "し"
+   },
+   {
+    "sentence": "この 道は 海に ○る。",
+    "reading": "いた"
+   }
+  ]
+ },
+ {
+  "kanji": "宗",
+  "questions": [
+   {
+    "sentence": "世界の ○教に ついて 調べる。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "○教に よって 食事の きまりが ある。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "法然は 浄土(じょうど)○を 開いた。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "お寺には いろいろな ○派が ある。",
+    "reading": "しゅう"
+   },
+   {
+    "sentence": "日本の ○教の 歴史を 学ぶ。",
+    "reading": "しゅう"
+   }
+  ]
+ },
+ {
+  "kanji": "宙",
+  "questions": [
+   {
+    "sentence": "宇○飛行士に なりたい。",
+    "reading": "ちゅう"
+   },
+   {
+    "sentence": "宇○から 地球を ながめる。",
+    "reading": "ちゅう"
+   },
+   {
+    "sentence": "鉄棒で ○返りを する。",
+    "reading": "ちゅう"
+   },
+   {
+    "sentence": "宇○船が 打ち上げられた。",
+    "reading": "ちゅう"
+   },
+   {
+    "sentence": "シャボン玉が ○に うかぶ。",
+    "reading": "ちゅう"
+   }
+  ]
+ },
+ {
+  "kanji": "銭",
+  "questions": [
+   {
+    "sentence": "近所の ○湯に 行く。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "さいふの 小○を 数える。",
+    "reading": "ぜに"
+   },
+   {
+    "sentence": "○湯の 大きな 湯船に つかる。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "小○入れを 落として しまった。",
+    "reading": "ぜに"
+   },
+   {
+    "sentence": "お金の ことを 「○」とも 言う。",
+    "reading": "ぜに"
+   }
+  ]
+ },
+ {
+  "kanji": "操",
+  "questions": [
+   {
+    "sentence": "毎朝 ラジオ体○を する。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "タブレットの ○作に なれる。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "人形を 糸で ○る。",
+    "reading": "あやつ"
+   },
+   {
+    "sentence": "器械体○の 選手に あこがれる。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "機械を 正しく ○作する。",
+    "reading": "そう"
+   }
+  ]
+ },
+ {
+  "kanji": "誕",
+  "questions": [
+   {
+    "sentence": "○生日に ケーキを 食べる。",
+    "reading": "たん"
+   },
+   {
+    "sentence": "友だちの ○生日会に 招かれた。",
+    "reading": "たん"
+   },
+   {
+    "sentence": "パンダの 赤ちゃんが ○生した。",
+    "reading": "たん"
+   },
+   {
+    "sentence": "弟が ○生して 家族が ふえた。",
+    "reading": "たん"
+   },
+   {
+    "sentence": "○生日プレゼントを 選ぶ。",
+    "reading": "たん"
+   }
+  ]
+ },
+ {
+  "kanji": "孝",
+  "questions": [
+   {
+    "sentence": "親○行だねと ほめられる。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "手伝いを して 親○行を する。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "大人に なったら 親に ○行したい。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "家の 手伝いを よく する ○行者だ。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "祖父母にも ○行したい。",
+    "reading": "こう"
+   }
+  ]
+ },
+ {
+  "kanji": "純",
+  "questions": [
+   {
+    "sentence": "○白の ドレスを 着る。",
+    "reading": "じゅん"
+   },
+   {
+    "sentence": "○金の メダルが かざられる。",
+    "reading": "じゅん"
+   },
+   {
+    "sentence": "単○な 計算ミスを した。",
+    "reading": "じゅん"
+   },
+   {
+    "sentence": "しくみは 意外と 単○だ。",
+    "reading": "じゅん"
+   },
+   {
+    "sentence": "○真な 心を もつ。",
+    "reading": "じゅん"
+   }
+  ]
+ },
+ {
+  "kanji": "訳",
+  "questions": [
+   {
+    "sentence": "英語の 文を 日本語に ○す。",
+    "reading": "やく"
+   },
+   {
+    "sentence": "海外の 選手に 通○が つく。",
+    "reading": "やく"
+   },
+   {
+    "sentence": "おくれた ○を 説明する。",
+    "reading": "わけ"
+   },
+   {
+    "sentence": "言い○を しないで あやまる。",
+    "reading": "わけ"
+   },
+   {
+    "sentence": "外国語から ○された 物語。",
+    "reading": "やく"
+   }
+  ]
+ },
+ {
+  "kanji": "吸",
+  "questions": [
+   {
+    "sentence": "深く 息を ○う。",
+    "reading": "す"
+   },
+   {
+    "sentence": "深呼○を して 落ち着く。",
+    "reading": "きゅう"
+   },
+   {
+    "sentence": "そうじきが ごみを ○いこむ。",
+    "reading": "す"
+   },
+   {
+    "sentence": "根から 水分を ○収する。",
+    "reading": "きゅう"
+   },
+   {
+    "sentence": "朝の すんだ 空気を ○う。",
+    "reading": "す"
+   }
+  ]
+ },
+ {
+  "kanji": "看",
+  "questions": [
+   {
+    "sentence": "○護師の 仕事に あこがれる。",
+    "reading": "かん"
+   },
+   {
+    "sentence": "病気の 母を ○病する。",
+    "reading": "かん"
+   },
+   {
+    "sentence": "店の ○板が 目立つ。",
+    "reading": "かん"
+   },
+   {
+    "sentence": "○護師さんが やさしく 声を かけた。",
+    "reading": "かん"
+   },
+   {
+    "sentence": "ラーメン屋の ○板を 見つけた。",
+    "reading": "かん"
+   }
+  ]
+ },
+ {
+  "kanji": "奏",
+  "questions": [
+   {
+    "sentence": "リコーダーの 合○を する。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "ピアノの 演○会に 行く。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "バイオリンを 独○する。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "美しい 音色を ○でる。",
+    "reading": "かな"
+   },
+   {
+    "sentence": "音楽会で 演○する 曲を 決める。",
+    "reading": "そう"
+   }
+  ]
+ },
+ {
+  "kanji": "翌",
+  "questions": [
+   {
+    "sentence": "○日の 朝、早く 起きた。",
+    "reading": "よく"
+   },
+   {
+    "sentence": "遠足の ○日は ゆっくり 休んだ。",
+    "reading": "よく"
+   },
+   {
+    "sentence": "○週の 月曜日に 続きを やる。",
+    "reading": "よく"
+   },
+   {
+    "sentence": "○年の 春に 引っこした。",
+    "reading": "よく"
+   },
+   {
+    "sentence": "○朝、雪が 積もって いた。",
+    "reading": "よく"
+   }
+  ]
+ },
+ {
+  "kanji": "片",
+  "questions": [
+   {
+    "sentence": "○方の 手ぶくろを なくす。",
+    "reading": "かた"
+   },
+   {
+    "sentence": "使った 道具を ○づける。",
+    "reading": "かた"
+   },
+   {
+    "sentence": "学校まで ○道 十五分 かかる。",
+    "reading": "かた"
+   },
+   {
+    "sentence": "○手で ボールを 投げる。",
+    "reading": "かた"
+   },
+   {
+    "sentence": "ガラスの 破○に 気を つける。",
+    "reading": "へん"
+   }
+  ]
+ },
+ {
+  "kanji": "郷",
+  "questions": [
+   {
+    "sentence": "父の 故○は 九州だ。",
+    "reading": "きょう"
+   },
+   {
+    "sentence": "○土料理を 味わう。",
+    "reading": "きょう"
+   },
+   {
+    "sentence": "○土資料館へ 見学に 行く。",
+    "reading": "きょう"
+   },
+   {
+    "sentence": "故○の 山と 川を なつかしむ。",
+    "reading": "きょう"
+   },
+   {
+    "sentence": "この 地方の ○土芸能を 調べる。",
+    "reading": "きょう"
+   }
+  ]
+ },
+ {
+  "kanji": "敬",
+  "questions": [
+   {
+    "sentence": "お年寄りを ○う。",
+    "reading": "うやま"
+   },
+   {
+    "sentence": "目上の 人には ○語を 使う。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "○老の日に 祖父母を たずねる。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "尊○する 人物に ついて 話す。",
+    "reading": "けい"
+   },
+   {
+    "sentence": "相手を ○う 気持ちで あいさつする。",
+    "reading": "うやま"
+   }
+  ]
+ },
+ {
+  "kanji": "泉",
+  "questions": [
+   {
+    "sentence": "山の 温○に 出かける。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "森の ○から 水が わき出る。",
+    "reading": "いずみ"
+   },
+   {
+    "sentence": "温○の 湯けむりが 上がる。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "○の 水は すき通って いた。",
+    "reading": "いずみ"
+   },
+   {
+    "sentence": "この 町は 温○で 有名だ。",
+    "reading": "せん"
+   }
+  ]
+ },
+ {
+  "kanji": "己",
+  "questions": [
+   {
+    "sentence": "自○しょうかいを する。",
+    "reading": "こ"
+   },
+   {
+    "sentence": "マラソンで 自○ベストを 出す。",
+    "reading": "こ"
+   },
+   {
+    "sentence": "自○流の 泳ぎ方を 直す。",
+    "reading": "こ"
+   },
+   {
+    "sentence": "利○的な 態度を 反省する。",
+    "reading": "こ"
+   },
+   {
+    "sentence": "自○記録を ぬりかえる。",
+    "reading": "こ"
+   }
+  ]
+ },
+ {
+  "kanji": "忠",
+  "questions": [
+   {
+    "sentence": "○犬ハチ公の 話を 読む。",
+    "reading": "ちゅう"
+   },
+   {
+    "sentence": "犬は ○実な 動物だ。",
+    "reading": "ちゅう"
+   },
+   {
+    "sentence": "友だちの ○告を 素直に 聞く。",
+    "reading": "ちゅう"
+   },
+   {
+    "sentence": "医者の ○告を 守る。",
+    "reading": "ちゅう"
+   },
+   {
+    "sentence": "主人に ○実な 家来。",
+    "reading": "ちゅう"
+   }
+  ]
+ },
+ {
+  "kanji": "沿",
+  "questions": [
+   {
+    "sentence": "川に ○って 遊歩道が 続く。",
+    "reading": "そ"
+   },
+   {
+    "sentence": "線路○いの 道を 歩く。",
+    "reading": "ぞ"
+   },
+   {
+    "sentence": "○岸で 漁業が さかんだ。",
+    "reading": "えん"
+   },
+   {
+    "sentence": "海○いの 町に 住む。",
+    "reading": "ぞ"
+   },
+   {
+    "sentence": "道路に ○って 桜が 並ぶ。",
+    "reading": "そ"
+   }
+  ]
+ },
+ {
+  "kanji": "誠",
+  "questions": [
+   {
+    "sentence": "○実な 人がらが 好かれる。",
+    "reading": "せい"
+   },
+   {
+    "sentence": "○意を もって あやまる。",
+    "reading": "せい"
+   },
+   {
+    "sentence": "○を つくして 看病する。",
+    "reading": "まこと"
+   },
+   {
+    "sentence": "何事にも ○実に 取り組む。",
+    "reading": "せい"
+   },
+   {
+    "sentence": "約束を ○実に 守る。",
+    "reading": "せい"
+   }
+  ]
+ },
+ {
+  "kanji": "忘",
+  "questions": [
+   {
+    "sentence": "宿題を ○れて あわてた。",
+    "reading": "わす"
+   },
+   {
+    "sentence": "かさを 電車に ○れる。",
+    "reading": "わす"
+   },
+   {
+    "sentence": "○れ物が ないか 確かめる。",
+    "reading": "わす"
+   },
+   {
+    "sentence": "旅の 思い出は 一生 ○れない。",
+    "reading": "わす"
+   },
+   {
+    "sentence": "ど○れして 名前が 出て こない。",
+    "reading": "わす"
+   }
+  ]
+ },
+ {
+  "kanji": "俳",
+  "questions": [
+   {
+    "sentence": "五・七・五で ○句を 作る。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "○句に 季語を 入れる。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "芭蕉(ばしょう)は 有名な ○人だ。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "テレビで 人気の ○優。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "○句を 短冊に 書いて かざる。",
+    "reading": "はい"
+   }
+  ]
+ },
+ {
+  "kanji": "宝",
+  "questions": [
+   {
+    "sentence": "○物を 大切に しまう。",
+    "reading": "たから"
+   },
+   {
+    "sentence": "国○の 仏像を 見学する。",
+    "reading": "ほう"
+   },
+   {
+    "sentence": "○石の ついた ゆびわ。",
+    "reading": "ほう"
+   },
+   {
+    "sentence": "公園で ○さがしを して 遊ぶ。",
+    "reading": "たから"
+   },
+   {
+    "sentence": "友だちは 一生の ○だ。",
+    "reading": "たから"
+   }
+  ]
+ },
+ {
+  "kanji": "胸",
+  "questions": [
+   {
+    "sentence": "発表の 前は ○が どきどきする。",
+    "reading": "むね"
+   },
+   {
+    "sentence": "○を 張って 行進する。",
+    "reading": "むね"
+   },
+   {
+    "sentence": "プールで 水が ○まで きた。",
+    "reading": "むね"
+   },
+   {
+    "sentence": "兄は 度○が あって たのもしい。",
+    "reading": "きょう"
+   },
+   {
+    "sentence": "うれしくて ○が いっぱいに なる。",
+    "reading": "むね"
+   }
+  ]
+ },
+ {
+  "kanji": "砂",
+  "questions": [
+   {
+    "sentence": "公園の ○場で 遊ぶ。",
+    "reading": "すな"
+   },
+   {
+    "sentence": "○浜(はま)で 貝がらを 拾う。",
+    "reading": "すな"
+   },
+   {
+    "sentence": "○時計で 三分を はかる。",
+    "reading": "すな"
+   },
+   {
+    "sentence": "○糖を 少し 加える。",
+    "reading": "さ"
+   },
+   {
+    "sentence": "○ばくを らくだが 歩く。",
+    "reading": "さ"
+   }
+  ]
+ },
+ {
+  "kanji": "誤",
+  "questions": [
+   {
+    "sentence": "計算を ○って やり直す。",
+    "reading": "あやま"
+   },
+   {
+    "sentence": "作文の ○字を 直す。",
+    "reading": "ご"
+   },
+   {
+    "sentence": "意味を ○解して いた。",
+    "reading": "ご"
+   },
+   {
+    "sentence": "文章の ○りを 見つける。",
+    "reading": "あやま"
+   },
+   {
+    "sentence": "○った 情報に 注意する。",
+    "reading": "あやま"
+   }
+  ]
+ },
+ {
+  "kanji": "聖",
+  "questions": [
+   {
+    "sentence": "オリンピックの ○火リレー。",
+    "reading": "せい"
+   },
+   {
+    "sentence": "○徳太子の 政治を 学ぶ。",
+    "reading": "しょう"
+   },
+   {
+    "sentence": "○火ランナーが 街を 走る。",
+    "reading": "せい"
+   },
+   {
+    "sentence": "神○な 場所では 静かに する。",
+    "reading": "せい"
+   },
+   {
+    "sentence": "○徳太子が 法隆寺(ほうりゅうじ)を 建てた。",
+    "reading": "しょう"
+   }
+  ]
+ },
+ {
+  "kanji": "洗",
+  "questions": [
+   {
+    "sentence": "外から 帰ったら 手を ○う。",
+    "reading": "あら"
+   },
+   {
+    "sentence": "○面所で 顔を あらう。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "くつを ごしごし ○う。",
+    "reading": "あら"
+   },
+   {
+    "sentence": "○たく物を 取りこむ。",
+    "reading": "せん"
+   },
+   {
+    "sentence": "食器を ○って かたづける。",
+    "reading": "あら"
+   }
+  ]
+ },
+ {
+  "kanji": "尊",
+  "questions": [
+   {
+    "sentence": "先生を ○敬して いる。",
+    "reading": "そん"
+   },
+   {
+    "sentence": "おたがいの 意見を ○重する。",
+    "reading": "そん"
+   },
+   {
+    "sentence": "○敬する 人は 祖母だ。",
+    "reading": "そん"
+   },
+   {
+    "sentence": "生き物の 命を ○重する。",
+    "reading": "そん"
+   },
+   {
+    "sentence": "文化の ちがいを ○重し合う。",
+    "reading": "そん"
+   }
+  ]
+ },
+ {
+  "kanji": "窓",
+  "questions": [
+   {
+    "sentence": "○を 開けて 空気を 入れかえる。",
+    "reading": "まど"
+   },
+   {
+    "sentence": "○ガラスを きれいに ふく。",
+    "reading": "まど"
+   },
+   {
+    "sentence": "車○からの けしきを 楽しむ。",
+    "reading": "そう"
+   },
+   {
+    "sentence": "○ぎわの 席に すわる。",
+    "reading": "まど"
+   },
+   {
+    "sentence": "夜は ○の カーテンを 閉める。",
+    "reading": "まど"
+   }
+  ]
+ },
+ {
+  "kanji": "敵",
+  "questions": [
+   {
+    "sentence": "試合で 強○と 当たる。",
+    "reading": "てき"
+   },
+   {
+    "sentence": "油断は 大○だ。",
+    "reading": "てき"
+   },
+   {
+    "sentence": "物語の 主人公が ○と 戦う。",
+    "reading": "てき"
+   },
+   {
+    "sentence": "○も 味方も 全力を つくした。",
+    "reading": "てき"
+   },
+   {
+    "sentence": "カマキリは 害虫の 天○だ。",
+    "reading": "てき"
+   }
+  ]
+ },
+ {
+  "kanji": "幼",
+  "questions": [
+   {
+    "sentence": "○い ころの 写真を 見る。",
+    "reading": "おさな"
+   },
+   {
+    "sentence": "カブトムシの ○虫を 育てる。",
+    "reading": "よう"
+   },
+   {
+    "sentence": "○稚(ち)園の 思い出を 話す。",
+    "reading": "よう"
+   },
+   {
+    "sentence": "○児向けの 絵本を 読んで あげる。",
+    "reading": "よう"
+   },
+   {
+    "sentence": "○なじみと 同じ クラスに なる。",
+    "reading": "おさな"
+   }
+  ]
+ },
+ {
+  "kanji": "潮",
+  "questions": [
+   {
+    "sentence": "海の ○が 満ちて くる。",
+    "reading": "しお"
+   },
+   {
+    "sentence": "○干がりで あさりを とる。",
+    "reading": "しお"
+   },
+   {
+    "sentence": "満○の 時刻を 調べる。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "黒○は 日本の 南を 流れる。",
+    "reading": "しお"
+   },
+   {
+    "sentence": "○風が 気持ちいい。",
+    "reading": "しお"
+   }
+  ]
+ },
+ {
+  "kanji": "鋼",
+  "questions": [
+   {
+    "sentence": "○鉄で できた 橋。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "鉄○業が さかんな 地域。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "○の ように かたい 意志を もつ。",
+    "reading": "はがね"
+   },
+   {
+    "sentence": "自転車の フレームは ○鉄製だ。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "日本の 鉄○は 世界に 輸出される。",
+    "reading": "こう"
+   }
+  ]
+ },
+ {
+  "kanji": "縦",
+  "questions": [
+   {
+    "sentence": "○書きで 作文を 書く。",
+    "reading": "たて"
+   },
+   {
+    "sentence": "○と 横の 長さを はかる。",
+    "reading": "たて"
+   },
+   {
+    "sentence": "音楽で ○笛を ふく。",
+    "reading": "たて"
+   },
+   {
+    "sentence": "日本列島を ○断する 旅。",
+    "reading": "じゅう"
+   },
+   {
+    "sentence": "ノートに ○の 線を 引く。",
+    "reading": "たて"
+   }
+  ]
+ },
+ {
+  "kanji": "捨",
+  "questions": [
+   {
+    "sentence": "ごみは ごみ箱に ○てる。",
+    "reading": "す"
+   },
+   {
+    "sentence": "四○五入で およその 数に する。",
+    "reading": "しゃ"
+   },
+   {
+    "sentence": "空きかんを ○てずに 持ち帰る。",
+    "reading": "す"
+   },
+   {
+    "sentence": "いらない 物を 思い切って ○てる。",
+    "reading": "す"
+   },
+   {
+    "sentence": "ごみの ポイ○ては しない。",
+    "reading": "す"
+   }
+  ]
+ },
+ {
+  "kanji": "腹",
+  "questions": [
+   {
+    "sentence": "○いっぱい ごはんを 食べた。",
+    "reading": "はら"
+   },
+   {
+    "sentence": "空○で 力が 出ない。",
+    "reading": "ふく"
+   },
+   {
+    "sentence": "○を かかえて 大笑いする。",
+    "reading": "はら"
+   },
+   {
+    "sentence": "○筋(きん)運動を 十回 する。",
+    "reading": "ふっ"
+   },
+   {
+    "sentence": "食べすぎて ○が 苦しい。",
+    "reading": "はら"
+   }
+  ]
+ },
+ {
+  "kanji": "乳",
+  "questions": [
+   {
+    "sentence": "毎朝 牛○を 飲む。",
+    "reading": "にゅう"
+   },
+   {
+    "sentence": "○歯が ぬけて 新しい 歯が 生えた。",
+    "reading": "にゅう"
+   },
+   {
+    "sentence": "牧場で ○しぼりを 体験する。",
+    "reading": "ちち"
+   },
+   {
+    "sentence": "チーズは ○製品の 一つだ。",
+    "reading": "にゅう"
+   },
+   {
+    "sentence": "母○で 育つ 赤ちゃん。",
+    "reading": "にゅう"
+   }
+  ]
+ },
+ {
+  "kanji": "紅",
+  "questions": [
+   {
+    "sentence": "○白に 分かれて 玉入れを する。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "○茶に ミルクを 入れる。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "山の ○葉を 見に 行く。",
+    "reading": "こう"
+   },
+   {
+    "sentence": "母が 口○を つける。",
+    "reading": "べに"
+   },
+   {
+    "sentence": "夕日で 空が ○色に 染まる。",
+    "reading": "べに"
+   }
+  ]
+ },
+ {
+  "kanji": "冊",
+  "questions": [
+   {
+    "sentence": "図書室で 本を 二○ 借りる。",
+    "reading": "さつ"
+   },
+   {
+    "sentence": "新しい ノートを 一○ 買う。",
+    "reading": "さつ"
+   },
+   {
+    "sentence": "全十○の 百科事典。",
+    "reading": "さつ"
+   },
+   {
+    "sentence": "雑誌の 別○ふろく。",
+    "reading": "さつ"
+   },
+   {
+    "sentence": "夏休みに 本を 五○ 読んだ。",
+    "reading": "さつ"
+   }
+  ]
+ },
+ {
+  "kanji": "仁",
+  "questions": [
+   {
+    "sentence": "お寺の 門に ○王像が 立つ。",
+    "reading": "に"
+   },
+   {
+    "sentence": "○徳天皇に ついて 学ぶ。",
+    "reading": "にん"
+   },
+   {
+    "sentence": "○王立ちで 通せんぼを する。",
+    "reading": "に"
+   },
+   {
+    "sentence": "○とは 思いやりの 心の ことだ。",
+    "reading": "じん"
+   },
+   {
+    "sentence": "○徳天皇の 古墳(こふん)は 日本で 一番 大きい。",
+    "reading": "にん"
+   }
+  ]
+ },
+ {
+  "kanji": "卵",
+  "questions": [
+   {
+    "sentence": "にわとりが ○を 産んだ。",
+    "reading": "たまご"
+   },
+   {
+    "sentence": "生○を ごはんに かける。",
+    "reading": "たまご"
+   },
+   {
+    "sentence": "ゆで○を 半分に 切る。",
+    "reading": "たまご"
+   },
+   {
+    "sentence": "さけが 川で 産○する。",
+    "reading": "らん"
+   },
+   {
+    "sentence": "カエルの ○を 観察する。",
+    "reading": "たまご"
+   }
+  ]
+ },
+ {
+  "kanji": "干",
+  "questions": [
+   {
+    "sentence": "ベランダに ふとんを ○す。",
+    "reading": "ほ"
+   },
+   {
+    "sentence": "梅○しの おにぎりを 食べる。",
+    "reading": "ぼ"
+   },
+   {
+    "sentence": "○潮の 海で 貝を 拾う。",
+    "reading": "かん"
+   },
+   {
+    "sentence": "魚の ○物を 焼く。",
+    "reading": "ひ"
+   },
+   {
+    "sentence": "洗たく物を ○して 出かける。",
+    "reading": "ほ"
+   }
+  ]
+ },
+ {
+  "kanji": "頂",
+  "questions": [
+   {
+    "sentence": "山の ○上から 景色を ながめる。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "○上まで あと 少しだ。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "山の ○に 雪が 残って いる。",
+    "reading": "いただき"
+   },
+   {
+    "sentence": "おみやげの おかしを ○く。",
+    "reading": "いただ"
+   },
+   {
+    "sentence": "先生から 賞状を ○く。",
+    "reading": "いただ"
+   }
+  ]
+ },
+ {
+  "kanji": "穴",
+  "questions": [
+   {
+    "sentence": "地面に ○を ほって 球根を 植える。",
+    "reading": "あな"
+   },
+   {
+    "sentence": "くつ下に ○が あいた。",
+    "reading": "あな"
+   },
+   {
+    "sentence": "もぐらが ○を ほる。",
+    "reading": "あな"
+   },
+   {
+    "sentence": "ドーナツの まん中の ○。",
+    "reading": "あな"
+   },
+   {
+    "sentence": "ボタンを ○に 通す。",
+    "reading": "あな"
+   }
+  ]
+ },
+ {
+  "kanji": "暖",
+  "questions": [
+   {
+    "sentence": "○かい 春風が ふく。",
+    "reading": "あたた"
+   },
+   {
+    "sentence": "○ぼうの きいた 部屋。",
+    "reading": "だん"
+   },
+   {
+    "sentence": "○かい 日が 続く。",
+    "reading": "あたた"
+   },
+   {
+    "sentence": "地球温○化に ついて 学ぶ。",
+    "reading": "だん"
+   },
+   {
+    "sentence": "○流の 黒潮が 流れる。",
+    "reading": "だん"
+   }
+  ]
+ },
+ {
+  "kanji": "朗",
+  "questions": [
+   {
+    "sentence": "国語の 時間に 詩を ○読する。",
+    "reading": "ろう"
+   },
+   {
+    "sentence": "○らかな 性格で 人気者だ。",
+    "reading": "ほが"
+   },
+   {
+    "sentence": "物語を ○読する 会に 出る。",
+    "reading": "ろう"
+   },
+   {
+    "sentence": "祖父は 明○で よく 笑う。",
+    "reading": "ろう"
+   },
+   {
+    "sentence": "合格の ○報が とどいた。",
+    "reading": "ろう"
+   }
+  ]
+ },
+ {
+  "kanji": "肺",
+  "questions": [
+   {
+    "sentence": "○で 酸素を 取り入れる。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "○活量を 測定する。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "深呼吸で ○に 空気を 送る。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "○の しくみを 理科で 学ぶ。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "心○機能を 高める 運動。",
+    "reading": "はい"
+   }
+  ]
+ },
+ {
+  "kanji": "熟",
+  "questions": [
+   {
+    "sentence": "真っ赤に ○れた トマトを とる。",
+    "reading": "う"
+   },
+   {
+    "sentence": "○語の 意味を 辞典で 調べる。",
+    "reading": "じゅく"
+   },
+   {
+    "sentence": "バナナが ○して あまく なる。",
+    "reading": "じゅく"
+   },
+   {
+    "sentence": "二字○語を 三つ 作る。",
+    "reading": "じゅく"
+   },
+   {
+    "sentence": "かきの 実が ○れて 落ちた。",
+    "reading": "う"
+   }
+  ]
+ },
+ {
+  "kanji": "恩",
+  "questions": [
+   {
+    "sentence": "つるの ○返しの お話。",
+    "reading": "おん"
+   },
+   {
+    "sentence": "○師に 年賀状を 書く。",
+    "reading": "おん"
+   },
+   {
+    "sentence": "命の ○人に 感謝する。",
+    "reading": "おん"
+   },
+   {
+    "sentence": "受けた ご○を 忘れない。",
+    "reading": "おん"
+   },
+   {
+    "sentence": "○返しの つもりで 手伝う。",
+    "reading": "おん"
+   }
+  ]
+ },
+ {
+  "kanji": "晩",
+  "questions": [
+   {
+    "sentence": "○ごはんの したくを 手伝う。",
+    "reading": "ばん"
+   },
+   {
+    "sentence": "毎○ 九時に ねる。",
+    "reading": "ばん"
+   },
+   {
+    "sentence": "今○の おかずは カレーだ。",
+    "reading": "ばん"
+   },
+   {
+    "sentence": "朝から ○まで よく 働いた。",
+    "reading": "ばん"
+   },
+   {
+    "sentence": "昨○は 早めに ねた。",
+    "reading": "ばん"
+   }
+  ]
+ },
+ {
+  "kanji": "陛",
+  "questions": [
+   {
+    "sentence": "天皇○下の おことばを 聞く。",
+    "reading": "へい"
+   },
+   {
+    "sentence": "両○下が 式典に 出席された。",
+    "reading": "へい"
+   },
+   {
+    "sentence": "皇后○下が 手を ふられた。",
+    "reading": "へい"
+   },
+   {
+    "sentence": "○下の ご訪問の ニュース。",
+    "reading": "へい"
+   },
+   {
+    "sentence": "国王○下に あいさつを する。",
+    "reading": "へい"
+   }
+  ]
+ },
+ {
+  "kanji": "拝",
+  "questions": [
+   {
+    "sentence": "初日の出を ○む。",
+    "reading": "おが"
+   },
+   {
+    "sentence": "神社に 参○する。",
+    "reading": "ぱい"
+   },
+   {
+    "sentence": "お寺で 仏像を ○む。",
+    "reading": "おが"
+   },
+   {
+    "sentence": "お手紙を ○見しました。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "初もうでで 手を 合わせて ○む。",
+    "reading": "おが"
+   }
+  ]
+ },
+ {
+  "kanji": "棒",
+  "questions": [
+   {
+    "sentence": "鉄○で さか上がりの 練習を する。",
+    "reading": "ぼう"
+   },
+   {
+    "sentence": "調べた 数を ○グラフに 表す。",
+    "reading": "ぼう"
+   },
+   {
+    "sentence": "長い ○で 川の 深さを はかる。",
+    "reading": "ぼう"
+   },
+   {
+    "sentence": "○高とびの 世界記録を 見た。",
+    "reading": "ぼう"
+   },
+   {
+    "sentence": "歩きすぎて 足が ○に なった。",
+    "reading": "ぼう"
+   }
+  ]
+ },
+ {
+  "kanji": "糖",
+  "questions": [
+   {
+    "sentence": "料理に 砂○を 加える。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "○分の とりすぎに 気を つける。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "ぶどう○は エネルギーの もとに なる。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "砂○を 水に とかす 実験。",
+    "reading": "とう"
+   },
+   {
+    "sentence": "ジュースには ○分が 多い。",
+    "reading": "とう"
+   }
+  ]
+ },
+ {
+  "kanji": "俵",
+  "questions": [
+   {
+    "sentence": "米○を かついで 運ぶ。",
+    "reading": "だわら"
+   },
+   {
+    "sentence": "土○の 上で 力士が 組み合う。",
+    "reading": "ひょう"
+   },
+   {
+    "sentence": "昔は 米を ○に 入れて 運んだ。",
+    "reading": "たわら"
+   },
+   {
+    "sentence": "土○ぎわで 逆転した。",
+    "reading": "ひょう"
+   },
+   {
+    "sentence": "一○の 米は 六十キログラムだ。",
+    "reading": "ぴょう"
+   }
+  ]
+ },
+ {
+  "kanji": "覧",
+  "questions": [
+   {
+    "sentence": "遊園地の 観○車に 乗る。",
+    "reading": "らん"
+   },
+   {
+    "sentence": "回○板を となりの 家に 回す。",
+    "reading": "らん"
+   },
+   {
+    "sentence": "美術館の 展○会に 行く。",
+    "reading": "らん"
+   },
+   {
+    "sentence": "図書室の 本の 一○表を 作る。",
+    "reading": "らん"
+   },
+   {
+    "sentence": "万国博○会の 歴史を 調べる。",
+    "reading": "らん"
+   }
+  ]
+ },
+ {
+  "kanji": "奮",
+  "questions": [
+   {
+    "sentence": "初優勝に 興○する。",
+    "reading": "ふん"
+   },
+   {
+    "sentence": "勇気を ○って 手を 挙げた。",
+    "reading": "ふる"
+   },
+   {
+    "sentence": "試合前に 気持ちが ○い立つ。",
+    "reading": "ふる"
+   },
+   {
+    "sentence": "興○して なかなか ねむれなかった。",
+    "reading": "ふん"
+   },
+   {
+    "sentence": "発○して 勉強に はげむ。",
+    "reading": "ぷん"
+   }
+  ]
+ },
+ {
+  "kanji": "蒸",
+  "questions": [
+   {
+    "sentence": "水たまりの 水が ○発した。",
+    "reading": "じょう"
+   },
+   {
+    "sentence": "○し暑い 夜が 続く。",
+    "reading": "む"
+   },
+   {
+    "sentence": "○気機関車が 走る。",
+    "reading": "じょう"
+   },
+   {
+    "sentence": "○しパンを おやつに 食べる。",
+    "reading": "む"
+   },
+   {
+    "sentence": "茶わん○しを 食べる。",
+    "reading": "む"
+   }
+  ]
+ },
+ {
+  "kanji": "后",
+  "questions": [
+   {
+    "sentence": "皇○さまが 外国を 訪問される。",
+    "reading": "ごう"
+   },
+   {
+    "sentence": "天皇皇○両陛下の パレード。",
+    "reading": "ごう"
+   },
+   {
+    "sentence": "皇○陛下が おことばを 述べられた。",
+    "reading": "ごう"
+   },
+   {
+    "sentence": "皇○さまの お誕生日の ニュース。",
+    "reading": "ごう"
+   },
+   {
+    "sentence": "皇○とは 天皇の きさきの ことだ。",
+    "reading": "ごう"
+   }
+  ]
+ },
+ {
+  "kanji": "班",
+  "questions": [
+   {
+    "sentence": "○に 分かれて 実験する。",
+    "reading": "はん"
+   },
+   {
+    "sentence": "話し合いで ○長を 決める。",
+    "reading": "はん"
+   },
+   {
+    "sentence": "同じ ○の 友だちと 調べ学習を する。",
+    "reading": "はん"
+   },
+   {
+    "sentence": "給食当番を ○で 交代する。",
+    "reading": "はん"
+   },
+   {
+    "sentence": "遠足では ○行動を 守る。",
+    "reading": "はん"
+   }
+  ]
+ },
+ {
+  "kanji": "詞",
+  "questions": [
+   {
+    "sentence": "好きな 歌の 歌○を おぼえる。",
+    "reading": "し"
+   },
+   {
+    "sentence": "この 曲の 作○者を 調べる。",
+    "reading": "し"
+   },
+   {
+    "sentence": "国語で 名○に ついて 学ぶ。",
+    "reading": "し"
+   },
+   {
+    "sentence": "「走る」は 動○だ。",
+    "reading": "し"
+   },
+   {
+    "sentence": "合唱曲の 歌○の 意味を 考える。",
+    "reading": "し"
+   }
+  ]
+ },
+ {
+  "kanji": "胃",
+  "questions": [
+   {
+    "sentence": "食べすぎて ○が 痛く なった。",
+    "reading": "い"
+   },
+   {
+    "sentence": "○腸の 調子を 整える。",
+    "reading": "い"
+   },
+   {
+    "sentence": "食べ物は ○で 消化される。",
+    "reading": "い"
+   },
+   {
+    "sentence": "○液は 食べ物を とかす。",
+    "reading": "い"
+   },
+   {
+    "sentence": "父が ○カメラの 検査を 受けた。",
+    "reading": "い"
+   }
+  ]
+ },
+ {
+  "kanji": "寸",
+  "questions": [
+   {
+    "sentence": "服の ○法を 測る。",
+    "reading": "すん"
+   },
+   {
+    "sentence": "一○法師の 昔話を 読む。",
+    "reading": "すん"
+   },
+   {
+    "sentence": "工作の 前に ○法を 確かめる。",
+    "reading": "すん"
+   },
+   {
+    "sentence": "ゴール○前で ぬかれた。",
+    "reading": "すん"
+   },
+   {
+    "sentence": "学芸会で ○劇を 演じる。",
+    "reading": "すん"
+   }
+  ]
+ },
+ {
+  "kanji": "机",
+  "questions": [
+   {
+    "sentence": "○の 上を きれいに 整理する。",
+    "reading": "つくえ"
+   },
+   {
+    "sentence": "○の 中に 教科書を しまう。",
+    "reading": "つくえ"
+   },
+   {
+    "sentence": "新しい 学習○を 買って もらう。",
+    "reading": "づくえ"
+   },
+   {
+    "sentence": "○を ならべて 給食を 食べる。",
+    "reading": "つくえ"
+   },
+   {
+    "sentence": "図書室の ○で 宿題を する。",
+    "reading": "つくえ"
+   }
+  ]
+ },
+ {
+  "kanji": "磁",
+  "questions": [
+   {
+    "sentence": "○石に くぎが つく。",
+    "reading": "じ"
+   },
+   {
+    "sentence": "○石の N極と S極を 調べる。",
+    "reading": "じ"
+   },
+   {
+    "sentence": "理科で 電○石を 作った。",
+    "reading": "じ"
+   },
+   {
+    "sentence": "方位○針で 北を 確かめる。",
+    "reading": "じ"
+   },
+   {
+    "sentence": "○石は 鉄を 引きつける。",
+    "reading": "じ"
+   }
+  ]
+ },
+ {
+  "kanji": "灰",
+  "questions": [
+   {
+    "sentence": "○色の 雲が 広がる。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "火山○が 遠くまで 飛ぶ。",
+    "reading": "ばい"
+   },
+   {
+    "sentence": "石○水が 白く にごった。",
+    "reading": "かい"
+   },
+   {
+    "sentence": "花火の あとの ○を かたづける。",
+    "reading": "はい"
+   },
+   {
+    "sentence": "たき火の ○に 水を かける。",
+    "reading": "はい"
+   }
+  ]
+ },
+ {
+  "kanji": "垂",
+  "questions": [
+   {
+    "sentence": "○直な 線を 引く。",
+    "reading": "すい"
+   },
+   {
+    "sentence": "つりざおから 糸を ○らす。",
+    "reading": "た"
+   },
+   {
+    "sentence": "犬の 耳が ○れて いる。",
+    "reading": "た"
+   },
+   {
+    "sentence": "算数で ○直と 平行を 学ぶ。",
+    "reading": "すい"
+   },
+   {
+    "sentence": "あせが ぽたぽたと ○れる。",
+    "reading": "た"
+   }
+  ]
+ },
+ {
+  "kanji": "穀",
+  "questions": [
+   {
+    "sentence": "米や 麦は ○物だ。",
+    "reading": "こく"
+   },
+   {
+    "sentence": "○物を 育てる 農家。",
+    "reading": "こく"
+   },
+   {
+    "sentence": "○倉地帯と よばれる 平野。",
+    "reading": "こく"
+   },
+   {
+    "sentence": "雑○入りの ごはんを 食べる。",
+    "reading": "こく"
+   },
+   {
+    "sentence": "世界の ○物の 生産量を 調べる。",
+    "reading": "こく"
+   }
+  ]
+ },
+ {
+  "kanji": "腸",
+  "questions": [
+   {
+    "sentence": "小○で 養分を 吸収する。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "大○の 働きを 学ぶ。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "胃○の 調子が よい。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "○内の 細きんの 働きを 知る。",
+    "reading": "ちょう"
+   },
+   {
+    "sentence": "食物せんいは ○に よい。",
+    "reading": "ちょう"
+   }
+  ]
+ },
+ {
+  "kanji": "舌",
+  "questions": [
+   {
+    "sentence": "熱い スープで ○を やけどした。",
+    "reading": "した"
+   },
+   {
+    "sentence": "ねこが ○で 毛づくろいを する。",
+    "reading": "した"
+   },
+   {
+    "sentence": "○で 味を 感じる。",
+    "reading": "した"
+   },
+   {
+    "sentence": "ごちそうに ○つづみを 打つ。",
+    "reading": "した"
+   },
+   {
+    "sentence": "犬が ○を 出して 息を する。",
+    "reading": "した"
+   }
+  ]
+ },
+ {
+  "kanji": "絹",
+  "questions": [
+   {
+    "sentence": "○の スカーフは 手ざわりが よい。",
+    "reading": "きぬ"
+   },
+   {
+    "sentence": "○糸は 蚕の まゆから とれる。",
+    "reading": "きぬ"
+   },
+   {
+    "sentence": "○織物の 産地を 調べる。",
+    "reading": "きぬ"
+   },
+   {
+    "sentence": "○の ハンカチを おくる。",
+    "reading": "きぬ"
+   },
+   {
+    "sentence": "○の 着物を 着る。",
+    "reading": "きぬ"
+   }
+  ]
+ },
+ {
+  "kanji": "尺",
+  "questions": [
+   {
+    "sentence": "地図の 縮○を 読み取る。",
+    "reading": "しゃく"
+   },
+   {
+    "sentence": "○八の 音色を 聞く。",
+    "reading": "しゃく"
+   },
+   {
+    "sentence": "巻○で 木の まわりを 測る。",
+    "reading": "じゃく"
+   },
+   {
+    "sentence": "縮○の ちがう 二つの 地図。",
+    "reading": "しゃく"
+   },
+   {
+    "sentence": "一○は 約 三十センチだ。",
+    "reading": "しゃく"
+   }
+  ]
+ },
+ {
+  "kanji": "蚕",
+  "questions": [
+   {
+    "sentence": "○は くわの 葉を 食べる。",
+    "reading": "かいこ"
+   },
+   {
+    "sentence": "○の まゆから 生糸を とる。",
+    "reading": "かいこ"
+   },
+   {
+    "sentence": "養○業が さかんだった 地域。",
+    "reading": "さん"
+   },
+   {
+    "sentence": "○を 育てて 観察する。",
+    "reading": "かいこ"
+   },
+   {
+    "sentence": "○の まゆは 白くて 丸い。",
+    "reading": "かいこ"
+   }
+  ]
+ }
+]

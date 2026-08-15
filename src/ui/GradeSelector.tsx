@@ -2,12 +2,14 @@
 import { GRADE_OPTIONS } from '../data/curriculum'
 import { setBrowseGrade, useAppState } from '../state/store'
 
-export function GradeSelector({ ownGrade }: { ownGrade: number }) {
+export function GradeSelector({ ownGrade, effectiveGrade }: { ownGrade: number; effectiveGrade?: number }) {
   const browseGrade = useAppState((s) => s.browseGrade)
-  const effective = browseGrade ?? Math.max(1, ownGrade)
+  // effectiveGrade: 画面側が既定学年を上書きしている場合（テストの「未クリア最小学年」等）に渡す
+  const effective = effectiveGrade ?? browseGrade ?? Math.max(1, ownGrade)
   return (
     <div className="grade-selector">
       <span className="grade-selector-label">学年:</span>
+      {/* ★（自分の学年マーク）は第41回で廃止: プロフィールの学年選択をやめたため */}
       {GRADE_OPTIONS.filter((o) => o.value >= 1).map((o) => (
         <button
           key={o.value}
@@ -15,7 +17,6 @@ export function GradeSelector({ ownGrade }: { ownGrade: number }) {
           onClick={() => setBrowseGrade(o.value)}
         >
           {o.label}
-          {o.value === Math.max(1, ownGrade) ? '★' : ''}
         </button>
       ))}
     </div>

@@ -287,6 +287,119 @@ body {
   border: 2px solid transparent;
 }
 
+/* 四字熟語など複数文字のチップ（第24回） */
+.kanji-chip.chip-wide {
+  width: auto;
+  padding: 0 12px;
+  font-size: 21px;
+  letter-spacing: 1px;
+}
+
+/* 称号バッジ（第36回）: まとめテスト100点の本数=ランク */
+.rank-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 6px;
+  padding: 2px 10px 2px 4px;
+  border-radius: 999px;
+  border: 1.5px solid #e3d6b0;
+  background: #fffaf0;
+  color: #6a5a2a;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+}
+.rank-chip-grand {
+  border-color: #f2c33c;
+  background: linear-gradient(135deg, #fff8e0, #ffefc2);
+  color: #8a5a1a;
+}
+.rank-chip-none {
+  padding: 2px 10px;
+  color: #9a9a9a;
+  border-style: dashed;
+  background: #fafafa;
+}
+.rank-list-head h2 {
+  margin: 0 0 4px;
+}
+.rank-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding: 4px;
+}
+.rank-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border-radius: 12px;
+  background: #fffdf6;
+  border: 1px solid #eee4c8;
+}
+.rank-item-locked {
+  background: #f6f6f6;
+  border-color: #e4e4e4;
+}
+.rank-item-label {
+  font-size: 13px;
+  font-weight: 800;
+}
+.rank-item-locked .rank-item-label {
+  color: #a0a0a0;
+}
+.rank-item-cond {
+  font-size: 10px;
+  color: #9a8f6a;
+}
+.rankup-panel {
+  text-align: center;
+}
+.rankup-badge {
+  margin: 12px auto;
+  animation: rankup-pop 0.7s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+@keyframes rankup-pop {
+  0% {
+    transform: scale(0.2) rotate(-18deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+/* まとめテスト100点の到達レベルバッジ（第28回） */
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #fdeec8;
+  color: #8a6a1f;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* プロフィール選択画面のレベル表示（第29回: 学年より目立たせる） */
+.profile-card .profile-level {
+  margin-left: 0;
+  margin-top: 4px;
+  font-size: 15px;
+  padding: 4px 12px;
+}
+
 .chip-practiced {
   background: #e3eafb;
   color: var(--primary);
@@ -595,6 +708,80 @@ body {
   padding: 2px 4px 8px;
 }
 
+/* 実績の大きな表示（第37回。ホーム・みんな共通） */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+/* ホームは4枠を2×2できっちり整理（第38回） */
+.home-left .stat-row {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: #fffdf6;
+  border: 1.5px solid #eee4c8;
+}
+
+.stat-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #8a7f5e;
+  white-space: nowrap;
+}
+
+.stat-num {
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.15;
+  color: #4a4232;
+}
+
+.stat-num small {
+  font-size: 13px;
+  font-weight: 700;
+  color: #a09572;
+}
+
+/* 称号の枠（4枠目。タップで一覧。第38回） */
+.stat-card-btn {
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  align-items: flex-start;
+}
+
+.stat-rank {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+}
+
+.stat-rank-label {
+  font-size: 24px;
+  font-weight: 900;
+  color: #4a4232;
+}
+
+.stat-rank-none {
+  font-size: 16px;
+  font-weight: 700;
+  color: #a09572;
+}
+
+.stat-rank-hint {
+  font-size: 11px;
+  color: #b0a68a;
+}
+
 .masterbar {
   height: 12px;
   background: #ece7da;
@@ -811,6 +998,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.writing-pad,
+.trace-wrap {
+  /* 手のひらが枠の外に触れてもスクロール判定が始まらないようにする（ペンのcancel対策） */
+  touch-action: none;
 }
 
 .pad-box {
@@ -2037,6 +2230,15 @@ body {
   margin-bottom: 8px;
 }
 
+/* みんな画面の実績カード（第37回） */
+.minna-stat-row {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.minna-stat .stat-num {
+  font-size: 26px;
+}
+
 .minna-mastered {
   margin: 2px 0;
   font-size: 14.5px;
@@ -2217,6 +2419,17 @@ body {
 
 .map-note-inline {
   margin: 0 2px;
+}
+
+/* 到達レベルチップ（5問テスト100点が全部そろっている学年学期。第44回） */
+.level-chip {
+  background: #eef4ff;
+  color: #2f4a86;
+  border: 1.5px solid #cfdcf5;
+  box-shadow: none;
+  font-size: 13px;
+  padding: 4px 10px;
+  white-space: nowrap;
 }
 
 /* ---------- ステータス常設表示 ---------- */
@@ -2749,6 +2962,11 @@ body {
     font-size: 13px;
   }
 
+  .level-chip {
+    padding: 3px 7px;
+    font-size: 11px;
+  }
+
   .strict-btn {
     font-size: 11px;
     padding: 6px 9px;
@@ -2757,5 +2975,328 @@ body {
   .sound-btn {
     width: 34px;
     height: 34px;
+  }
+}
+
+/* デスクトップ/iPadでのバディカード内レイアウト（第40回でJSXを分割したぶん） */
+.buddy-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+}
+
+/* ============================================================
+   スマホ対応（第40回）
+   - 縦: ヘッダーを折り返し、バディカードは横並びのコンパクト表示
+   - 横（低い画面）: 上部を薄くし、「つぎへ」等の判定ボタンを画面下に固定
+   ============================================================ */
+@media (max-width: 700px) {
+  /* ホームヘッダー: あふれずに折り返す */
+  .home-header {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .home-profile {
+    font-size: 15px;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .home-profile .avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+
+  .level-badge {
+    font-size: 11px;
+    padding: 2px 7px;
+    max-width: 38vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .home-badges {
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  .badge {
+    padding: 3px 8px;
+    font-size: 12px;
+  }
+
+  .sound-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .home-badges .btn {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .home-main {
+    gap: 10px;
+  }
+
+  /* 実績4枠はやや小さく */
+  .stat-card {
+    padding: 8px 10px;
+  }
+
+  .stat-num {
+    font-size: 24px;
+  }
+
+  .stat-rank-label {
+    font-size: 19px;
+  }
+
+  .action-btn {
+    padding: 12px 8px;
+  }
+
+  .action-sub {
+    font-size: 10.5px;
+  }
+}
+
+/* 縦のスマホ: バディ（キャラクター）は横長のコンパクトカードに */
+@media (max-width: 700px) and (orientation: portrait) {
+  .home-right {
+    flex: none;
+  }
+
+  .buddy-card {
+    flex: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    text-align: left;
+  }
+
+  .buddy-sprite-box svg {
+    width: 74px;
+    height: 74px;
+  }
+
+  .buddy-info {
+    align-items: flex-start;
+    text-align: left;
+    flex: 1;
+  }
+
+  .buddy-name {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .buddy-level {
+    font-size: 13px;
+  }
+
+  .buddy-desc {
+    display: none;
+  }
+
+  .buddy-card .tile-sub {
+    display: none;
+  }
+
+  .buddy-card .expbar {
+    width: 100%;
+  }
+
+  .buddy-empty {
+    width: 74px;
+    height: 74px;
+    font-size: 30px;
+  }
+}
+
+/* 横のスマホ（高さが低い画面）: 練習・テスト画面を使いやすく */
+@media (max-height: 540px) {
+  .topbar {
+    min-height: 40px;
+    padding: 4px 10px;
+    gap: 6px;
+  }
+
+  .topbar-title {
+    font-size: 14px;
+  }
+
+  .badge {
+    padding: 3px 8px;
+    font-size: 12px;
+  }
+
+  .sound-btn {
+    width: 30px;
+    height: 30px;
+  }
+
+  .step-banner {
+    font-size: 11.5px;
+    padding: 3px 10px;
+  }
+
+  .split {
+    padding: 6px 10px 8px;
+    gap: 10px;
+  }
+
+  .pad-box {
+    width: min(68vh, 42vw, 560px);
+  }
+
+  .model-note {
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+
+  .usage-line {
+    font-size: 13.5px;
+  }
+
+  /* 「もういちど/つぎへ」を必ず押せるように、判定パネルは画面下に固定 */
+  .feedback {
+    position: fixed;
+    left: 10px;
+    bottom: 8px;
+    width: min(50vw, 400px);
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 46;
+    box-shadow: 0 8px 28px rgba(40, 30, 10, 0.3);
+  }
+
+  /* バディは右下に小さく */
+  .split .buddy-corner {
+    position: fixed;
+    right: 6px;
+    bottom: 6px;
+    top: auto;
+    z-index: 30;
+    background: rgba(255, 255, 255, 0.78);
+    border-radius: 12px;
+    margin: 0;
+    padding: 2px 4px;
+  }
+
+  .split .buddy-corner .buddy-corner-sprite svg {
+    width: 44px;
+    height: auto;
+  }
+
+  .split .buddy-corner .buddy-corner-name {
+    display: none;
+  }
+
+  /* ホーム: 右カラムをスクロール可能に・バディ小さめ */
+  .home-right {
+    min-width: 210px;
+    overflow-y: auto;
+  }
+
+  .buddy-sprite-box svg {
+    width: 90px;
+    height: 90px;
+  }
+
+  .buddy-desc {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  /* なかまガチャ等の小タイルの文字折れ対策 */
+  .tile-sm {
+    font-size: 13px;
+    padding: 10px 4px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 700px) {
+  /* ボタン文字の縦割れ防止（さいしょから等） */
+  .topbar .btn {
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 6px 9px;
+    min-height: 32px;
+  }
+}
+
+@media (max-width: 700px) and (orientation: portrait) {
+  /* スマホ縦: バディはヘッダーに重ならないよう右下へ */
+  .buddy-corner {
+    top: auto;
+    bottom: 8px;
+    right: 8px;
+  }
+}
+
+@media (max-width: 700px) {
+  /* れんしゅう/テスト画面の上部: バディチップは画面内のバディと重複するため隠して幅を確保 */
+  .topbar .buddy-chip {
+    display: none;
+  }
+}
+
+/* ---------- 第41回の追加スマホ調整 ---------- */
+@media (max-width: 700px) {
+  /* タイトル（ステージ1 ５もんテスト 1/5 等）は省略せず折り返して全部見せる */
+  .topbar-title {
+    white-space: normal;
+    font-size: 13.5px;
+    line-height: 1.3;
+  }
+
+  /* 称号チップは狭い画面ではバッジだけ（名前は省略） */
+  .topbar .rank-chip span,
+  .home-badges .rank-chip span {
+    display: none;
+  }
+
+  .topbar .rank-chip,
+  .home-badges .rank-chip {
+    padding: 2px 4px;
+  }
+}
+
+@media (max-width: 700px) and (orientation: portrait) {
+  /* 判定パネル（×の説明）は問題文と重なりにくいようコンパクトに */
+  .feedback {
+    max-height: 32vh;
+    padding: 10px 12px;
+    border: 2px solid var(--line);
+  }
+
+  .feedback-msgs {
+    font-size: 13.5px;
+    margin: 4px 0;
+    padding-left: 18px;
+  }
+
+  .feedback-icon {
+    font-size: 22px;
+  }
+
+  .feedback-retry-note {
+    font-size: 12px;
+  }
+
+  /* パネル表示中は下に余白を作り、スクロールすれば問題文を全部読めるように */
+  .split:has(.feedback) {
+    padding-bottom: 34vh;
   }
 }

@@ -33,6 +33,8 @@ export interface PendingEvolution {
 
 export interface AppState {
   route: Route
+  /** 直前のルート（ホームから来たときだけ「続きの場所」へジャンプする等の判定用。第41回） */
+  prevRoute: Route | null
   profileId: string | null
   /** れんしゅう/テストページで見ている学年（null=自分の学年） */
   browseGrade: number | null
@@ -46,6 +48,7 @@ export interface AppState {
 
 let state: AppState = {
   route: { name: 'profiles' },
+  prevRoute: null,
   profileId: null,
   browseGrade: null,
   dataVersion: 0,
@@ -81,7 +84,7 @@ export function useAppState<T>(selector: (s: AppState) => T): T {
 }
 
 export function navigate(route: Route) {
-  setState({ route })
+  setState({ route, prevRoute: state.route })
 }
 
 export function selectProfile(profileId: string | null) {

@@ -7,7 +7,7 @@
     { "sentence": "○ふりの 日が つづく。", "reading": "あめ" } ] },
   { "kanji": "円", "questions": [
     { "sentence": "ひゃく○だまを おとした。", "reading": "えん" },
-    { "sentence": "○い おつきさまが でた。", "reading": "まる" },
+    { "sentence": "おこづかいは 五百○です。", "reading": "えん" },
     { "sentence": "じゅう○で あめが かえた。", "reading": "えん" },
     { "sentence": "コンパスで ○を かく。", "reading": "えん" },
     { "sentence": "ごじゅう○の おかしを かう。", "reading": "えん" } ] },
@@ -109,7 +109,7 @@
     { "sentence": "○ひゃくえんだまで かいものを する。", "reading": "ご" } ] },
   { "kanji": "四", "questions": [
     { "sentence": "○つばの クローバーを さがす。", "reading": "よ" },
-    { "sentence": "一ねんには ○きが ある。", "reading": "し" },
+    { "sentence": "えんぴつが ○ほん ある。", "reading": "よん" },
     { "sentence": "○かくい はこに いれる。", "reading": "し" },
     { "sentence": "○にんで トランプを する。", "reading": "よ" },
     { "sentence": "○がつに 一ねんせいに なった。", "reading": "し" } ] },
@@ -158,7 +158,7 @@
   { "kanji": "小", "questions": [
     { "sentence": "○さな とりが とんで きた。", "reading": "ちい" },
     { "sentence": "○がっこうに かよって いる。", "reading": "しょう" },
-    { "sentence": "○いぬと あそぶ。", "reading": "こ" },
+    { "sentence": "○川で めだかを 見つけた。", "reading": "お" },
     { "sentence": "○さい こえで はなす。", "reading": "ちい" },
     { "sentence": "○とりが ちゅんちゅん なく。", "reading": "こ" } ] },
   { "kanji": "上", "questions": [
@@ -303,10 +303,10 @@
     { "sentence": "○い くもが うかんで いる。", "reading": "しろ" },
     { "sentence": "まっ○な ゆきが つもった。", "reading": "しろ" },
     { "sentence": "○くまが みずに とびこむ。", "reading": "しろ" },
-    { "sentence": "うんどうかいの こう○せん。", "reading": "はく" },
+    { "sentence": "うんどうかいで こう○ぼうを かぶる。", "reading": "はく" },
     { "sentence": "○ゆりの はなが さいた。", "reading": "しら" } ] },
   { "kanji": "八", "questions": [
-    { "sentence": "たこの あしは ○ほん。", "reading": "はっ" },
+    { "sentence": "たこの あしは ○ぽん。", "reading": "はっ" },
     { "sentence": "おまんじゅうが ○つ ある。", "reading": "やっ" },
     { "sentence": "○がつは なつやすみだ。", "reading": "はち" },
     { "sentence": "あさ ○じに いえを でる。", "reading": "はち" },

@@ -1,6 +1,5 @@
-// ステージテスト（5問）と学期相当の大型テスト。
-// 大型テストは「その期で れんしゅうずみの全漢字」を対象にする（2026-08-08変更）。
-import { findStage, findTerm, termKanji, termTestTitle } from '../data/curriculum'
+// ステージテスト（5問）とまとめテスト（第43回: 4ステージ=最大20問の通し番号テスト）。
+import { findStage, findTermTest } from '../data/curriculum'
 import { hasQuestions } from '../data/questions'
 import { hasRefKanji } from '../core/refdata'
 import { TestRunner } from '../learn/TestRunner'
@@ -28,16 +27,15 @@ export function StageTestScreen({ stageId }: { stageId: string }) {
 }
 
 export function TermTestScreen({ termId }: { termId: string }) {
-  const found = findTerm(termId)
-  if (!found) {
+  const test = findTermTest(termId)
+  if (!test) {
     return (
       <div className="screen">
         <TopBar title="テストが みつかりません" back={{ name: 'tests' }} />
       </div>
     )
   }
-  const title = termTestTitle(found.cur, found.term.index)
-  // 練習していなくても、いつでもその学期の全漢字で受けられる（2026-08-08 第9回）
-  const chars = termKanji(found.term).filter((c) => hasRefKanji(c) && hasQuestions(c))
-  return <TestRunner kind="term" targetId={termId} chars={chars} title={title} backRoute={{ name: 'tests' }} />
+  // 練習していなくても、いつでも受けられる（2026-08-08 第9回）
+  const chars = test.kanji.filter((c) => hasRefKanji(c) && hasQuestions(c))
+  return <TestRunner kind="term" targetId={termId} chars={chars} title={test.label} backRoute={{ name: 'tests' }} />
 }

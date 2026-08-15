@@ -1,132 +1,113 @@
-// みんな画面（2026-08-08刷新）: できごと履歴ではなく、各利用者の進捗を視覚的に表示。
-// - 覚えた（マスターした）漢字数
-// - どのステージまで完全クリアか（5問テスト100点＝クリア）
-// - 各学期テストの最高点
-// 順位付けはしない（仕様 §30）。
-import { getCurriculumForGrade, gradeLabelOf, termDisplayLabel, termKanji } from '../data/curriculum'
-import { hasQuestions } from '../data/questions'
-import { hasRefKanji } from '../core/refdata'
+// みんな画面（2026-08-14 第37回で視覚重視に刷新）:
+// 各利用者の「マスターした漢字」「５もんテスト100点」「まとめテスト100点」「ずかん」を
+// 大きな数字で見比べられるダッシュボード。称号バッジつき。
+// 順位付けはしない（仕様 §30）。細かい学期別リストは廃止（情報過多のため）。
+import { ACTIVE_STAGE_IDS, CURRICULUM, TERM_TEST_TOTAL, perfectTermTestIds } from '../data/curriculum'
+import { totalDexStages } from '../data/species'
 import { useAsyncData } from '../state/hooks'
 import { useAppState } from '../state/store'
-import { listProfiles, listProgress, listTestResults } from '../storage/repo'
+import { listDex, listProfiles, listProgress, listTestResults } from '../storage/repo'
 import { Card, LoadingView, TopBar } from '../ui/components'
+import { RankChip } from '../ui/RankBadge'
 
 interface ProfileDash {
   id: string
   name: string
   color: string
-  gradeLabel: string
   mastered: number
-  totalPlayable: number
-  terms: {
-    label: string
-    stages: { label: string; state: 'cleared' | 'practiced' | 'none'; perfectCount: number }[]
-    best: { correct: number; total: number } | null
-    perfectCount: number
-  }[]
+  stageCleared: number
+  termCleared: number
+  dexCount: number
+  /** 100点をとったまとめテストの本数（称号ランク） */
+  perfectCount: number
 }
 
 export function Minna() {
   const profileId = useAppState((s) => s.profileId)
-  const { data } = useAsyncData<ProfileDash[]>(async () => {
-    const profiles = await listProfiles()
-    return Promise.all(
-      profiles.map(async (p) => {
-        const [progress, results] = await Promise.all([listProgress(p.id), listTestResults(p.id)])
-        const progressMap = new Map(progress.map((x) => [x.char, x]))
-        const { cur } = getCurriculumForGrade(p.grade)
-        const stagePerfect = new Map<string, number>()
-        const termBest = new Map<string, { correct: number; total: number }>()
-        const termPerfect = new Map<string, number>()
-        for (const r of results) {
-          if (r.kind === 'stage' && r.total > 0 && r.correct === r.total) {
-            stagePerfect.set(r.targetId, (stagePerfect.get(r.targetId) ?? 0) + 1)
+  const { data } = useAsyncData<{ dash: ProfileDash[]; totals: { chars: number; stages: number; terms: number; dex: number } } | null>(
+    async () => {
+      const profiles = await listProfiles()
+      // 分母は全学年（小1〜中3＋マスター級）の合計。そうまとめの再掲はユニーク化して除外（第34回）
+      const allStages = [
+        ...new Map(CURRICULUM.flatMap((c) => c.terms.flatMap((t) => t.stages)).map((s) => [s.id, s])).values(),
+      ]
+      const totals = {
+        chars: new Set(allStages.flatMap((s) => s.kanji)).size,
+        stages: allStages.length,
+        terms: TERM_TEST_TOTAL,
+        dex: totalDexStages(),
+      }
+      const dash = await Promise.all(
+        profiles.map(async (p) => {
+          const [progress, results, dex] = await Promise.all([listProgress(p.id), listTestResults(p.id), listDex(p.id)])
+          const stagePerfect = new Set<string>()
+          for (const r of results) {
+            if (r.kind === 'stage' && r.total > 0 && r.correct === r.total && ACTIVE_STAGE_IDS.has(r.targetId)) {
+              stagePerfect.add(r.targetId)
+            }
           }
-          if (r.kind === 'term') {
-            const best = termBest.get(r.targetId)
-            if (!best || r.correct > best.correct) termBest.set(r.targetId, { correct: r.correct, total: r.total })
-            if (r.total > 0 && r.correct === r.total) termPerfect.set(r.targetId, (termPerfect.get(r.targetId) ?? 0) + 1)
+          const termPerfect = perfectTermTestIds(results)
+          return {
+            id: p.id,
+            name: p.name,
+            color: p.color,
+            mastered: progress.filter((x) => x.masteredAt != null).length,
+            stageCleared: stagePerfect.size,
+            termCleared: termPerfect.size,
+            dexCount: dex.length,
+            perfectCount: termPerfect.size,
           }
-        }
-        const terms = cur.terms
-          .filter((t) => t.stages.length > 0)
-          .map((t) => ({
-            label: termDisplayLabel(cur, t.index),
-            best: termBest.get(t.id) ?? null,
-            perfectCount: termPerfect.get(t.id) ?? 0,
-            stages: t.stages.map((s) => {
-              const practicedAll = s.kanji.every((k) => progressMap.get(k)?.practicedAt != null)
-              const perfectCount = stagePerfect.get(s.id) ?? 0
-              return {
-                label: s.label.replace('ステージ', ''),
-                state: perfectCount > 0 ? ('cleared' as const) : practicedAll ? ('practiced' as const) : ('none' as const),
-                perfectCount,
-              }
-            }),
-          }))
-        const totalPlayable = cur.terms
-          .flatMap((t) => t.stages)
-          .flatMap((s) => s.kanji)
-          .filter((c) => hasRefKanji(c) && hasQuestions(c)).length
-        return {
-          id: p.id,
-          name: p.name,
-          color: p.color,
-          gradeLabel: gradeLabelOf(p.grade),
-          mastered: progress.filter((x) => x.masteredAt != null).length,
-          totalPlayable,
-          terms,
-        }
-      })
-    )
-  }, [profileId])
+        })
+      )
+      return { dash, totals }
+    },
+    [profileId]
+  )
 
   if (!data) return <LoadingView />
+  const { dash, totals } = data
+
+  const stat = (icon: string, label: string, value: number, total: number, unit = '') => (
+    <div className="stat-card minna-stat">
+      <span className="stat-label">
+        {icon} {label}
+      </span>
+      <span className="stat-num">
+        {value}
+        <small>
+          {' '}
+          / {total}
+          {unit}
+        </small>
+      </span>
+      <div className="masterbar">
+        <div className="masterbar-fill" style={{ width: `${total > 0 ? (value / total) * 100 : 0}%` }} />
+      </div>
+    </div>
+  )
 
   return (
     <div className="screen">
       <TopBar title="みんな" back={{ name: 'home' }} />
       <div className="map-scroll">
-        <p className="tile-sub minna-note">じゅんいは ないよ。みんな それぞれの ペースで がんばろう！（★=５もんテストで100てん）</p>
+        <p className="tile-sub minna-note">じゅんいは ないよ。みんな それぞれの ペースで がんばろう！</p>
         <div className="minna-dash">
-          {data.map((d) => (
+          {dash.map((d) => (
             <Card key={d.id} className="minna-profile-card">
               <div className="minna-head">
                 <span className="avatar" style={{ background: d.color }}>
                   {d.name.slice(0, 1)}
                 </span>
-                <div>
-                  <p className="minna-name">
-                    {d.name} <span className="minna-grade">{d.gradeLabel}</span>
-                  </p>
-                  <p className="minna-mastered">
-                    マスターした漢字　<b>{d.mastered}</b> / {d.totalPlayable}字
-                  </p>
-                  <div className="masterbar minna-bar">
-                    <div
-                      className="masterbar-fill"
-                      style={{ width: `${d.totalPlayable > 0 ? (d.mastered / d.totalPlayable) * 100 : 0}%` }}
-                    />
-                  </div>
-                </div>
+                <p className="minna-name">
+                  {d.name}
+                  <RankChip perfectCount={d.perfectCount} />
+                </p>
               </div>
-              <div className="minna-terms">
-                {d.terms.map((t) => (
-                  <div key={t.label} className="minna-term-row">
-                    <span className="minna-term-label">{t.label}</span>
-                    <span className="minna-stages">
-                      {t.stages.map((s) => (
-                        <span key={s.label} className={`mini-stage mini-stage-${s.state}`} title={`ステージ${s.label}`}>
-                          {s.state === 'cleared' ? '★' : s.label}
-                        </span>
-                      ))}
-                    </span>
-                    <span className="minna-term-best">
-                      {t.best ? `まとめテストさいこう ${t.best.correct}/${t.best.total}問` : 'まとめテストは まだ'}
-                    </span>
-                    {t.perfectCount > 0 && <span className="stage-clear">👑100点 {t.perfectCount}回</span>}
-                  </div>
-                ))}
+              <div className="stat-row minna-stat-row">
+                {stat('📖', 'マスターした漢字', d.mastered, totals.chars, '字')}
+                {stat('✏️', '５もんテスト 100点', d.stageCleared, totals.stages, 'ステージ')}
+                {stat('💮', 'まとめテスト 100点', d.termCleared, totals.terms, 'テスト')}
+                {stat('📔', 'ずかん', d.dexCount, totals.dex, 'しゅるい')}
               </div>
             </Card>
           ))}

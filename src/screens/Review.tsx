@@ -3,7 +3,7 @@
 // - 1文字につき4回: ①書き順アシスト → ②書き順の数字＋グレー → ③グレーのみ → ④何もなしで書く
 // - 1文字おわるごとに「つぎの漢字を ふくしゅうする」ボタン
 // - リストから消えるのは、その出どころのテストで正解したときだけ（復習では消えない）
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { GAME_CONFIG } from '../config/gameConfig'
 import type { KanjiEvaluation } from '../core/judge/evaluate'
 import type { InkStroke } from '../core/ink/types'
@@ -42,12 +42,20 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
   const [traceMark, setTraceMark] = useState(false)
   const [phase, setPhase] = useState<'practice' | 'charDone' | 'allDone'>('practice')
 
-  const { data: list } = useAsyncData(async () => {
+  const { data: fetched } = useAsyncData(async () => {
     if (!profileId) return null
     if (charsParam && charsParam.length > 0) return charsParam.filter((c) => hasRefKanji(c))
     return (await listUnknown(profileId, source)).map((u) => u.char).filter((c) => hasRefKanji(c))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileId, source])
+
+  // 復習中に bumpData（リスト解除）で再取得されても、このセッションの字の並びは変えない
+  // （第27回: リストが途中で縮むと index とずれて「違う漢字が終わった」表示や
+  //   早すぎる「ぜんぶ終わり」になるバグの修正。リストはセッション開始時に固定する）
+  const [list, setList] = useState<string[] | null>(null)
+  useEffect(() => {
+    if (list == null && fetched != null) setList(fetched)
+  }, [list, fetched])
 
   if (!profileId || !list) return <LoadingView />
 
@@ -157,7 +165,7 @@ export function Review({ source, chars: charsParam }: { source: 'stage' | 'term'
                 <KanjiChip key={k} char={k} state="practiced" />
               ))}
             </div>
-            <CoinReward amount={GAME_CONFIG.coins.reviewPerCorrect} />
+            <CoinReward amount={GAME_CONFIG.coins.reviewPerCorrect * list.length} />
             <p className="tile-sub">ふくしゅうした漢字は リストから きえたよ！ こんどは テストで 100点に ちょうせんしよう！</p>
             {/* テストへのボタンは小さめ（第15回: 大きいと間違えて押しやすい） */}
             <div className="result-actions">

@@ -108,6 +108,49 @@ export async function feedStar(profileId: string, ownedId: number): Promise<Feed
   }
 }
 
+export interface FeedStarsResult {
+  ok: true
+  /** 実際にあげられた数 */
+  fed: number
+  leveledUp: boolean
+  fromLevel: number
+  newLevel: number
+  starsFed: number
+  starsNeeded: number | null
+  isMax: boolean
+}
+
+export type FeedStarsOutcome = FeedStarsResult | { ok: false; reason: 'noStars' | 'max' | 'notFound' }
+
+/** スターをまとめてあげる（最大countこ。スター切れ・最大レベルで自動的に止まる。第37回） */
+export async function feedStars(profileId: string, ownedId: number, count: number): Promise<FeedStarsOutcome> {
+  let first: FeedStarResult | null = null
+  let last: FeedStarResult | null = null
+  let fed = 0
+  for (let i = 0; i < count; i++) {
+    const r = await feedStar(profileId, ownedId)
+    if (!r.ok) {
+      if (!last || !first) return r
+      break
+    }
+    if (!first) first = r
+    last = r
+    fed++
+    if (r.isMax) break
+  }
+  if (!first || !last) return { ok: false, reason: 'noStars' }
+  return {
+    ok: true,
+    fed,
+    leveledUp: last.newLevel > first.fromLevel,
+    fromLevel: first.fromLevel,
+    newLevel: last.newLevel,
+    starsFed: last.starsFed,
+    starsNeeded: last.starsNeeded,
+    isMax: last.isMax,
+  }
+}
+
 export async function buyStars(profileId: string, count = 1): Promise<{ ok: boolean; bought?: number; profile?: Profile }> {
   const profile = await getProfile(profileId)
   if (!profile) return { ok: false }
@@ -173,9 +216,22 @@ export async function rollGacha(profileId: string): Promise<GachaOutcome> {
   }
 
   profile.gachaMissStreak = 0
-  const pool = speciesByRarity(pickRarity())
-  const sp = pool[Math.floor(Math.random() * pool.length)] ?? SPECIES[0]
+  // 第25回: 出会えたら「まだ いない なかま」から選ぶ（重複を出さない）。
+  // レアリティはまず抽選し、そのレアリティに未所持がいなければ
+  // やさしい方向へ（epic→rare→common / common→rare→epic）ずらして必ず新顔を出す。
+  // 全種コンプリート後だけ、従来どおり重複＝おみやげスターになる。
   const owned = await listOwned(profileId)
+  const ownedIds = new Set(owned.map((o) => o.speciesId))
+  const rolled = pickRarity()
+  const fallbackOrder: Rarity[] =
+    rolled === 'epic' ? ['epic', 'rare', 'common'] : rolled === 'rare' ? ['rare', 'common', 'epic'] : ['common', 'rare', 'epic']
+  let pool: typeof SPECIES = []
+  for (const r of fallbackOrder) {
+    pool = speciesByRarity(r).filter((s) => !ownedIds.has(s.id))
+    if (pool.length > 0) break
+  }
+  if (pool.length === 0) pool = speciesByRarity(rolled).length > 0 ? speciesByRarity(rolled) : SPECIES
+  const sp = pool[Math.floor(Math.random() * pool.length)] ?? SPECIES[0]
   const existing = owned.find((o) => o.speciesId === sp.id)
 
   if (existing) {

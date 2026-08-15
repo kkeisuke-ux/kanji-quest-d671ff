@@ -87,7 +87,7 @@ const MASTER_STAGES = [
   { id: 'g10s5', label: 'さかな③', kanji: [...'鮫鰤鱒鮒鯵'] },
   { id: 'g10s6', label: 'さかな④', kanji: [...'鮃鰈鱸鰆鰊'] },
   { id: 'g10s7', label: 'うみのいきもの', kanji: [...'蛸蟹蝦鯱鰐'] },
-  { id: 'g10s3', label: 'ことわざ', kanji: [...'兎蛙鳶狸亀'] },
+  // ことわざ（g10s3: 兎蛙鳶狸亀）は第26回ユーザー指示で削除
   { id: 'g10s4', label: 'よじじゅくご①', kanji: [...'石心転差老'] },
   { id: 'g10s8', label: 'よじじゅくご②', kanji: [...'伝色期業弱'] },
   { id: 'g10s9', label: 'よじじゅくご③', kanji: [...'進器機賛異'] },
@@ -278,8 +278,28 @@ const exIndex = new Map() // 語(基本形) -> [exSentencesのindex]
     // 子ども向けに短めの文だけ。英数字・記号まじりは除外
     if (jp.length < 4 || jp.length > 30) continue
     if (/[A-Za-zＡ-Ｚａ-ｚ0-9０-９%％&＆@＠]/.test(jp)) continue
-    // 子どもに不適切な語（侮蔑・暴力・性的・自傷）を含む文は使わない
-    if (/デブ|ブス|バカ|馬鹿|ばかやろ|アホ|クソ|くそっ|死ね|死んで|殺|死体|死刑|処刑|拷問|レイプ|強姦|セックス|エッチ|売春|愛人|不倫|浮気|童貞|処女|麻薬|覚醒剤|拳銃|銃で|爆弾|テロ|人質|誘拐|虐待|いじめ|遺体|地獄/.test(jp)) continue
+    // 子どもに不適切な語（侮蔑・暴力・性的・犯罪・薬物・自傷）を含む文は使わない。
+    // 第48回: 全問一括監査（scripts/audit-safety.ts）のカテゴリに合わせて強化した。
+    // 監査側は「配当漢字の意味上どうしても必要な語（弔・虜・患など）」を人が判断する運用のため、
+    // 生成側のここは機械的に強め（＝候補を落としても他の例文で代替できる）に振っている。
+    if (
+      /デブ|ブス|バカ|馬鹿|ばかやろ|アホ|阿呆|間抜け|まぬけ|クソ|くそっ|きちがい|気違い|めくら|つんぼ|土人|乞食|くたばれ|死ね|死んで|殺|死体|死刑|処刑|拷問|虐待|暴行|なぐりつけ|殴りつけ|殴った|蹴りつけ|撃ち殺|射殺|絞殺|刺殺|自殺|首をつ|首を絞|血まみれ|血だらけ/.test(
+        jp
+      )
+    )
+      continue
+    if (
+      /レイプ|強姦|セックス|性交|性欲|エッチ|全裸|裸に|わいせつ|猥褻|売春|買春|風俗店|愛人|不倫|浮気|童貞|処女|避妊|中絶|エロ|ポルノ|ヌード|乳房|ブラジャー|ストリップ|接吻/.test(
+        jp
+      )
+    )
+      continue
+    if (
+      /麻薬|覚醒剤|大麻|コカイン|ヘロイン|密売|密輸|恐喝|脅迫|誘拐|人質|強盗|窃盗|万引き|放火|テロ|爆弾|拳銃|銃で|賭博|八百長|横領|贈賄|収賄|いじめ|遺体|地獄/.test(
+        jp
+      )
+    )
+      continue
     const toks = []
     let ok = true
     for (const t of lines[i + 1].slice(3).split(/\s+/)) {
@@ -609,15 +629,14 @@ for (const g of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
     })).filter((s) => s.kanji.length > 0)
     const ids = stages.map((s) => s.id)
     const fishIds = ['g10s1', 'g10s2', 'g10s5', 'g10s6', 'g10s7']
-    const kotowazaIds = ['g10s3']
     const yojiIds = ['g10s4', 'g10s8', 'g10s9', 'g10s10', 'g10s11', 'g10s12', 'g10s13', 'g10s14', 'g10s15', 'g10s16', 'g10s17']
+    // ことわざ期（g10t2）は第26回で削除。期ID g10t3/g10t4 は既存の記録との互換のため維持
     terms = [
       { id: 'g10t1', index: 0, stageIds: ids.filter((id) => fishIds.includes(id)) },
-      { id: 'g10t2', index: 1, stageIds: ids.filter((id) => kotowazaIds.includes(id)) },
-      { id: 'g10t3', index: 2, stageIds: ids.filter((id) => yojiIds.includes(id)) },
-      { id: 'g10t4', index: 3, stageIds: ids },
+      { id: 'g10t3', index: 1, stageIds: ids.filter((id) => yojiIds.includes(id)) },
+      { id: 'g10t4', index: 2, stageIds: ids },
     ]
-    termLabels = ['さかな・うみのいきもの', 'ことわざ', 'よじじゅくご', 'そうまとめ']
+    termLabels = ['さかな・うみのいきもの', 'よじじゅくご', 'そうまとめ']
     curriculum.push({ grade: g, kanji: all, stages, terms, termLabels })
     continue
   }

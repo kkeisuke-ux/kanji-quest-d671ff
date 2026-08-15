@@ -254,8 +254,8 @@ export const MASTER_BANK: Question[] = [
   qp('鰐', 2, 'sentence', [b('わに'), t('は は虫(ちゅう)るいの なかまだ。')], 'わに: きょうりゅうの 時代(じだい)から いる は虫るい。'),
   // ---- よじじゅくご（第20回: 四文字ぜんぶを書く問題に変更。空欄4つを順に書く） ----
   qp('石', 6, 'word', [bk('いっ', '一'), bk('せき', '石'), bk('に', '二'), bk('ちょう', '鳥')], '四字熟語「いっせきにちょう」: 一つの ことで 二つの とくを する こと。'),
-  qp('心', 6, 'sentence', [t('しょ'), b('しん'), t('わするべからず。')], '「しょしん わするべからず」: はじめた ときの 気もちを ずっと わすれるな、と いう ことば。'),
-  qp('転', 6, 'sentence', [t('しっぱいしても '), b('ころ'), t('んでも おきあがろう。')], '「ななころび やおき」: 何ども しっぱいしても、その たびに 立ち上がる こと。'),
+  qp('心', 6, 'word', [bk('いっ', '一'), bk('しん', '心'), bk('どう', '同'), bk('たい', '体')], '四字熟語「いっしんどうたい」: ふたりいじょうの 人が、心を 一つに して、まるで 一人の ように なる こと。'),
+  qp('転', 6, 'word', [bk('しん', '心'), bk('き', '機'), bk('いっ', '一'), bk('てん', '転')], '四字熟語「しんきいってん」: 気もちを すっかり きりかえて、あたらしい 気もちで はじめる こと。'),
   qp('差', 6, 'word', [bk('せん', '千'), bk('さ', '差'), bk('ばん', '万'), bk('べつ', '別')], '四字熟語「せんさばんべつ」: 人や ものは、それぞれ みんな ちがう と いう こと。'),
   qp('老', 6, 'word', [bk('ろう', '老'), bk('にゃく', '若'), bk('なん', '男'), bk('にょ', '女')], '四字熟語「ろうにゃくなんにょ」: 年よりも わかい 人も、男も 女も、みんな。'),
   qp('伝', 7, 'word', [bk('い', '以'), bk('しん', '心'), bk('でん', '伝'), bk('しん', '心')], '四字熟語「いしんでんしん」: ことばに しなくても、気もちが あいてに つたわる こと。'),
@@ -352,6 +352,14 @@ export class LocalQuestionBankProvider implements QuestionProvider {
 // 記法: ○=空欄（対象の字を書く）、漢字(よみ)=ルビ。それ以外はそのまま表示。
 // ============================================================
 import grade1Json from './hand/grade1.json'
+import grade2Json from './hand/grade2.json'
+import grade3Json from './hand/grade3.json'
+import grade4Json from './hand/grade4.json'
+import grade5Json from './hand/grade5.json'
+import grade6Json from './hand/grade6.json'
+import grade7Json from './hand/grade7.json'
+import grade8Json from './hand/grade8.json'
+import grade9Json from './hand/grade9.json'
 
 interface HandEntry {
   kanji: string
@@ -373,7 +381,19 @@ function parseHandSentence(sentence: string, reading: string): QuestionPart[] {
   return parts
 }
 
-export const GRADE1_HAND_BANK: Question[] = (grade1Json as HandEntry[]).flatMap((e) =>
+const HAND_JSON: HandEntry[] = [
+  grade1Json,
+  grade2Json,
+  grade3Json,
+  grade4Json,
+  grade5Json,
+  grade6Json,
+  grade7Json,
+  grade8Json,
+  grade9Json,
+].flat() as HandEntry[]
+
+export const GRADE_HAND_BANK: Question[] = HAND_JSON.flatMap((e) =>
   e.questions.map((q, i) => ({
     id: `h${e.kanji}-${i + 1}`,
     char: e.kanji,
@@ -385,19 +405,50 @@ export const GRADE1_HAND_BANK: Question[] = (grade1Json as HandEntry[]).flatMap(
 // 自動生成問題（頻出単語の穴埋め。scripts/gen-content.mjs 参照）と手書き問題を併用。
 // 手書きの問題がある字は自動生成を出さない（第20回: 小1は100%手書き＝学年相応の生活文脈）。
 import genQuestionsJson from './gen/questions.gen.json'
+// 第31回: 品質レビューで不適切と判定した自動生成問題の恒久除外リスト（問題ID）。
+// 再生成しても復活しないようIDで管理する。除外でその字の文脈つき問題が尽きないよう、
+// 適用後は scripts/audit-context-questions.mjs で確認すること。
+import genExcludedJson from './gen/excluded.json'
 
 const GENERATED_BANK = genQuestionsJson as Question[]
+const GEN_EXCLUDED = new Set(genExcludedJson as string[])
 
-const HAND_CHARS = new Set([...QUESTION_BANK, ...GRADE1_HAND_BANK].map((q) => q.char))
+const HAND_CHARS = new Set([...QUESTION_BANK, ...GRADE_HAND_BANK].map((q) => q.char))
 
-export const FULL_BANK: Question[] = [
-  ...QUESTION_BANK,
-  ...GRADE1_HAND_BANK,
-  ...MASTER_BANK,
-  ...GENERATED_BANK.filter((q) => !HAND_CHARS.has(q.char)),
-]
+/** 文脈（句読点など）を含む問題か。「語のみ」問題の判定に使う（第23回） */
+export function hasSentenceContext(q: Question): boolean {
+  return q.parts.some((p) => p.text != null && /[。、！？]/.test(p.text))
+}
+
+// 第23回: 「〔しゃ〕名(めい)」のような文脈のない語のみ問題は、読みだけでは答えが決まらず
+// 学年不相応の語も多い（ユーザー指摘）。文脈つき問題がその字に1問でもあるなら語のみは全部捨てる。
+// 文脈問題がまだ無い字だけ暫定的に語のみを残す（手書き問題を書けばその字のgenは自動で消える）。
+// 残っている字の一覧: node scripts/audit-context-questions.mjs
+const GEN_SERVED: Question[] = (() => {
+  const byChar = new Map<string, Question[]>()
+  for (const q of GENERATED_BANK) {
+    if (GEN_EXCLUDED.has(q.id)) continue
+    if (HAND_CHARS.has(q.char)) continue
+    const arr = byChar.get(q.char) ?? []
+    arr.push(q)
+    byChar.set(q.char, arr)
+  }
+  const out: Question[] = []
+  for (const list of byChar.values()) {
+    const ctx = list.filter(hasSentenceContext)
+    out.push(...(ctx.length > 0 ? ctx : list))
+  }
+  return out
+})()
+
+export const FULL_BANK: Question[] = [...QUESTION_BANK, ...GRADE_HAND_BANK, ...MASTER_BANK, ...GEN_SERVED]
 
 export const questionProvider: QuestionProvider = new LocalQuestionBankProvider(FULL_BANK)
+
+/** その字を代表字とする「全部書く」四字熟語問題（第21回: 四字熟語ステージの練習・判定に使う） */
+export function yojiQuestionOf(char: string): Question | null {
+  return FULL_BANK.find((v) => v.char === char && questionWriteChars(v).length > 1) ?? null
+}
 
 const CHARS_WITH_QUESTIONS = new Set(FULL_BANK.map((v) => v.char))
 

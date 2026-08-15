@@ -1,9 +1,10 @@
-// まとめテスト専用ページ（2026-08-08 第2回フィードバックで新設）。
+// まとめテスト一覧（第43回で全面改編）。
+// 旧「学期ごと1本（最大120字超）」は長すぎて続かないため、
+// 4ステージ（最大20問）ごとの通し番号テスト「まとめテスト N」に分割した。
 // 「100点満点をとるまでやりたくなる」ことを重視:
 // - 100点回数（王冠）・最高記録・「100点まであと○問」を表示
-// - 100点でスペシャルボーナスコイン
-import { GAME_CONFIG } from '../config/gameConfig'
-import { getCurriculumForGrade, termKanji, termTestTitle } from '../data/curriculum'
+// - 旧・学期テストの100点は内包する新テストへ自動で引き継ぐ
+import { CURRICULUM, TERM_TESTS, getCurriculumForGrade, perfectTermTestIds } from '../data/curriculum'
 import { hasQuestions } from '../data/questions'
 import { hasRefKanji } from '../core/refdata'
 import { useAsyncData } from '../state/hooks'
@@ -11,10 +12,12 @@ import { navigate, useAppState } from '../state/store'
 import { getProfile, getTestSession, listProgress, listTestResults } from '../storage/repo'
 import { Button, Card, LoadingView, TopBar } from '../ui/components'
 import { GradeSelector, effectiveBrowseGrade } from '../ui/GradeSelector'
+import { useScrollMemory } from '../ui/scrollMemory'
 
-interface TermEntry {
-  termId: string
-  title: string
+interface TestEntry {
+  id: string
+  label: string
+  rangeLabel: string
   practicedCount: number
   totalCount: number
   perfectCount: number
@@ -29,25 +32,38 @@ export function TestsHub() {
     if (!profileId) return null
     const profile = await getProfile(profileId)
     if (!profile) return null
-    // どの学年のまとめテストでも受けられる（既定は自分の学年。2026-08-08 第8回）
-    const { cur, fallback } = getCurriculumForGrade(effectiveBrowseGrade(browseGrade, profile.grade))
     const [progress, results] = await Promise.all([listProgress(profileId), listTestResults(profileId)])
     const practiced = new Set(progress.filter((p) => p.practicedAt != null).map((p) => p.char))
-    const entries: TermEntry[] = []
-    for (const term of cur.terms) {
-      if (term.stages.length === 0) continue
-      const all = termKanji(term).filter((c) => hasRefKanji(c) && hasQuestions(c))
-      const termResults = results.filter((r) => r.kind === 'term' && r.targetId === term.id)
-      let best: TermEntry['best'] = null
-      let perfectCount = 0
-      for (const r of termResults) {
-        if (!best || r.correct > best.correct) best = { correct: r.correct, total: r.total }
-        if (r.total > 0 && r.correct === r.total) perfectCount++
+    const achieved = perfectTermTestIds(results)
+    // どの学年のまとめテストでも受けられる（2026-08-08 第8回）。
+    // 既定は「まだ100点をとっていないまとめテストが残る いちばん低い学年」（第37回）。
+    let defaultGrade: number | null = null
+    if (browseGrade == null) {
+      for (const c of CURRICULUM) {
+        if (TERM_TESTS.some((t) => t.grade === c.grade && !achieved.has(t.id))) {
+          defaultGrade = c.grade
+          break
+        }
       }
-      const session = await getTestSession(profileId, `term:${term.id}`)
+    }
+    const { cur, fallback } = getCurriculumForGrade(browseGrade ?? defaultGrade ?? effectiveBrowseGrade(null, profile.grade))
+    const entries: TestEntry[] = []
+    for (const test of TERM_TESTS.filter((t) => t.grade === cur.grade)) {
+      const all = test.kanji.filter((c) => hasRefKanji(c) && hasQuestions(c))
+      const runs = results.filter((r) => r.kind === 'term' && r.targetId === test.id)
+      let best: TestEntry['best'] = null
+      let perfectRuns = 0
+      for (const r of runs) {
+        if (!best || r.correct > best.correct) best = { correct: r.correct, total: r.total }
+        if (r.total > 0 && r.correct === r.total) perfectRuns++
+      }
+      // 旧・学期テストからの引き継ぎ100点は1回ぶんとして数える
+      const perfectCount = perfectRuns + (perfectRuns === 0 && achieved.has(test.id) ? 1 : 0)
+      const session = await getTestSession(profileId, `term:${test.id}`)
       entries.push({
-        termId: term.id,
-        title: termTestTitle(cur, term.index),
+        id: test.id,
+        label: test.label,
+        rangeLabel: test.rangeLabel,
         practicedCount: all.filter((c) => practiced.has(c)).length,
         totalCount: all.length,
         perfectCount,
@@ -55,31 +71,32 @@ export function TestsHub() {
         hasSession: session != null && session.currentIndex > 0,
       })
     }
-    return { entries, fallback, gradeLabel: cur.gradeLabel, ownGrade: profile.grade }
+    return { entries, fallback, grade: cur.grade, gradeLabel: cur.gradeLabel, ownGrade: profile.grade }
   }, [profileId, browseGrade])
+
+  // 戻ってきたとき、直前に見ていたテストの位置をそのまま表示する（2026-08-14 第31回）
+  const scrollRef = useScrollMemory(data ? `tests:${profileId}:g${data.grade}` : null)
 
   if (!data) return <LoadingView />
 
   return (
     <div className="screen">
       <TopBar title={`テストする（${data.gradeLabel}）`} back={{ name: 'home' }} />
-      <div className="map-scroll">
-        <GradeSelector ownGrade={data.ownGrade} />
-        <p className="tile-sub map-note">
-          もんだいは まいかい ランダムに でるよ。さいごまで やりきると +{GAME_CONFIG.termTest.finish}コイン、100点なら +
-          {GAME_CONFIG.termTest.perfect}コイン！（おなじテストの2回目からは はんぶん）
-        </p>
+      <div className="map-scroll" ref={scrollRef}>
+        <GradeSelector ownGrade={data.ownGrade} effectiveGrade={data.grade} />
+        <p className="tile-sub map-note">1つの テストは さいだい20問。もんだいは まいかい ランダムに でるよ</p>
         {data.entries.map((e) => (
-          <Card key={e.termId} className={`termtest-card ${e.perfectCount > 0 ? 'termtest-card-perfect' : ''}`}>
+          <Card key={e.id} className={`termtest-card ${e.perfectCount > 0 ? 'termtest-card-perfect' : ''}`}>
             <div className="termtest-head">
               <span className="termtest-title">
                 {e.perfectCount > 0 && <span className="crown">👑</span>}
-                {e.title}
+                {e.label}
+                <span className="termtest-range">（{e.rangeLabel}）</span>
               </span>
               <span className={`stage-clear ${e.perfectCount === 0 ? 'stage-clear-zero' : ''}`}>100点 {e.perfectCount}回</span>
             </div>
             <p className="tile-sub">
-              しゅつだい: ぜんぶで{e.totalCount}字（いつでも うけられるよ。れんしゅうずみ {e.practicedCount}字）
+              しゅつだい: {e.totalCount}問（いつでも うけられるよ。れんしゅうずみ {e.practicedCount}字）
             </p>
             {e.best ? (
               e.best.correct === e.best.total ? (
@@ -89,11 +106,13 @@ export function TestsHub() {
                   さいこう {e.best.correct}/{e.best.total}問　—　<b>100点まで あと{e.best.total - e.best.correct}問！</b>
                 </p>
               )
+            ) : e.perfectCount > 0 ? (
+              <p className="termtest-status termtest-status-perfect">100点 たっせい！（まえの ながい テストで クリアずみ）</p>
             ) : (
               <p className="termtest-status">まだ ちょうせんしていないよ</p>
             )}
             {e.hasSession && <p className="stage-resume">とちゅうの きろくあり（つづきから できるよ）</p>}
-            <Button variant={e.perfectCount > 0 ? 'secondary' : 'accent'} onClick={() => navigate({ name: 'termTest', termId: e.termId })}>
+            <Button variant={e.perfectCount > 0 ? 'secondary' : 'accent'} onClick={() => navigate({ name: 'termTest', termId: e.id })}>
               {e.best && e.best.correct !== e.best.total ? '100点に ちょうせん！' : 'ちょうせんする'}
             </Button>
           </Card>

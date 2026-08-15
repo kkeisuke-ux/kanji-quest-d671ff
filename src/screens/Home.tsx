@@ -1,15 +1,19 @@
-// ホーム画面（仕様 §36）: 今日の学習・今日の復習・仲間・コイン・進捗。
-import { getCurriculumForGrade, gradeLabelOf, termTestTitle, type StageDef } from '../data/curriculum'
+// ホーム画面（仕様 §36）: 学習入口・復習・仲間・コイン・進捗・称号。
+import { useState } from 'react'
+import { CURRICULUM, TERM_TEST_TOTAL, getCurriculumForGrade, perfectTermTestIds } from '../data/curriculum'
 import { MAX_LEVEL, getSpecies, nameForLevel, stageForLevel, starsNeededFor } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
 import { navigate, useAppState } from '../state/store'
 import { getProfile, listOwned, listProgress, listTestResults, listUnknown } from '../storage/repo'
+import { rankForCount } from '../game/ranks'
 import { Button, Card, LoadingView, StarMeter, StatusChips } from '../ui/components'
+import { RankBadge, RankListModal } from '../ui/RankBadge'
 import { SoundButton } from '../ui/SoundButton'
 
 export function Home() {
   const profileId = useAppState((s) => s.profileId)
+  const [showRanks, setShowRanks] = useState(false)
   const { data } = useAsyncData(async () => {
     if (!profileId) return null
     const profile = await getProfile(profileId)
@@ -22,36 +26,19 @@ export function Home() {
     ])
     const buddy = profile.buddyId != null ? (owned.find((o) => o.id === profile.buddyId) ?? null) : null
     const mastered = progressList.filter((p) => p.masteredAt != null).length
-    const { cur, fallback } = getCurriculumForGrade(profile.grade)
-    const practicedSet = new Set(progressList.filter((p) => p.practicedAt != null).map((p) => p.char))
+    const { fallback } = getCurriculumForGrade(profile.grade)
     const stagePerfectSet = new Set(
       results.filter((r) => r.kind === 'stage' && r.total > 0 && r.correct === r.total).map((r) => r.targetId)
     )
-    const termPerfectSet = new Set(
-      results.filter((r) => r.kind === 'term' && r.total > 0 && r.correct === r.total).map((r) => r.targetId)
-    )
-    // おすすめ: 「100点を1回も取っていない いちばん低いステージ」を出す（2026-08-08修正）。
-    // そのステージが練習未完了なら練習へ、練習済みなら５もんテストへ。
-    let targetStage: { stage: StageDef; practiced: boolean } | null = null
-    let nextTerm: { id: string; title: string } | null = null
-    outer: for (const term of cur.terms) {
-      for (const st of term.stages) {
-        if (!stagePerfectSet.has(st.id)) {
-          targetStage = { stage: st, practiced: st.kanji.every((k) => practicedSet.has(k)) }
-          break outer
-        }
-      }
-    }
-    for (const term of cur.terms) {
-      if (term.stages.length > 0 && !termPerfectSet.has(term.id)) {
-        nextTerm = { id: term.id, title: termTestTitle(cur, term.index) }
-        break
-      }
-    }
-    const gradeName = cur.grade <= 6 ? `${cur.grade}年生` : gradeLabelOf(cur.grade)
-    const totalPlayable = cur.terms.flatMap((t) => t.stages).flatMap((s) => s.kanji).length
-    const allStages = cur.terms.flatMap((t) => t.stages)
+    const termPerfectSet = perfectTermTestIds(results)
+    // マスター字数・100点クリアは自分の学年だけでなく全学年（小1〜中3＋マスター級）の合計（第34回）。
+    // マスター級の「そうまとめ」学期はステージを再掲しているため、IDと字でユニーク化して数える
+    const allStages = [
+      ...new Map(CURRICULUM.flatMap((c) => c.terms.flatMap((t) => t.stages)).map((s) => [s.id, s])).values(),
+    ]
+    const totalPlayable = new Set(allStages.flatMap((s) => s.kanji)).size
     const clearedStages = allStages.filter((s) => stagePerfectSet.has(s.id)).length
+    const termTotal = TERM_TEST_TOTAL
     return {
       profile,
       unknown,
@@ -61,29 +48,15 @@ export function Home() {
       totalPlayable,
       clearedStages,
       totalStages: allStages.length,
-      targetStage,
-      nextTerm,
-      gradeName,
+      termTotal,
+      // 称号ランク: 100点をとったまとめテストの本数（第36回。第43回で20問テスト基準に）
+      termPerfectCount: termPerfectSet.size,
     }
   }, [profileId])
 
   if (!data) return <LoadingView />
-  const { profile, unknown, mastered, buddy, fallback, totalPlayable, clearedStages, totalStages, targetStage, nextTerm, gradeName } = data
+  const { profile, unknown, mastered, buddy, fallback, totalPlayable, clearedStages, totalStages, termTotal, termPerfectCount } = data
   const buddySpecies = buddy ? getSpecies(buddy.speciesId) : null
-
-  const recommend = targetStage
-    ? targetStage.practiced
-      ? {
-          text: `${gradeName}　${targetStage.stage.label}「${targetStage.stage.kanji.join('')}」の ５もんテストで 100点を めざそう！`,
-          route: { name: 'stageTest', stageId: targetStage.stage.id } as const,
-        }
-      : {
-          text: `${gradeName}　${targetStage.stage.label}「${targetStage.stage.kanji.join('')}」の れんしゅうを すすめよう`,
-          route: { name: 'learn', stageId: targetStage.stage.id } as const,
-        }
-    : nextTerm
-      ? { text: `${nextTerm.title}で 100点に ちょうせん！`, route: { name: 'termTest', termId: nextTerm.id } as const }
-      : { text: 'ぜんぶ 100点！ すごい！ また ちょうせんして きろくを のばそう', route: { name: 'tests' } as const }
 
   return (
     <div className="screen home-screen">
@@ -105,10 +78,6 @@ export function Home() {
 
       <div className="home-main">
         <div className="home-left">
-          <Card className="tile tile-study" onClick={() => navigate(recommend.route)}>
-            <h2>きょうの がくしゅう</h2>
-            <p className="tile-big">{recommend.text}</p>
-          </Card>
           <div className="home-actions">
             <button className="action-btn action-practice" onClick={() => navigate({ name: 'stages' })}>
               <span className="action-icon">✏️</span>
@@ -139,30 +108,77 @@ export function Home() {
               みんな
             </Card>
           </div>
-          <div className="progress-line">
-            <span>
-              マスターした漢字　{mastered} / {totalPlayable}字　　100点クリア　{clearedStages} / {totalStages}ステージ
-            </span>
-            <div className="masterbar">
-              <div className="masterbar-fill" style={{ width: `${totalPlayable > 0 ? (mastered / totalPlayable) * 100 : 0}%` }} />
+          {/* 3つの実績を大きく表示（第37回。全学年の合計） */}
+          <div className="stat-row">
+            <div className="stat-card">
+              <span className="stat-label">📖 マスターした漢字</span>
+              <span className="stat-num">
+                {mastered}
+                <small> / {totalPlayable}字</small>
+              </span>
+              <div className="masterbar">
+                <div className="masterbar-fill" style={{ width: `${totalPlayable > 0 ? (mastered / totalPlayable) * 100 : 0}%` }} />
+              </div>
             </div>
-            {fallback && <p className="tile-sub">いまは 小1の漢字で れんしゅうできるよ（ほかの学年は じゅんびちゅう）</p>}
+            <div className="stat-card">
+              <span className="stat-label">✏️ ５もんテスト 100点</span>
+              <span className="stat-num">
+                {clearedStages}
+                <small> / {totalStages}ステージ</small>
+              </span>
+              <div className="masterbar">
+                <div className="masterbar-fill" style={{ width: `${totalStages > 0 ? (clearedStages / totalStages) * 100 : 0}%` }} />
+              </div>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">💮 まとめテスト 100点</span>
+              <span className="stat-num">
+                {termPerfectCount}
+                <small> / {termTotal}テスト</small>
+              </span>
+              <div className="masterbar">
+                <div className="masterbar-fill" style={{ width: `${termTotal > 0 ? (termPerfectCount / termTotal) * 100 : 0}%` }} />
+              </div>
+            </div>
+            {/* 4枠目: 称号（タップで全30種の一覧。第38回） */}
+            <button className="stat-card stat-card-btn" onClick={() => setShowRanks(true)}>
+              <span className="stat-label">🏅 しょうごう</span>
+              {(() => {
+                const rank = rankForCount(termPerfectCount)
+                return rank ? (
+                  <span className="stat-rank">
+                    <RankBadge rank={rank} size={38} />
+                    <span className="stat-rank-label">{rank.label}</span>
+                  </span>
+                ) : (
+                  <span className="stat-rank">
+                    <span className="stat-rank-none">まだ なし</span>
+                  </span>
+                )
+              })()}
+              <span className="stat-rank-hint">タップで いちらん</span>
+            </button>
           </div>
+          {fallback && <p className="tile-sub">いまは 小1の漢字で れんしゅうできるよ（ほかの学年は じゅんびちゅう）</p>}
         </div>
 
         <div className="home-right">
           <Card className="buddy-card" onClick={() => navigate({ name: 'friends' })}>
             {buddy && buddySpecies ? (
               <>
-                <CharacterSprite speciesId={buddy.speciesId} level={buddy.level} size={140} />
-                <p className="buddy-name">{nameForLevel(buddy.speciesId, buddy.level)}</p>
-                <p className="buddy-level">
-                  レベル {buddy.level}
-                  {buddy.level >= MAX_LEVEL ? '（MAX）' : ` / ${MAX_LEVEL}`}
-                </p>
-                <p className="buddy-desc">{buddySpecies.stages[stageForLevel(buddy.level)].desc}</p>
-                <StarMeter fed={buddy.starsFed ?? 0} need={starsNeededFor(buddy.level)} />
-                <p className="tile-sub">スターを あげて そだてよう</p>
+                <div className="buddy-sprite-box">
+                  <CharacterSprite speciesId={buddy.speciesId} level={buddy.level} size={140} />
+                </div>
+                <div className="buddy-info">
+                  <p className="buddy-name">{nameForLevel(buddy.speciesId, buddy.level)}</p>
+                  <p className="buddy-level">
+                    レベル {buddy.level}
+                    {buddy.level >= MAX_LEVEL ? '（MAX）' : ''}
+                  </p>
+                  <p className="buddy-desc">{buddySpecies.stages[stageForLevel(buddy.level)].desc}</p>
+                  <StarMeter fed={buddy.starsFed ?? 0} need={starsNeededFor(buddy.level)} />
+                  <p className="tile-sub">スターを あげて そだてよう</p>
+                </div>
               </>
             ) : (
               <>
@@ -178,6 +194,7 @@ export function Home() {
           </Card>
         </div>
       </div>
+      <RankListModal open={showRanks} perfectCount={termPerfectCount} onClose={() => setShowRanks(false)} />
     </div>
   )
 }

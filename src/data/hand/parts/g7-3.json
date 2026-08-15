@@ -1,0 +1,92 @@
+[
+  { "kanji": "控", "questions": [
+    { "sentence": "大会が 近いので あまい ものを ○える。", "reading": "ひか" },
+    { "sentence": "文化祭を 三日後に ○えて 準備を 急ぐ。", "reading": "ひか" },
+    { "sentence": "大事な 予定を 手帳に ○える。", "reading": "ひか" },
+    { "sentence": "発表会の ○え室で 出番を 待つ。", "reading": "ひか" },
+    { "sentence": "裁判の 判決に 不服が ある 場合は ○訴(そ)する ことが できる。", "reading": "こう" } ] },
+  { "kanji": "掛", "questions": [
+    { "sentence": "壁(かべ)に 時計を ○ける。", "reading": "か" },
+    { "sentence": "いすに こしを ○けて 休む。", "reading": "か" },
+    { "sentence": "友達に 声を ○けて いっしょに 帰る。", "reading": "か" },
+    { "sentence": "ぬれた 上着を ハンガーに ○ける。", "reading": "か" },
+    { "sentence": "帰りが おそく なり 家族に 心配を ○けた。", "reading": "か" } ] },
+  { "kanji": "綱", "questions": [
+    { "sentence": "運動会の ○引きで 力いっぱい 引っぱる。", "reading": "つな" },
+    { "sentence": "サーカスで ○わたりの 演技を 見る。", "reading": "つな" },
+    { "sentence": "横○が 土俵入りを 行う。", "reading": "づな" },
+    { "sentence": "乗馬体験で 馬の 手○を にぎる。", "reading": "づな" },
+    { "sentence": "高い 所で 作業する 人は 命○を つけて いる。", "reading": "づな" } ] },
+  { "kanji": "訟", "questions": [
+    { "sentence": "社会科の 授業で 訴(そ)○の しくみを 学ぶ。", "reading": "しょう" },
+    { "sentence": "裁判所に うったえて 争いを 解決する ことを 訴(そ)○と いう。", "reading": "しょう" },
+    { "sentence": "民事訴(そ)○では お金の 貸し借りなどの 争いを あつかう。", "reading": "しょう" },
+    { "sentence": "ニュース番組で 刑(けい)事訴(そ)○の 流れが 解説される。", "reading": "しょう" },
+    { "sentence": "公害を めぐる 行政訴(そ)○に ついて 新聞で 読む。", "reading": "しょう" } ] },
+  { "kanji": "既", "questions": [
+    { "sentence": "駅に 着いた ときには 電車は ○に 出発して いた。", "reading": "すで" },
+    { "sentence": "その ニュースなら ○に 友達から 聞いて いた。", "reading": "すで" },
+    { "sentence": "手作りでは なく ○製品の かばんを 買う。", "reading": "き" },
+    { "sentence": "送った メッセージが ○読に なったか 気に なる。", "reading": "き" },
+    { "sentence": "皆(かい)○日食では 太陽が 完全に 月に かくれる。", "reading": "き" } ] },
+  { "kanji": "薦", "questions": [
+    { "sentence": "次の 学級委員長に 友人を ○める。", "reading": "すす" },
+    { "sentence": "図書室の 推○図書の 中から 一冊を 借りる。", "reading": "せん" },
+    { "sentence": "先生の 推○を 受けて 作文コンクールに 出場する。", "reading": "せん" },
+    { "sentence": "自己推○の 文章を 書いて 生徒会役員に 立候補する。", "reading": "せん" },
+    { "sentence": "クラスの 代表には 山田さんを ○めたい。", "reading": "すす" } ] },
+  { "kanji": "御", "questions": [
+    { "sentence": "朝は パンでは なく ○飯を 食べる。", "reading": "ご" },
+    { "sentence": "ロボットの 動きを コンピューターで 制○する。", "reading": "ぎょ" },
+    { "sentence": "サッカーの 試合で 防○を 固める。", "reading": "ぎょ" },
+    { "sentence": "○殿(てん)の ように りっぱな 建物を 見学する。", "reading": "ご" },
+    { "sentence": "正月に 祖父母から ○年玉を もらう。", "reading": "お" } ] },
+  { "kanji": "微", "questions": [
+    { "sentence": "理科の 授業で 顕(けん)○鏡を 使って 観察する。", "reading": "び" },
+    { "sentence": "ヨーグルトは ○生物の はたらきで 作られる。", "reading": "び" },
+    { "sentence": "かぜぎみで ○熱が 出たので 早めに 休む。", "reading": "び" },
+    { "sentence": "写真の 中の 祖母は ○笑を うかべて いる。", "reading": "び" },
+    { "sentence": "遠くから ○かな 物音が 聞こえて くる。", "reading": "かす" } ] },
+  { "kanji": "暫", "questions": [
+    { "sentence": "バスが 来るまで ○く 待つ。", "reading": "しばら" },
+    { "sentence": "引っこした 友人とは ○く 会って いない。", "reading": "しばら" },
+    { "sentence": "マラソン大会で ○定トップに 立つ。", "reading": "ざん" },
+    { "sentence": "新しい ルールを ○定的に 導入する。", "reading": "ざん" },
+    { "sentence": "国会の 審(しん)議は ○時 休憩(きゅうけい)と なった。", "reading": "ざん" } ] },
+  { "kanji": "妙", "questions": [
+    { "sentence": "困った ときに 友人が ○案を 思いついた。", "reading": "みょう" },
+    { "sentence": "体操選手の ○技に 観客が わく。", "reading": "みょう" },
+    { "sentence": "奇(き)○な 形の 岩が 海岸に 並ぶ。", "reading": "みょう" },
+    { "sentence": "絶○な タイミングで パスが 通る。", "reading": "みょう" },
+    { "sentence": "今日の 教室は ○に 静かだ。", "reading": "みょう" } ] },
+  { "kanji": "娘", "questions": [
+    { "sentence": "○が 母親と 買い物に 出かけた。", "reading": "むすめ" },
+    { "sentence": "となりの 家の ○さんは 高校で テニスを して いる。", "reading": "むすめ" },
+    { "sentence": "物語の 主人公は 漁師の ○だ。", "reading": "むすめ" },
+    { "sentence": "山田さんの 家では 一人○の 誕生日を 盛大に 祝った。", "reading": "むすめ" },
+    { "sentence": "おじは ○の 運動会を 楽しみに して いる。", "reading": "むすめ" } ] },
+  { "kanji": "瀬", "questions": [
+    { "sentence": "川の 浅○で 小魚を つかまえる。", "reading": "せ" },
+    { "sentence": "年の○に なると 町は 買い物客で にぎわう。", "reading": "せ" },
+    { "sentence": "○戸内海には 大小の 島が 数多く ある。", "reading": "せ" },
+    { "sentence": "○戸物の 茶わんを ていねいに あらう。", "reading": "せ" },
+    { "sentence": "そこまで 言われては ぼくの 立つ○が ない。", "reading": "せ" } ] },
+  { "kanji": "唆", "questions": [
+    { "sentence": "校長先生の 話は 示○に 富んで いた。", "reading": "さ" },
+    { "sentence": "この 本は 進路を 考える うえで 多くの 示○を あたえて くれる。", "reading": "さ" },
+    { "sentence": "友達に いたずらを ○されても きっぱりと 断る。", "reading": "そそのか" },
+    { "sentence": "うまい もうけ話に ○されない ように 注意する。", "reading": "そそのか" },
+    { "sentence": "法律の 本で 教○と いう 言葉の 意味を 調べる。", "reading": "さ" } ] },
+  { "kanji": "帝", "questions": [
+    { "sentence": "ローマ○国の 歴史を 授業で 学ぶ。", "reading": "てい" },
+    { "sentence": "中国の 皇○に ついて 本で 調べる。", "reading": "てい" },
+    { "sentence": "○政ローマの 時代に 水道が 整備された。", "reading": "てい" },
+    { "sentence": "大日本○国憲法は 明治時代に 発布された。", "reading": "てい" },
+    { "sentence": "水族館で 皇○ペンギンの 泳ぐ 姿を 見る。", "reading": "てい" } ] },
+  { "kanji": "懇", "questions": [
+    { "sentence": "三者○談で 担任の 先生と 進路の 話を する。", "reading": "こん" },
+    { "sentence": "地域の ○親会で 昔の 話を 聞く。", "reading": "こん" },
+    { "sentence": "弟は 犬を 飼いたいと 母に ○願した。", "reading": "こん" },
+    { "sentence": "駅員が ○切丁寧(ていねい)に 乗りかえの 道順を 教えて くれた。", "reading": "こん" },
+    { "sentence": "祖父は 近所の 農家の 人と ○意に して いる。", "reading": "こん" } ] }
+]
