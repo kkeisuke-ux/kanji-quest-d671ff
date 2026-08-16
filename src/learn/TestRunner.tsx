@@ -507,9 +507,11 @@ export function TestRunner({ kind, targetId, chars: baseChars, title, backRoute 
               </div>
             </div>
           )}
+          {/* 第50回: 100点のあとホームへ戻ってしまい次のテストへ進みにくかったため、
+              来た一覧（ステージ一覧／まとめテスト一覧）へ戻す */}
           <div className="result-actions">
             {perfect ? (
-              <Button size="lg" variant="accent" onClick={() => navigate(kind === 'stage' ? { name: 'stages' } : { name: 'home' })}>
+              <Button size="lg" variant="accent" onClick={() => navigate(backRoute)}>
                 つぎへ！
               </Button>
             ) : (

@@ -4,11 +4,12 @@
 // 「100点満点をとるまでやりたくなる」ことを重視:
 // - 100点回数（王冠）・最高記録・「100点まであと○問」を表示
 // - 旧・学期テストの100点は内包する新テストへ自動で引き継ぐ
+import { useEffect, useRef } from 'react'
 import { CURRICULUM, TERM_TESTS, getCurriculumForGrade, perfectTermTestIds } from '../data/curriculum'
 import { hasQuestions } from '../data/questions'
 import { hasRefKanji } from '../core/refdata'
 import { useAsyncData } from '../state/hooks'
-import { navigate, useAppState } from '../state/store'
+import { getState, navigate, useAppState } from '../state/store'
 import { getProfile, getTestSession, listProgress, listTestResults } from '../storage/repo'
 import { Button, Card, LoadingView, TopBar } from '../ui/components'
 import { GradeSelector, effectiveBrowseGrade } from '../ui/GradeSelector'
@@ -77,6 +78,26 @@ export function TestsHub() {
   // 戻ってきたとき、直前に見ていたテストの位置をそのまま表示する（2026-08-14 第31回）
   const scrollRef = useScrollMemory(data ? `tests:${profileId}:g${data.grade}` : null)
 
+  // まとめテストを終えて戻ってきたら、そのテスト（100点なら次のテスト）まで自動でスクロールする（第50回）
+  const justFinishedRef = useRef<string | null>(
+    (() => {
+      const prev = getState().prevRoute
+      return prev && prev.name === 'termTest' ? prev.termId : null
+    })()
+  )
+  useEffect(() => {
+    const id = justFinishedRef.current
+    if (!id || !data) return
+    justFinishedRef.current = null
+    const idx = data.entries.findIndex((e) => e.id === id)
+    if (idx < 0) return
+    // 100点をとったテストなら次へ、まだなら同じテストを画面の上に出す
+    const target = data.entries[idx].perfectCount > 0 ? (data.entries[idx + 1] ?? data.entries[idx]) : data.entries[idx]
+    const el = scrollRef.current?.querySelector(`[data-term-test-id="${target.id}"]`)
+    if (el) el.scrollIntoView({ block: 'start' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
+
   if (!data) return <LoadingView />
 
   return (
@@ -86,7 +107,11 @@ export function TestsHub() {
         <GradeSelector ownGrade={data.ownGrade} effectiveGrade={data.grade} />
         <p className="tile-sub map-note">1つの テストは さいだい20問。もんだいは まいかい ランダムに でるよ</p>
         {data.entries.map((e) => (
-          <Card key={e.id} className={`termtest-card ${e.perfectCount > 0 ? 'termtest-card-perfect' : ''}`}>
+          <Card
+            key={e.id}
+            className={`termtest-card ${e.perfectCount > 0 ? 'termtest-card-perfect' : ''}`}
+            data-term-test-id={e.id}
+          >
             <div className="termtest-head">
               <span className="termtest-title">
                 {e.perfectCount > 0 && <span className="crown">👑</span>}
