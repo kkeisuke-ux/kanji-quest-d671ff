@@ -10,6 +10,7 @@ import {
   createProfile,
   deleteProfileDeep,
   getProfile,
+  isTutorialDone,
   listProfiles,
   listStudyDays,
   listTestResults,
@@ -56,7 +57,8 @@ export function ProfileSelect() {
     await saveProfile(fresh)
     setStrictnessRuntime(fresh.judgeStrictness)
     selectProfile(p.id)
-    navigate({ name: 'home' })
+    // はじめての人には、ホームより先にチュートリアルを見せる（第55回）
+    navigate({ name: (await isTutorialDone(p.id)) ? 'home' : 'tutorial' })
   }
 
   const create = async () => {
@@ -68,7 +70,7 @@ export function ProfileSelect() {
     setName('')
     bumpData()
     selectProfile(p.id)
-    navigate({ name: 'home' })
+    navigate({ name: 'tutorial' })
   }
 
   const saveEdit = async () => {

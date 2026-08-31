@@ -4,10 +4,12 @@ import { loadJudgeOverrides } from './config/judgeRuntime'
 import { migrateCoinDenomination } from './game/logic'
 import { setBgmScene } from './sound/sound'
 import { navigate, useAppState, type Route } from './state/store'
+import { markTutorialDone } from './storage/repo'
 import { Toasts } from './ui/components'
 import { EvolutionModal } from './ui/EvolutionModal'
 import { ProfileSelect } from './screens/ProfileSelect'
 import { Home } from './screens/Home'
+import { Tutorial } from './screens/Tutorial'
 import { StageMap } from './screens/StageMap'
 import { TestsHub } from './screens/TestsHub'
 import { LearnFlow } from './screens/LearnFlow'
@@ -22,10 +24,18 @@ import { Settings } from './screens/Settings'
 import { PencilDiag } from './screens/PencilDiag'
 import { JudgeDebug } from './screens/JudgeDebug'
 
+/** チュートリアルは「見おわったら二度と出さない」ので、完了フラグの保存だけここで面倒を見る */
+function TutorialRoute() {
+  const profileId = useAppState((s) => s.profileId)
+  return <Tutorial onDone={async () => { if (profileId) await markTutorialDone(profileId) }} />
+}
+
 function RouteView({ route }: { route: Route }) {
   switch (route.name) {
     case 'profiles':
       return <ProfileSelect />
+    case 'tutorial':
+      return <TutorialRoute />
     case 'home':
       return <Home />
     case 'stages':
