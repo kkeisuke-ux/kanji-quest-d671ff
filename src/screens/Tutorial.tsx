@@ -13,7 +13,7 @@ interface Props {
   onDone: () => void
 }
 
-const LAST_STEP = 4
+const LAST_STEP = 5
 
 export function Tutorial({ onDone }: Props) {
   const [step, setStep] = useState(0)
@@ -46,7 +46,7 @@ export function Tutorial({ onDone }: Props) {
               かんじを 書いて れんしゅうして、テストで 100てんを めざすアプリだよ。
               かんじを おぼえると コインが たまって、なかまが ふえていくよ。
             </p>
-            <p className="tutorial-note">はじめる まえに、4つだけ 大事なことを つたえるね。</p>
+            <p className="tutorial-note">はじめる まえに、5つだけ 大事なことを つたえるね。</p>
           </div>
         )}
 
@@ -159,6 +159,40 @@ export function Tutorial({ onDone }: Props) {
         )}
 
         {step === 4 && (
+          <div className="tutorial-body">
+            <p className="tutorial-emoji">🪙</p>
+            <h2>コイン と スター と ずかん</h2>
+            <div className="tutorial-three">
+              <div className="tutorial-half">
+                <p className="tutorial-half-title">🪙 コイン</p>
+                <p>
+                  れんしゅうや テストを すると もらえるよ。
+                  コインで <b>なかまガチャ</b>を まわして、あたらしい なかまに 会える。
+                </p>
+              </div>
+              <div className="tutorial-half">
+                <p className="tutorial-half-title">⭐ スター</p>
+                <p>
+                  なかまに あげると <b>レベルが 上がる</b>よ。
+                  レベルが 上がると すがたが かわって、どんどん たくましく なる。
+                </p>
+              </div>
+              <div className="tutorial-half">
+                <p className="tutorial-half-title">📔 ずかん</p>
+                <p>
+                  会った なかまと、その <b>すがたぜんぶ</b>が のっていくよ。
+                  そだてないと 見られない すがたも あるから、たくさん そだてよう。
+                </p>
+              </div>
+            </div>
+            <p className="tutorial-note">
+              なかまは <b>レベル3・5・20・50・99</b>で すがたが かわるよ。
+              レベル99の すがたは、ずっと つづけた 人だけが 見られる。
+            </p>
+          </div>
+        )}
+
+        {step === 5 && (
           <div className="tutorial-body">
             <p className="tutorial-emoji">🎒</p>
             <h2>さいごに、2つだけ</h2>

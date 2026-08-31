@@ -3,7 +3,7 @@
 // いまの姿 → 光 → 新しい姿。最終レベル到達時はいちばん豪華な音。
 import { useEffect, useState } from 'react'
 import { setPendingEvolution, useAppState, type PendingEvolution } from '../state/store'
-import { FINAL_FORM_LEVEL, MAX_LEVEL, nameForLevel } from '../data/species'
+import { FORM_LEVELS, MAX_LEVEL, nameForLevel, nextFormLevel, stageForLevel } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { playGrand, playPerfect } from '../sound/sound'
 import { Button } from './components'
@@ -34,13 +34,16 @@ export function EvolutionModal() {
 
   useEffect(() => {
     if (phase !== 'after' || !current) return
-    // 最終形態（L6）と最大レベル（L99）はいちばん豪華な音
-    if (current.toLevel >= MAX_LEVEL || current.toLevel === FINAL_FORM_LEVEL) playGrand()
+    // 姿が変わった回はいちばん豪華な音（L3/L5/L20/L50/L99）
+    if (FORM_LEVELS.includes(current.toLevel)) playGrand()
     else playPerfect()
   }, [phase, current])
 
   if (!current) return null
   const newName = nameForLevel(current.speciesId, current.toLevel)
+  // 形態が変わった回だけ「すがたが かわった！」にする（レベルだけ上がった回と区別する）
+  const formChanged = stageForLevel(current.toLevel) > stageForLevel(current.fromLevel)
+  const nf = nextFormLevel(current.toLevel)
 
   const advance = () => {
     if (phase === 'before') setPhase('flash')
@@ -56,9 +59,7 @@ export function EvolutionModal() {
               <CharacterSprite speciesId={current.speciesId} level={current.fromLevel} size={150} />
             </div>
             <p className="evo-text">
-              {current.toLevel <= FINAL_FORM_LEVEL
-                ? `…おや？ ${current.name}の ようすが…！`
-                : `${current.name}に ちからが みなぎる…！`}
+              {formChanged ? `…おや？ ${current.name}の ようすが…！` : `${current.name}に ちからが みなぎる…！`}
             </p>
           </div>
         )}
@@ -77,11 +78,11 @@ export function EvolutionModal() {
               {newName}は レベル{current.toLevel}に あがった！
             </p>
             <p className="evo-text">
-              {current.toLevel <= FINAL_FORM_LEVEL ? 'すがたが かわった！' : 'もっと たくましく なった！'}
+              {formChanged ? 'すがたが かわった！' : 'もっと たくましく なった！'}
               {current.toLevel >= MAX_LEVEL
-                ? '（さいしゅうレベル！）'
-                : current.toLevel === FINAL_FORM_LEVEL
-                  ? `（さいしゅうけいたい！ ここから レベル${MAX_LEVEL}まで そだてられるよ）`
+                ? '（さいごの すがた！）'
+                : formChanged && nf != null
+                  ? `（つぎは レベル${nf}で また かわるよ）`
                   : ''}
             </p>
             <Button onClick={() => setPendingEvolution(null)}>やったー！</Button>

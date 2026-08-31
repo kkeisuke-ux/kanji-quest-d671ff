@@ -3944,3 +3944,20 @@ body {
     line-height: 1;
   }
 }
+
+/* チュートリアル: 3つ横ならび（コイン・スター・ずかん。第58回） */
+.tutorial-three {
+  display: flex;
+  gap: 8px;
+}
+
+.tutorial-three .tutorial-half {
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .tutorial-three {
+    flex-direction: column;
+  }
+}

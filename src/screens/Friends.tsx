@@ -4,7 +4,7 @@
 // - 「つぎのレベルまで スター○こ」を明示。必要数に達するとレベルアップ（=姿が変わる）
 import { useRef, useState } from 'react'
 import { GAME_CONFIG } from '../config/gameConfig'
-import { FINAL_FORM_LEVEL, MAX_LEVEL, getSpecies, nameForLevel, stageForLevel, starsNeededFor } from '../data/species'
+import { MAX_LEVEL, getSpecies, nameForLevel, nextFormLevel, stageForLevel, starsNeededFor } from '../data/species'
 import { buyStars, feedStars } from '../game/logic'
 import { CharacterSprite } from '../game/sprites'
 import { playEat, playStarGet } from '../sound/sound'
@@ -56,12 +56,16 @@ export function Friends() {
     }
   }
 
-  // 次のレベルのわくわく予告（L2→3, L4→5が大変身。L5→6は最終形態。L6以降はレベル99を目指す）
+  // 次に姿が変わるレベルを予告する（第57回: 姿は L3/L5/L20/L50/L99 で変わる）。
+  // 「あと何レベルで変わるか」が見えていないと、途中で育てる手が止まりやすい
   const nextTease = (level: number): string | null => {
-    if (level >= MAX_LEVEL) return `レベル${MAX_LEVEL}！ さいきょうの なかまだ！`
-    if (level >= FINAL_FORM_LEVEL) return null
-    if (level === FINAL_FORM_LEVEL - 1) return 'つぎは さいごの すがた…！ でんせつに なりそう！'
-    return level % 2 === 0 ? 'つぎのレベルで おおきく へんしんしそう…！' : 'つぎのレベルで ちょっと おしゃれに なるよ'
+    if (level >= MAX_LEVEL) return `レベル${MAX_LEVEL}！ さいごの すがただ！`
+    const nf = nextFormLevel(level)
+    if (nf == null) return null
+    const remain = nf - level
+    if (remain === 1) return nf === MAX_LEVEL ? 'つぎは さいごの すがた…！ でんせつに なりそう！' : 'つぎのレベルで おおきく へんしんしそう…！'
+    if (remain <= 3) return `あと ${remain}レベルで すがたが かわりそう…！`
+    return `レベル${nf}で すがたが かわるよ（あと ${remain}）`
   }
 
   // count=1で1こ、count=5でまとめて（スター切れ・最大レベルで自動停止。第37回）
