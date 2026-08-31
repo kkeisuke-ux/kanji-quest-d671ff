@@ -1,0 +1,16 @@
+{
+  "name": "かんじクエスト",
+  "short_name": "かんじクエスト",
+  "description": "Apple Pencilで漢字を書いて覚える学習アプリ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#f6f2e9",
+  "theme_color": "#4a67d8",
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
