@@ -2,18 +2,34 @@
 // レベルが上がるたびに姿が変わるので、毎回この演出でわくわくさせる。
 // いまの姿 → 光 → 新しい姿。最終レベル到達時はいちばん豪華な音。
 import { useEffect, useState } from 'react'
-import { setPendingEvolution, useAppState, type PendingEvolution } from '../state/store'
+import { pushEvolutions, shiftEvolution, useAppState, type PendingEvolution } from '../state/store'
 import { FORM_LEVELS, MAX_LEVEL, nameForLevel, nextFormLevel, stageForLevel } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { playGrand, playPerfect } from '../sound/sound'
 import { Button } from './components'
 
-export function queueLevelUp(speciesId: string, fromLevel: number, toLevel: number) {
-  setPendingEvolution({ speciesId, fromLevel, toLevel, name: nameForLevel(speciesId, fromLevel) })
+/**
+ * レベルアップ演出を積む。まとめてあげて何段も上がったときは、
+ * 姿が変わったところで区切って1つずつ見せる（第61回）。
+ * 「まとめてやると 変身が 見られない」のは、育てる いちばんの たのしみを 失う
+ */
+export function queueLevelUp(speciesId: string, fromLevel: number, toLevel: number, formLevels: number[] = []) {
+  const steps: PendingEvolution[] = []
+  let from = fromLevel
+  for (const f of formLevels) {
+    if (f <= from || f > toLevel) continue
+    steps.push({ speciesId, fromLevel: from, toLevel: f, name: nameForLevel(speciesId, from) })
+    from = f
+  }
+  if (from < toLevel || steps.length === 0) {
+    steps.push({ speciesId, fromLevel: from, toLevel, name: nameForLevel(speciesId, from) })
+  }
+  pushEvolutions(steps)
 }
 
 export function EvolutionModal() {
-  const pending = useAppState((s) => s.pendingEvolution)
+  const queue = useAppState((s) => s.pendingEvolutions)
+  const pending = queue[0] ?? null
   const [phase, setPhase] = useState<'before' | 'flash' | 'after'>('before')
   const [current, setCurrent] = useState<PendingEvolution | null>(null)
 
@@ -85,7 +101,7 @@ export function EvolutionModal() {
                   ? `（つぎは レベル${nf}で また かわるよ）`
                   : ''}
             </p>
-            <Button onClick={() => setPendingEvolution(null)}>やったー！</Button>
+            <Button onClick={() => shiftEvolution()}>{queue.length > 1 ? `つぎへ（あと ${queue.length - 1}）` : 'やったー！'}</Button>
           </div>
         )}
       </div>

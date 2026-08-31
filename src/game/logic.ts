@@ -112,6 +112,8 @@ export interface FeedStarsResult {
   ok: true
   /** 実際にあげられた数 */
   fed: number
+  /** 姿が変わったレベル（まとめてあげたとき、そこで区切って演出を見せる。第61回） */
+  formLevels: number[]
   leveledUp: boolean
   fromLevel: number
   newLevel: number
@@ -142,6 +144,7 @@ export async function feedStars(profileId: string, ownedId: number, count: numbe
   let available = Math.min(count, profile.stars)
   let fed = 0
   const newStages: number[] = []
+  const formLevels: number[] = []
   while (available > 0 && level < MAX_LEVEL) {
     const need = starsNeededFor(level)
     if (need == null) break
@@ -152,6 +155,7 @@ export async function feedStars(profileId: string, ownedId: number, count: numbe
       starsFed = 0
       level = Math.min(MAX_LEVEL, level + 1)
       const st = stageForLevel(level)
+      if (st !== stageForLevel(level - 1)) formLevels.push(level)
       if (st !== fromStage && !newStages.includes(st)) newStages.push(st)
     } else {
       starsFed += available
@@ -180,6 +184,7 @@ export async function feedStars(profileId: string, ownedId: number, count: numbe
   return {
     ok: true,
     fed,
+    formLevels,
     leveledUp: level > fromLevel,
     fromLevel,
     newLevel: level,

@@ -44,7 +44,8 @@ export interface AppState {
   /** 音設定変更の通知カウンタ（SoundButtonの再描画用） */
   soundVersion: number
   toasts: ToastItem[]
-  pendingEvolution: PendingEvolution | null
+  /** レベルアップ演出の待ち行列。まとめてあげたとき、姿が変わるたびに1つずつ見せる（第61回） */
+  pendingEvolutions: PendingEvolution[]
 }
 
 let state: AppState = {
@@ -55,7 +56,7 @@ let state: AppState = {
   dataVersion: 0,
   soundVersion: 0,
   toasts: [],
-  pendingEvolution: null,
+  pendingEvolutions: [],
 }
 
 const listeners = new Set<() => void>()
@@ -115,6 +116,16 @@ export function showToast(text: string) {
   }, 2600)
 }
 
-export function setPendingEvolution(p: PendingEvolution | null) {
-  setState({ pendingEvolution: p })
+export function pushEvolutions(list: PendingEvolution[]) {
+  if (list.length === 0) return
+  setState({ pendingEvolutions: [...state.pendingEvolutions, ...list] })
+}
+
+/** 先頭の演出を見おわった（次があれば続けて見せる） */
+export function shiftEvolution() {
+  setState({ pendingEvolutions: state.pendingEvolutions.slice(1) })
+}
+
+export function clearEvolutions() {
+  setState({ pendingEvolutions: [] })
 }

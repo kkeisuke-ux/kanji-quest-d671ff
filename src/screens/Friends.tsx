@@ -71,7 +71,7 @@ export function Friends() {
     return `レベル${nf}で すがたが かわるよ（あと ${remain}）`
   }
 
-  // count=1で1こ、count=5でまとめて（スター切れ・最大レベルで自動停止。第37回）
+  // count=1で1こ、まとめてもOK（スター切れ・最大レベルで自動停止。第37回／第61回で演出を分割）
   const onFeedStar = async (ownedId: number, count: number) => {
     if (busyRef.current || feedingId != null) return
     if (profile.stars <= 0) {
@@ -95,7 +95,7 @@ export function Friends() {
           }
           if (res.leveledUp) {
             const rec = owned.find((o) => o.id === ownedId)
-            if (rec) queueLevelUp(rec.speciesId, res.fromLevel, res.newLevel)
+            if (rec) queueLevelUp(rec.speciesId, res.fromLevel, res.newLevel, res.formLevels)
           } else {
             showToast(
               `もぐもぐ…！ スターを${res.fed}こ たべたよ。つぎのレベルまで あとスター${res.starsNeeded != null ? res.starsNeeded - res.starsFed : 0}こ`
