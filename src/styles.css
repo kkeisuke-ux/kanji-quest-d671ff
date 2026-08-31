@@ -3883,3 +3883,64 @@ body {
     font-size: 15px;
   }
 }
+
+/* チュートリアル: すすめる じゅんばん（第56回） */
+.tutorial-order {
+  margin-top: 10px;
+  background: #eef2ff;
+  border-radius: 12px;
+  padding: 8px 12px 10px;
+}
+
+.tutorial-order-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--primary-dark);
+}
+
+.tutorial-order-row {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.tutorial-order-step {
+  flex: 1;
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.tutorial-order-step b {
+  color: var(--primary);
+}
+
+.tutorial-order-step small {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.tutorial-order-arrow {
+  align-self: center;
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+@media (max-width: 700px) {
+  .tutorial-order-row {
+    flex-direction: column;
+  }
+
+  .tutorial-order-arrow {
+    transform: rotate(90deg);
+    line-height: 1;
+  }
+}

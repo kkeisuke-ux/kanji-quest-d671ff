@@ -135,8 +135,26 @@ export function Tutorial({ onDone }: Props) {
             </div>
             <p className="tutorial-note">
               しょうごうも レベルも、じぶんの なまえの よこに ついて、みんな画面でも 見られるよ。
-              じゅんいは つけないから、じぶんの ペースで いこう。
             </p>
+            <div className="tutorial-order">
+              <p className="tutorial-order-title">すすめる じゅんばん</p>
+              <div className="tutorial-order-row">
+                <span className="tutorial-order-step">
+                  <b>①</b> れんしゅう
+                  <small>お手本を なぞって おぼえる</small>
+                </span>
+                <span className="tutorial-order-arrow">→</span>
+                <span className="tutorial-order-step">
+                  <b>②</b> ５もんテスト
+                  <small>おぼえた 5字を ためす</small>
+                </span>
+                <span className="tutorial-order-arrow">→</span>
+                <span className="tutorial-order-step">
+                  <b>③</b> まとめテスト
+                  <small>たくさん まとめて ためす</small>
+                </span>
+              </div>
+            </div>
           </div>
         )}
 
@@ -159,7 +177,7 @@ export function Tutorial({ onDone }: Props) {
               <button className="tutorial-start-main" onClick={() => void finish('stages')}>
                 <span className="tutorial-start-icon">✏️</span>
                 <span className="tutorial-start-title">れんしゅうする</span>
-                <span className="tutorial-start-sub">はじめては こっち。お手本を なぞって おぼえよう</span>
+                <span className="tutorial-start-sub">まずは ここから。れんしゅう → ５もんテスト → まとめテスト の じゅんばん</span>
               </button>
               <button className="tutorial-start-sub-btn" onClick={() => void finish('home')}>
                 ホームを 見てみる
