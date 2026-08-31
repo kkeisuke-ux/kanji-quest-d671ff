@@ -4,7 +4,7 @@ import { CURRICULUM, TERM_TEST_TOTAL, getCurriculumForGrade, perfectTermTestIds 
 import { MAX_LEVEL, getSpecies, nameForLevel, stageForLevel, starsNeededFor } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
-import { bumpData, navigate, useAppState } from '../state/store'
+import { navigate, useAppState } from '../state/store'
 import {
   backfillStudyDays,
   getProfile,
@@ -17,7 +17,8 @@ import {
 } from '../storage/repo'
 import { rankForCount } from '../game/ranks'
 import type { StreakBonus } from '../game/streak'
-import { Button, Card, LoadingView, Modal, StarMeter, StatusChips } from '../ui/components'
+import { Button, Card, LoadingView, StarMeter, StatusChips } from '../ui/components'
+import { StreakBonusModal } from '../ui/StreakBonusModal'
 import { RankBadge, RankListModal } from '../ui/RankBadge'
 import { SoundButton } from '../ui/SoundButton'
 import { StudyCalendar } from '../ui/StudyCalendar'
@@ -30,10 +31,7 @@ export function Home() {
   useEffect(() => {
     if (!profileId) return
     void takePendingStreakBonus(profileId).then((list) => {
-      if (list.length === 0) return
-      setBonuses(list)
-      // ボーナスは練習中に加算済み。所持コインの表示を今の値に合わせる
-      bumpData()
+      if (list.length > 0) setBonuses(list)
     })
   }, [profileId])
   const { data } = useAsyncData(async () => {
@@ -223,19 +221,7 @@ export function Home() {
         </div>
       </div>
       <RankListModal open={showRanks} perfectCount={termPerfectCount} onClose={() => setShowRanks(false)} />
-      <Modal open={bonuses.length > 0} onClose={() => setBonuses([])}>
-        <div className="streak-bonus-modal">
-          <p className="streak-bonus-emoji">🎉</p>
-          {bonuses.map((b) => (
-            <p key={b.streak} className="streak-bonus-line">
-              <span className="streak-bonus-label">{b.label}</span>
-              <span className="streak-bonus-coins">＋{b.coins} コイン</span>
-            </p>
-          ))}
-          <p className="streak-bonus-sub">よく つづけたね！ この ちょうしで いこう</p>
-          <Button onClick={() => setBonuses([])}>やったー！</Button>
-        </div>
-      </Modal>
+      <StreakBonusModal profileId={profileId} bonuses={bonuses} onClose={() => setBonuses([])} />
     </div>
   )
 }
