@@ -122,32 +122,70 @@ export interface FeedStarsResult {
 
 export type FeedStarsOutcome = FeedStarsResult | { ok: false; reason: 'noStars' | 'max' | 'notFound' }
 
-/** スターをまとめてあげる（最大countこ。スター切れ・最大レベルで自動的に止まる。第37回） */
+/**
+ * スターをまとめてあげる（最大countこ。スター切れ・最大レベルで自動的に止まる）。
+ * 第37回は1個ずつ feedStar を回していたが、まとめ買い・まとめあげが増えると
+ * 1個につきDBを3回さわるので数百個で待たされる。第60回でメモリ上で計算して
+ * 保存は1回だけにした（レベルは何段でも上がる）。
+ */
 export async function feedStars(profileId: string, ownedId: number, count: number): Promise<FeedStarsOutcome> {
-  let first: FeedStarResult | null = null
-  let last: FeedStarResult | null = null
+  const profile = await getProfile(profileId)
+  const owned = await getOwned(ownedId)
+  if (!profile || !owned) return { ok: false, reason: 'notFound' }
+  if (owned.level >= MAX_LEVEL) return { ok: false, reason: 'max' }
+  if (profile.stars <= 0) return { ok: false, reason: 'noStars' }
+
+  const fromLevel = owned.level
+  const fromStage = owned.stage
+  let level = owned.level
+  let starsFed = owned.starsFed ?? 0
+  let available = Math.min(count, profile.stars)
   let fed = 0
-  for (let i = 0; i < count; i++) {
-    const r = await feedStar(profileId, ownedId)
-    if (!r.ok) {
-      if (!last || !first) return r
-      break
+  const newStages: number[] = []
+  while (available > 0 && level < MAX_LEVEL) {
+    const need = starsNeededFor(level)
+    if (need == null) break
+    const remain = need - starsFed
+    if (available >= remain) {
+      available -= remain
+      fed += remain
+      starsFed = 0
+      level = Math.min(MAX_LEVEL, level + 1)
+      const st = stageForLevel(level)
+      if (st !== fromStage && !newStages.includes(st)) newStages.push(st)
+    } else {
+      starsFed += available
+      fed += available
+      available = 0
     }
-    if (!first) first = r
-    last = r
-    fed++
-    if (r.isMax) break
   }
-  if (!first || !last) return { ok: false, reason: 'noStars' }
+  if (fed === 0) return { ok: false, reason: 'noStars' }
+
+  profile.stars -= fed
+  owned.starsFed = starsFed
+  owned.level = level
+  owned.stage = stageForLevel(level)
+  await saveProfile(profile)
+  await saveOwned(owned)
+  // とちゅうで とばした すがたも ずかんに のこす（まとめてあげて何段も上がったとき）
+  for (const st of newStages) await discoverDex(profileId, owned.speciesId, st)
+  if (level > fromLevel) {
+    await addActivity(
+      profileId,
+      profile.name,
+      'evolve',
+      `${profile.name}の ${nameForLevel(owned.speciesId, level)}が レベル${level}に あがった！`
+    )
+  }
   return {
     ok: true,
     fed,
-    leveledUp: last.newLevel > first.fromLevel,
-    fromLevel: first.fromLevel,
-    newLevel: last.newLevel,
-    starsFed: last.starsFed,
-    starsNeeded: last.starsNeeded,
-    isMax: last.isMax,
+    leveledUp: level > fromLevel,
+    fromLevel,
+    newLevel: level,
+    starsFed,
+    starsNeeded: starsNeededFor(level),
+    isMax: level >= MAX_LEVEL,
   }
 }
 

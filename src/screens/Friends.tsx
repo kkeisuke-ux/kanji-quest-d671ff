@@ -38,6 +38,9 @@ export function Friends() {
     showToast('いっしょに べんきょうする なかまを かえたよ')
   }
 
+  // 1回で買える上限。多すぎる数を一度に押しても困らないよう999で頭打ちにする
+  const maxBuyable = Math.min(999, Math.floor(profile.coins / GAME_CONFIG.star.cost))
+
   const onBuyStars = async (count: number) => {
     if (busyRef.current) return
     busyRef.current = true
@@ -125,14 +128,23 @@ export function Friends() {
               </span>
             )}
             <Button onClick={() => void onBuyStars(1)} disabled={profile.coins < GAME_CONFIG.star.cost}>
-              スターを 1こ かう（{GAME_CONFIG.star.cost}コイン）
+              1こ かう（{GAME_CONFIG.star.cost}コイン）
             </Button>
             <Button
-              variant="accent"
               onClick={() => void onBuyStars(GAME_CONFIG.star.bulkCount)}
               disabled={profile.coins < GAME_CONFIG.star.cost * GAME_CONFIG.star.bulkCount}
             >
-              まとめて {GAME_CONFIG.star.bulkCount}こ かう（{GAME_CONFIG.star.cost * GAME_CONFIG.star.bulkCount}コイン）
+              {GAME_CONFIG.star.bulkCount}こ かう（{GAME_CONFIG.star.cost * GAME_CONFIG.star.bulkCount}コイン）
+            </Button>
+            <Button
+              onClick={() => void onBuyStars(GAME_CONFIG.star.bulkCount2)}
+              disabled={profile.coins < GAME_CONFIG.star.cost * GAME_CONFIG.star.bulkCount2}
+            >
+              {GAME_CONFIG.star.bulkCount2}こ かう（{GAME_CONFIG.star.cost * GAME_CONFIG.star.bulkCount2}コイン）
+            </Button>
+            {/* コインが たまってくると 1こずつでは 追いつかないので「かえるだけ」を用意する（第60回） */}
+            <Button variant="accent" onClick={() => void onBuyStars(maxBuyable)} disabled={maxBuyable <= 0}>
+              かえるだけ かう（{maxBuyable}こ・{maxBuyable * GAME_CONFIG.star.cost}コイン）
             </Button>
           </div>
         </Card>
@@ -180,10 +192,19 @@ export function Friends() {
                       <Button
                         size="sm"
                         variant="accent"
-                        onClick={() => void onFeedStar(o.id!, 5)}
-                        disabled={profile.stars < 5 || o.level >= MAX_LEVEL || feedingId != null}
+                        onClick={() => void onFeedStar(o.id!, 10)}
+                        disabled={profile.stars < 1 || o.level >= MAX_LEVEL || feedingId != null}
                       >
-                        5こ まとめて
+                        10こ まとめて
+                      </Button>
+                      {/* レベル99まではスターが たくさん いるので、まとめて あげられるようにする（第60回） */}
+                      <Button
+                        size="sm"
+                        variant="accent"
+                        onClick={() => void onFeedStar(o.id!, profile.stars)}
+                        disabled={profile.stars < 1 || o.level >= MAX_LEVEL || feedingId != null}
+                      >
+                        ぜんぶ あげる（{profile.stars}こ）
                       </Button>
                       {isBuddy ? (
                         <span className="buddy-mark">いっしょに べんきょうちゅう</span>
