@@ -107,7 +107,7 @@ export function monthLabel(monthKey: string): string {
   return `${y}年 ${m}月`
 }
 
-// ---------------- れんぞくボーナス（第52回） ----------------
+// ---------------- れんぞくボーナス（第52回、第59回で増額） ----------------
 export interface StreakBonus {
   /** 何日れんぞくで出たか */
   streak: number
@@ -116,9 +116,23 @@ export interface StreakBonus {
 }
 
 /**
- * その日数に到達したときだけ出るボーナス。
- * 3日で最初の1回 → あとは7日ごとに少しずつ増える → 30日ごとは大きく出す。
- * 「毎日ちょっとずつ」より「続けた人ほど得」を強くしたいので、週の重みを回数で増やしている。
+ * 毎日もらえるコイン。れんぞくが のびるほど 1日ぶんが 増える。
+ * 「今日やらないと、明日の1日ぶんが 50に もどってしまう」という もったいなさが、
+ * 続けるいちばんの理由になるので、節目だけでなく毎日出すのが要点。
+ * 7日ごとに +30、上限は300（増えつづけると ほかの遊びが かすむため）。
+ */
+export const DAILY_BASE = 50
+export const DAILY_STEP = 30
+export const DAILY_CAP = 300
+
+export function dailyStreakCoins(streak: number): number {
+  if (streak <= 0) return 0
+  return Math.min(DAILY_CAP, DAILY_BASE + DAILY_STEP * Math.floor(streak / 7))
+}
+
+/**
+ * 節目に出る、まとまったごほうび（毎日ぶんとは別に上のせ）。
+ * 3日で最初の1回 → あとは7日ごとに増える → 30日ごとは特別に大きい。
  * 30は7の倍数ではないので、7日刻みとぶつからない。
  */
 export function bonusForStreak(streak: number): StreakBonus | null {
@@ -127,23 +141,30 @@ export function bonusForStreak(streak: number): StreakBonus | null {
     const months = streak / 30
     return {
       streak,
-      coins: 500 + (months - 1) * 200,
+      coins: 2000 + (months - 1) * 1000,
       label: months === 1 ? '1か月れんぞく' : `${months}か月れんぞく`,
     }
   }
   if (streak % 7 === 0) {
     const weeks = streak / 7
-    return { streak, coins: 70 + (weeks - 1) * 30, label: `${streak}日れんぞく` }
+    return { streak, coins: Math.min(2000, 300 + (weeks - 1) * 200), label: `${streak}日れんぞく` }
   }
-  if (streak === 3) return { streak, coins: 30, label: '3日れんぞく' }
+  if (streak === 3) return { streak, coins: 100, label: '3日れんぞく' }
   return null
 }
 
-/** つぎのボーナスまであと何日か（ホームの案内用） */
+/** つぎの節目まであと何日か（ホームの案内用） */
 export function nextBonus(streak: number): { inDays: number; bonus: StreakBonus } | null {
   for (let n = streak + 1; n <= streak + 31; n++) {
     const b = bonusForStreak(n)
     if (b) return { inDays: n - streak, bonus: b }
   }
   return null
+}
+
+/** 1日ぶんが つぎに増えるのは何日目か（もう上限なら null） */
+export function nextDailyStepUp(streak: number): { atStreak: number; coins: number } | null {
+  if (dailyStreakCoins(streak) >= DAILY_CAP) return null
+  const at = (Math.floor(streak / 7) + 1) * 7
+  return { atStreak: at, coins: dailyStreakCoins(at) }
 }

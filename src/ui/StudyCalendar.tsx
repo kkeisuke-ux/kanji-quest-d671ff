@@ -2,7 +2,16 @@
 // 「きょうも やった」が一目で分かることと、連続日数が見えることが目的なので、
 // 何をやったかの内訳は出さない（子どもが読む画面なので情報を増やしすぎない）。
 import { useState } from 'react'
-import { monthGrid, monthKeyOf, monthLabel, nextBonus, shiftMonth, studySummary } from '../game/streak'
+import {
+  dailyStreakCoins,
+  monthGrid,
+  monthKeyOf,
+  monthLabel,
+  nextBonus,
+  nextDailyStepUp,
+  shiftMonth,
+  studySummary,
+} from '../game/streak'
 import type { StudyDayRecord } from '../storage/models'
 
 const WEEK = ['日', '月', '火', '水', '木', '金', '土']
@@ -96,18 +105,38 @@ export function StudyCalendar({ records, navigable = true, compact = false, titl
           </span>
         </div>
         {!compact && (
-          <p className="studycal-hint">
+          <div className="studycal-hint">
             {(() => {
+              // きょうやると いくらもらえるか（＝やらないと いくら損か）を いちばん前に出す。
+              // 節目だけだと、節目の あいだの日に やる理由が うすくなる
+              const todayStreak = sum.studiedToday ? sum.streak : sum.streak + 1
+              const todayCoins = dailyStreakCoins(todayStreak)
+              const step = nextDailyStepUp(todayStreak)
               const nb = nextBonus(sum.streak)
-              // 「あと何日で いくらもらえるか」を出すのが いちばん次にやる気になる
-              if (nb) {
-                const more = sum.studiedToday ? nb.inDays : nb.inDays - 1
-                if (more <= 0) return `きょう やれば ${nb.bonus.label}で ${nb.bonus.coins}コイン！`
-                return `あと ${more}日 つづけると ${nb.bonus.label}で ${nb.bonus.coins}コイン！`
-              }
-              return sum.studiedToday ? 'きょうの スタンプ ゲット！' : 'きょうも やって スタンプを つけよう'
+              const more = nb ? (sum.studiedToday ? nb.inDays : nb.inDays - 1) : 0
+              return (
+                <>
+                  <p className="studycal-hint-main">
+                    {sum.studiedToday
+                      ? `きょうの れんぞくボーナス ＋${todayCoins}コイン ゲット！`
+                      : `きょう やると れんぞく${todayStreak}日め ＋${todayCoins}コイン！`}
+                  </p>
+                  {nb && (
+                    <p className="studycal-hint-sub">
+                      {more <= 0
+                        ? `しかも きょうは ${nb.bonus.label}！ さらに ＋${nb.bonus.coins}コイン`
+                        : `あと ${more}日で ${nb.bonus.label}（さらに ＋${nb.bonus.coins}コイン）`}
+                    </p>
+                  )}
+                  {step && (
+                    <p className="studycal-hint-sub">
+                      {`${step.atStreak}日つづけると 1日ぶんが ＋${step.coins}コインに ふえるよ`}
+                    </p>
+                  )}
+                </>
+              )
             })()}
-          </p>
+          </div>
         )}
       </div>
     </div>

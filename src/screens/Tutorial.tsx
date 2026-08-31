@@ -167,7 +167,8 @@ export function Tutorial({ onDone }: Props) {
                 <p className="tutorial-half-title">🪙 コイン</p>
                 <p>
                   れんしゅうや テストを すると もらえるよ。
-                  コインで <b>なかまガチャ</b>を まわして、あたらしい なかまに 会える。
+                  コインで <b>なかまガチャ</b>や <b>スター</b>が 買える。
+                  <b>まいにち つづけると、1日ぶんの ボーナスが どんどん ふえる</b>よ。
                 </p>
               </div>
               <div className="tutorial-half">

@@ -1,6 +1,6 @@
 // データアクセス層。画面からはこのモジュール経由で読み書きする。
 import { GAME_CONFIG } from '../config/gameConfig'
-import { bonusForStreak, studySummary, todayYmd, ymdOf, monthKeyOf } from '../game/streak'
+import { bonusForStreak, dailyStreakCoins, studySummary, todayYmd, ymdOf, monthKeyOf } from '../game/streak'
 import type { StreakBonus } from '../game/streak'
 import {
   dbAdd,
@@ -475,16 +475,28 @@ async function markStudiedInner(profileId: string, at: number): Promise<void> {
   // 1日1レコードなので、この分岐に入る回数＝1日1回。二重付与にならない。
   const days = await listStudyDays(profileId)
   const { streak } = studySummary(days, monthKeyOf(at))
-  const bonus = bonusForStreak(streak)
-  if (!bonus) return
-  await addCoins(profileId, bonus.coins, `${bonus.label}ボーナス`)
-  const profile = await getProfile(profileId)
-  if (profile) {
-    await addActivity(profileId, profile.name, 'milestone', `${profile.name}が ${bonus.label}を たっせい！`)
+  const earned: StreakBonus[] = []
+
+  // 毎日ぶん（第59回）。れんぞくが のびるほど 1日ぶんが 増える
+  const daily = dailyStreakCoins(streak)
+  if (daily > 0) {
+    earned.push({ streak, coins: daily, label: streak === 1 ? 'きょうの ぶん' : `${streak}日め れんぞく` })
+  }
+  // 節目ぶん（上のせ）
+  const milestone = bonusForStreak(streak)
+  if (milestone) earned.push(milestone)
+  if (earned.length === 0) return
+
+  for (const b of earned) await addCoins(profileId, b.coins, `${b.label}ボーナス`)
+  if (milestone) {
+    const profile = await getProfile(profileId)
+    if (profile) {
+      await addActivity(profileId, profile.name, 'milestone', `${profile.name}が ${milestone.label}を たっせい！`)
+    }
   }
   // 受け取り演出はホームで出す（練習中に割り込むと集中が切れるため、持ち越して見せる）
   const pending = (await getSetting<StreakBonus[]>(PENDING_BONUS_KEY(profileId))) ?? []
-  await putSetting(PENDING_BONUS_KEY(profileId), [...pending, bonus])
+  await putSetting(PENDING_BONUS_KEY(profileId), [...pending, ...earned])
 }
 
 /** ホームで受け取り演出を出したあと消す */
