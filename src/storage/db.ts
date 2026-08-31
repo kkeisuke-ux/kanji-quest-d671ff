@@ -1,6 +1,6 @@
 // IndexedDBの薄いPromiseラッパ。外部ライブラリ非依存。
 const DB_NAME = 'kanji-quest'
-const DB_VERSION = 2
+const DB_VERSION = 3
 
 export const STORE_NAMES = [
   'profiles',
@@ -15,6 +15,7 @@ export const STORE_NAMES = [
   'dexEntries',
   'gachaHistory',
   'activityFeed',
+  'studyDays',
   'settings',
 ] as const
 
@@ -54,6 +55,9 @@ export function getDb(): Promise<IDBDatabase> {
       const gacha = mk('gachaHistory', { keyPath: 'id', autoIncrement: true })
       if (!gacha.indexNames.contains('byProfile')) gacha.createIndex('byProfile', 'profileId')
       mk('activityFeed', { keyPath: 'id', autoIncrement: true })
+      // 第45回: べんきょうカレンダー用。1プロフィール1日1件
+      const studyDays = mk('studyDays', { keyPath: ['profileId', 'ymd'] })
+      if (!studyDays.indexNames.contains('byProfile')) studyDays.createIndex('byProfile', 'profileId')
       mk('settings', { keyPath: 'key' })
     }
     req.onsuccess = () => resolve(req.result)

@@ -24,6 +24,7 @@ import {
   deletePracticeSession,
   getPracticeSession,
   getProgress,
+  markStudied,
   savePracticeSession,
   saveProgress,
 } from '../storage/repo'
@@ -141,6 +142,7 @@ export function YojiLearnFlow({ stageId }: { stageId: string }) {
     const progress = await getProgress(profile.id, char)
     progress.practicedAt = Date.now()
     await saveProgress(progress)
+    void markStudied(profile.id)
     // 1熟語れんしゅうかんりょう → コイン＋スター（配当字1字ぶんの扱い）
     await awardCoinsFor(profile.id, GAME_CONFIG.coins.practicePerKanji, `れんしゅう「${idiom}」`)
     await awardStarsFor(profile.id, GAME_CONFIG.starRewards.practiceKanji)

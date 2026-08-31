@@ -25,6 +25,7 @@ import {
   deletePracticeSession,
   getPracticeSession,
   getProgress,
+  markStudied,
   savePracticeSession,
   saveProgress,
 } from '../storage/repo'
@@ -155,6 +156,7 @@ function SingleKanjiLearnFlow({ stageId }: { stageId: string; startIndex?: numbe
     const progress = await getProgress(profile.id, char)
     progress.practicedAt = Date.now()
     await saveProgress(progress)
+    void markStudied(profile.id)
     // 1文字れんしゅうかんりょう → コイン＋スター（スターは大きな獲得演出で見せる。第11回）
     await awardCoinsFor(profile.id, GAME_CONFIG.coins.practicePerKanji, `れんしゅう「${char}」`)
     await awardStarsFor(profile.id, GAME_CONFIG.starRewards.practiceKanji)

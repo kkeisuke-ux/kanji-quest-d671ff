@@ -1,28 +1,53 @@
 // ホーム画面（仕様 §36）: 学習入口・復習・仲間・コイン・進捗・称号。
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CURRICULUM, TERM_TEST_TOTAL, getCurriculumForGrade, perfectTermTestIds } from '../data/curriculum'
 import { MAX_LEVEL, getSpecies, nameForLevel, stageForLevel, starsNeededFor } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
-import { navigate, useAppState } from '../state/store'
-import { getProfile, listOwned, listProgress, listTestResults, listUnknown } from '../storage/repo'
+import { bumpData, navigate, useAppState } from '../state/store'
+import {
+  backfillStudyDays,
+  getProfile,
+  listOwned,
+  listProgress,
+  listStudyDays,
+  listTestResults,
+  listUnknown,
+  takePendingStreakBonus,
+} from '../storage/repo'
 import { rankForCount } from '../game/ranks'
-import { Button, Card, LoadingView, StarMeter, StatusChips } from '../ui/components'
+import type { StreakBonus } from '../game/streak'
+import { Button, Card, LoadingView, Modal, StarMeter, StatusChips } from '../ui/components'
 import { RankBadge, RankListModal } from '../ui/RankBadge'
 import { SoundButton } from '../ui/SoundButton'
+import { StudyCalendar } from '../ui/StudyCalendar'
 
 export function Home() {
   const profileId = useAppState((s) => s.profileId)
   const [showRanks, setShowRanks] = useState(false)
+  // れんぞくボーナスは練習中に割り込まず、ホームに戻ってきたときに受け取り演出を出す（第52回）
+  const [bonuses, setBonuses] = useState<StreakBonus[]>([])
+  useEffect(() => {
+    if (!profileId) return
+    void takePendingStreakBonus(profileId).then((list) => {
+      if (list.length === 0) return
+      setBonuses(list)
+      // ボーナスは練習中に加算済み。所持コインの表示を今の値に合わせる
+      bumpData()
+    })
+  }, [profileId])
   const { data } = useAsyncData(async () => {
     if (!profileId) return null
     const profile = await getProfile(profileId)
     if (!profile) return null
-    const [unknown, progressList, owned, results] = await Promise.all([
+    // カレンダー導入前の記録から べんきょうした日を1度だけ復元する（第45回）
+    await backfillStudyDays(profileId)
+    const [unknown, progressList, owned, results, studyDays] = await Promise.all([
       listUnknown(profileId),
       listProgress(profileId),
       listOwned(profileId),
       listTestResults(profileId),
+      listStudyDays(profileId),
     ])
     const buddy = profile.buddyId != null ? (owned.find((o) => o.id === profile.buddyId) ?? null) : null
     const mastered = progressList.filter((p) => p.masteredAt != null).length
@@ -41,6 +66,7 @@ export function Home() {
     const termTotal = TERM_TEST_TOTAL
     return {
       profile,
+      studyDays,
       unknown,
       mastered,
       buddy,
@@ -55,7 +81,7 @@ export function Home() {
   }, [profileId])
 
   if (!data) return <LoadingView />
-  const { profile, unknown, mastered, buddy, fallback, totalPlayable, clearedStages, totalStages, termTotal, termPerfectCount } = data
+  const { profile, studyDays, unknown, mastered, buddy, fallback, totalPlayable, clearedStages, totalStages, termTotal, termPerfectCount } = data
   const buddySpecies = buddy ? getSpecies(buddy.speciesId) : null
 
   return (
@@ -90,6 +116,8 @@ export function Home() {
               <span className="action-sub">まとめテストで 100てんを めざそう</span>
             </button>
           </div>
+          {/* べんきょうカレンダー（第45回）: 学習の入口のすぐ下に置いて「きょうも やろう」を促す */}
+          <StudyCalendar records={studyDays} />
           <div className="tile-row">
             <Card className="tile" onClick={() => navigate({ name: 'unknownList' })}>
               <h3>わからなかった漢字の ふくしゅう</h3>
@@ -195,6 +223,19 @@ export function Home() {
         </div>
       </div>
       <RankListModal open={showRanks} perfectCount={termPerfectCount} onClose={() => setShowRanks(false)} />
+      <Modal open={bonuses.length > 0} onClose={() => setBonuses([])}>
+        <div className="streak-bonus-modal">
+          <p className="streak-bonus-emoji">🎉</p>
+          {bonuses.map((b) => (
+            <p key={b.streak} className="streak-bonus-line">
+              <span className="streak-bonus-label">{b.label}</span>
+              <span className="streak-bonus-coins">＋{b.coins} コイン</span>
+            </p>
+          ))}
+          <p className="streak-bonus-sub">よく つづけたね！ この ちょうしで いこう</p>
+          <Button onClick={() => setBonuses([])}>やったー！</Button>
+        </div>
+      </Modal>
     </div>
   )
 }

@@ -4,10 +4,21 @@ import { setStrictnessRuntime } from '../config/judgeRuntime'
 import { perfectStageIds, perfectTermTestIds, stageClearLevelLabel } from '../data/curriculum'
 import { useAsyncData } from '../state/hooks'
 import { bumpData, navigate, selectProfile } from '../state/store'
-import { MAX_PROFILES, createProfile, deleteProfileDeep, listProfiles, listTestResults, saveProfile } from '../storage/repo'
+import {
+  MAX_PROFILES,
+  backfillStudyDays,
+  createProfile,
+  deleteProfileDeep,
+  getProfile,
+  listProfiles,
+  listStudyDays,
+  listTestResults,
+  saveProfile,
+} from '../storage/repo'
 import type { Profile } from '../storage/models'
 import { Button, LoadingView, Modal } from '../ui/components'
 import { RankChip } from '../ui/RankBadge'
+import { StudyStreakChip } from '../ui/StudyCalendar'
 
 export function ProfileSelect() {
   // 各プロフィールの称号（まとめテスト100点の数）と到達レベル（5問テスト100点。第44回）も一緒に読む
@@ -15,11 +26,13 @@ export function ProfileSelect() {
     const list = await listProfiles()
     return Promise.all(
       list.map(async (p) => {
-        const results = await listTestResults(p.id)
+        await backfillStudyDays(p.id)
+        const [results, studyDays] = await Promise.all([listTestResults(p.id), listStudyDays(p.id)])
         return {
           profile: p,
           perfectCount: perfectTermTestIds(results).size,
           levelLabel: stageClearLevelLabel(perfectStageIds(results)),
+          studyDays,
         }
       })
     )
@@ -27,6 +40,7 @@ export function ProfileSelect() {
   const profiles = data?.map((d) => d.profile) ?? null
   const rankCountOf = new Map((data ?? []).map((d) => [d.profile.id, d.perfectCount]))
   const levelOf = new Map((data ?? []).map((d) => [d.profile.id, d.levelLabel]))
+  const studyOf = new Map((data ?? []).map((d) => [d.profile.id, d.studyDays]))
   const [creating, setCreating] = useState(false)
   const [editing, setEditing] = useState<Profile | null>(null)
   const [name, setName] = useState('')
@@ -35,9 +49,12 @@ export function ProfileSelect() {
   if (!profiles) return <LoadingView />
 
   const pick = async (p: Profile) => {
-    p.lastActiveAt = Date.now()
-    await saveProfile(p)
-    setStrictnessRuntime(p.judgeStrictness)
+    // 一覧を開いたあとにコイン等が増えていることがあるため、必ず読み直してから保存する。
+    // 一覧取得時のオブジェクトをそのまま書き戻すと、その間の増減を巻き戻してしまう
+    const fresh = (await getProfile(p.id)) ?? p
+    fresh.lastActiveAt = Date.now()
+    await saveProfile(fresh)
+    setStrictnessRuntime(fresh.judgeStrictness)
     selectProfile(p.id)
     navigate({ name: 'home' })
   }
@@ -87,6 +104,8 @@ export function ProfileSelect() {
             <RankChip perfectCount={rankCountOf.get(p.id) ?? 0} />
             {/* 到達レベル（5問テスト100点が ぜんぶ そろっている ところまで。第44回） */}
             {levelOf.get(p.id) && <span className="badge profile-level level-chip">Lv {levelOf.get(p.id)}</span>}
+            {/* べんきょうの続きぐあい（第45回）。だれが続いているか 選ぶ前に分かる */}
+            <StudyStreakChip records={studyOf.get(p.id) ?? []} />
             <button
               className="profile-edit"
               onClick={(e) => {

@@ -6,9 +6,11 @@ import { ACTIVE_STAGE_IDS, CURRICULUM, TERM_TEST_TOTAL, perfectTermTestIds } fro
 import { totalDexStages } from '../data/species'
 import { useAsyncData } from '../state/hooks'
 import { useAppState } from '../state/store'
-import { listDex, listProfiles, listProgress, listTestResults } from '../storage/repo'
+import { backfillStudyDays, listDex, listProfiles, listProgress, listStudyDays, listTestResults } from '../storage/repo'
 import { Card, LoadingView, TopBar } from '../ui/components'
 import { RankChip } from '../ui/RankBadge'
+import { StudyCalendar } from '../ui/StudyCalendar'
+import type { StudyDayRecord } from '../storage/models'
 
 interface ProfileDash {
   id: string
@@ -20,6 +22,8 @@ interface ProfileDash {
   dexCount: number
   /** 100点をとったまとめテストの本数（称号ランク） */
   perfectCount: number
+  /** べんきょうカレンダー用（第45回） */
+  studyDays: StudyDayRecord[]
 }
 
 export function Minna() {
@@ -39,7 +43,13 @@ export function Minna() {
       }
       const dash = await Promise.all(
         profiles.map(async (p) => {
-          const [progress, results, dex] = await Promise.all([listProgress(p.id), listTestResults(p.id), listDex(p.id)])
+          await backfillStudyDays(p.id)
+          const [progress, results, dex, studyDays] = await Promise.all([
+            listProgress(p.id),
+            listTestResults(p.id),
+            listDex(p.id),
+            listStudyDays(p.id),
+          ])
           const stagePerfect = new Set<string>()
           for (const r of results) {
             if (r.kind === 'stage' && r.total > 0 && r.correct === r.total && ACTIVE_STAGE_IDS.has(r.targetId)) {
@@ -56,6 +66,7 @@ export function Minna() {
             termCleared: termPerfect.size,
             dexCount: dex.length,
             perfectCount: termPerfect.size,
+            studyDays,
           }
         })
       )
@@ -109,6 +120,8 @@ export function Minna() {
                 {stat('💮', 'まとめテスト 100点', d.termCleared, totals.terms, 'テスト')}
                 {stat('📔', 'ずかん', d.dexCount, totals.dex, 'しゅるい')}
               </div>
+              {/* だれが どれだけ 続いているか（第45回）。今月ぶんだけの小さいカレンダー */}
+              <StudyCalendar records={d.studyDays} navigable={false} compact title="" />
             </Card>
           ))}
         </div>
