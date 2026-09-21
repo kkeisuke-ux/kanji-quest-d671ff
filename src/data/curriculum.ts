@@ -192,19 +192,142 @@ export function perfectStageIds(
   )
 }
 
+// ---------------- 飛び級テスト（第63回） ----------------
+// これまでレベルは「完了した学期のうち いちばん上」で、下が空いていても上に飛べた。
+// そのため先の学年を少しやるだけでレベルだけが上がってしまい、実力と表示がずれていた。
+// かといって「1年生から順に全部」にすると、5年生の子は1〜4年で129ステージ＝645問を
+// やり直すことになり、続かない。
+// そこで レベルは「1年生から切れ目なくつながっているところまで」に戻したうえで、
+// 学年ごとに飛び級テスト（その学年からランダム20問・ぜんぶ正解で合格）を用意した。
+// 合格した学年は積み上げの計算で通過ずみとして扱う。テスト自体が関所になるので、
+// できる子は軽い手間で先に行けて、できない子は飛べない。
+
+export interface SkipTestDef {
+  id: string
+  grade: number
+  /** 「1年生 とびきゅうテスト」 */
+  label: string
+  gradeLabel: string
+  /** 出題もとの漢字（ここからランダムに20問） */
+  kanji: string[]
+}
+
+export const SKIP_TESTS: SkipTestDef[] = CURRICULUM.map((cur) => ({
+  id: `skip-g${cur.grade}`,
+  grade: cur.grade,
+  label: `${shortGradeLabel(cur.grade)} とびきゅうテスト`,
+  gradeLabel: shortGradeLabel(cur.grade),
+  kanji: cur.terms.flatMap((t) => t.stages.flatMap((s) => s.kanji)),
+}))
+
+export function shortGradeLabel(grade: number): string {
+  if (grade <= 6) return `${grade}年生`
+  if (grade <= 9) return `中${grade - 6}`
+  return 'マスター'
+}
+
+export function findSkipTest(id: string): SkipTestDef | null {
+  return SKIP_TESTS.find((t) => t.id === id) ?? null
+}
+
 /**
- * 5問テスト100点の到達レベル（第44回で復活、第47回でルール変更）。
- * 「その学期の全ステージで5問テスト100点」を満たす学期のうち、いちばん上の学年・学期を返す。
- * 下の学年が終わっているかは問わない（小1が途中でも、小3の1学期が全部100点なら「3年生1学期」）。
+ * 飛び級テストに合格ずみの学年。合格は「ぜんぶ正解」のみ（部分点では通さない）。
+ * 何度でも受けられるので、1回でも満点があれば合格あつかい。
+ */
+export function passedSkipGrades(
+  results: { kind: string; targetId: string; total: number; correct: number }[]
+): Set<number> {
+  const out = new Set<number>()
+  for (const r of results) {
+    if (r.kind !== 'skip' || r.total <= 0 || r.correct !== r.total) continue
+    const t = findSkipTest(r.targetId)
+    if (t) out.add(t.grade)
+  }
+  return out
+}
+
+/** その学年の全ステージが5問テスト100点で埋まっているか（＝飛び級テストなしで通過ずみ） */
+function gradeFilledByStages(cur: GradeCurriculum, perfect: Set<string>): boolean {
+  const stages = cur.terms.flatMap((t) => t.stages)
+  return stages.length > 0 && stages.every((s) => perfect.has(s.id))
+}
+
+/**
+ * 到達レベル（第63回でルール変更）。
+ * **1年生から切れ目なくつながっているところまで**を返す。
+ * 飛び級テストに合格した学年、または全ステージ100点の学年は「通過ずみ」として飛ばして先へ進む。
  * 例:「2年生1学期」「中1 2学期」「マスター・さかな」。1学期も完了していなければnull。
  */
-export function stageClearLevelLabel(perfect: Set<string>): string | null {
+export function stageClearLevelLabel(perfect: Set<string>, passedGrades?: Set<number>): string | null {
+  const passed = passedGrades ?? new Set<number>()
+  let best: { cur: GradeCurriculum; index: number } | null = null
+  for (const cur of CURRICULUM) {
+    // 飛び級テスト合格 or 全ステージ100点の学年は、まるごと通過ずみ
+    if (passed.has(cur.grade) || gradeFilledByStages(cur, perfect)) {
+      const last = [...cur.terms].reverse().find((t) => t.stages.length > 0)
+      if (last) best = { cur, index: last.index }
+      continue
+    }
+    // そうでなければ、この学年の中で連続して完了している学期まで進んで、そこで止まる
+    for (const term of cur.terms) {
+      if (term.stages.length === 0) continue
+      if (!term.stages.every((s) => perfect.has(s.id))) return best ? formatLevelLabel(best.cur, best.index) : null
+      best = { cur, index: term.index }
+    }
+    // 学年の途中で抜けがあった場合はここに来ない（上のreturnで抜ける）
+  }
+  return best ? formatLevelLabel(best.cur, best.index) : null
+}
+
+/**
+ * 積み上げの先で、とびとびに完了している学期の数。
+ * レベルは連続ぶんだけを表すが、飛ばした先でがんばった分が消えたように見えると
+ * やる気を削ぐので、「ほかにクリア ○」として別に見せる。
+ */
+export function extraClearedTermCount(perfect: Set<string>, passedGrades?: Set<number>): number {
+  const reached = stageClearLevelLabel(perfect, passedGrades)
+  if (reached == null) {
+    // 1つも連続していないなら、完了している学期はすべて「とびとび」
+    return countClearedTerms(perfect)
+  }
+  // 連続ぶんに含まれる学期を数え、完了総数から引く
+  const passed = passedGrades ?? new Set<number>()
+  let inRow = 0
+  outer: for (const cur of CURRICULUM) {
+    if (passed.has(cur.grade) || gradeFilledByStages(cur, perfect)) {
+      inRow += cur.terms.filter((t) => t.stages.length > 0 && t.stages.every((s) => perfect.has(s.id))).length
+      continue
+    }
+    for (const term of cur.terms) {
+      if (term.stages.length === 0) continue
+      if (!term.stages.every((s) => perfect.has(s.id))) break outer
+      inRow++
+    }
+  }
+  return Math.max(0, countClearedTerms(perfect) - inRow)
+}
+
+function countClearedTerms(perfect: Set<string>): number {
+  let n = 0
+  for (const cur of CURRICULUM) {
+    for (const term of cur.terms) {
+      if (term.stages.length === 0) continue
+      if (term.stages.every((s) => perfect.has(s.id))) n++
+    }
+  }
+  return n
+}
+
+/**
+ * これまでのさいこう記録（第63回）。旧ルールと同じ「完了した学期のうち いちばん上」。
+ * ルールを積み上げに変えた日に表示が下がって見えるのを防ぐために残してある。
+ */
+export function bestClearLevelLabel(perfect: Set<string>): string | null {
   let best: { cur: GradeCurriculum; index: number } | null = null
   for (const cur of CURRICULUM) {
     for (const term of cur.terms) {
       if (term.stages.length === 0) continue
       if (!term.stages.every((s) => perfect.has(s.id))) continue
-      // CURRICULUMは学年順・学期順なので、後に見つかったものほど上のレベル
       best = { cur, index: term.index }
     }
   }

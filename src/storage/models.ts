@@ -90,7 +90,7 @@ export interface TestItemRecord {
 export interface TestResultRecord {
   id?: number
   profileId: string
-  kind: 'stage' | 'term'
+  kind: 'stage' | 'term' | 'skip'
   targetId: string
   at: number
   total: number

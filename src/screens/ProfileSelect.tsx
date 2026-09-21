@@ -1,7 +1,12 @@
 // プロフィール選択（起動画面）。最大5人、データは完全分離（仕様 §29）。
 import { useState } from 'react'
 import { setStrictnessRuntime } from '../config/judgeRuntime'
-import { perfectStageIds, perfectTermTestIds, stageClearLevelLabel } from '../data/curriculum'
+import {
+  passedSkipGrades,
+  perfectStageIds,
+  perfectTermTestIds,
+  stageClearLevelLabel,
+} from '../data/curriculum'
 import { useAsyncData } from '../state/hooks'
 import { bumpData, navigate, selectProfile } from '../state/store'
 import {
@@ -32,7 +37,8 @@ export function ProfileSelect() {
         return {
           profile: p,
           perfectCount: perfectTermTestIds(results).size,
-          levelLabel: stageClearLevelLabel(perfectStageIds(results)),
+          // 第63回：下の学年から積み上がったところまで。飛び級テスト合格ぶんも数える
+          levelLabel: stageClearLevelLabel(perfectStageIds(results), passedSkipGrades(results)),
           studyDays,
         }
       })

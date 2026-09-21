@@ -10,6 +10,7 @@ export type Route =
   | { name: 'learn'; stageId: string; startIndex?: number }
   | { name: 'stageTest'; stageId: string }
   | { name: 'termTest'; termId: string }
+  | { name: 'skipTest'; skipId: string }
   | { name: 'review'; source: 'stage' | 'term'; chars?: string[] }
   | { name: 'unknownList' }
   | { name: 'gacha' }

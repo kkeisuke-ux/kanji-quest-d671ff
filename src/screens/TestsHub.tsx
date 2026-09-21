@@ -5,7 +5,18 @@
 // - 100点回数（王冠）・最高記録・「100点まであと○問」を表示
 // - 旧・学期テストの100点は内包する新テストへ自動で引き継ぐ
 import { useEffect, useRef } from 'react'
-import { CURRICULUM, TERM_TESTS, getCurriculumForGrade, perfectTermTestIds } from '../data/curriculum'
+import {
+  bestClearLevelLabel,
+  CURRICULUM,
+  SKIP_TESTS,
+  TERM_TESTS,
+  getCurriculumForGrade,
+  passedSkipGrades,
+  perfectStageIds,
+  perfectTermTestIds,
+  stageClearLevelLabel,
+} from '../data/curriculum'
+import { GAME_CONFIG } from '../config/gameConfig'
 import { hasQuestions } from '../data/questions'
 import { hasRefKanji } from '../core/refdata'
 import { useAsyncData } from '../state/hooks'
@@ -72,7 +83,43 @@ export function TestsHub() {
         hasSession: session != null && session.currentIndex > 0,
       })
     }
-    return { entries, fallback, grade: cur.grade, gradeLabel: cur.gradeLabel, ownGrade: profile.grade }
+    // 飛び級テスト（第63回）。この学年ぶん1本
+    const skip = SKIP_TESTS.find((t) => t.grade === cur.grade) ?? null
+    const skipRuns = skip ? results.filter((r) => r.kind === 'skip' && r.targetId === skip.id) : []
+    const skipBest = skipRuns.reduce<{ correct: number; total: number } | null>(
+      (b, r) => (!b || r.correct > b.correct ? { correct: r.correct, total: r.total } : b),
+      null
+    )
+    const skipPassed = skipRuns.some((r) => r.total > 0 && r.correct === r.total)
+    // 5問テストで学年をぜんぶ埋めてある場合も通過ずみ（飛び級テストを受ける必要がない）
+    const stagePerfect = perfectStageIds(results)
+    const stagesOfGrade = cur.terms.flatMap((t) => t.stages)
+    const filledByStages = stagesOfGrade.length > 0 && stagesOfGrade.every((st) => stagePerfect.has(st.id))
+    const skipSession = skip ? await getTestSession(profileId, `skip:${skip.id}`) : null
+    // 第63回でレベルの数え方を「下から積み上げ」に変えた。以前の数え方の記録も残しておく
+    const levelLabel = stageClearLevelLabel(stagePerfect, passedSkipGrades(results))
+    const bestLabel = bestClearLevelLabel(stagePerfect)
+    return {
+      levelLabel,
+      bestLabel,
+      entries,
+      fallback,
+      grade: cur.grade,
+      gradeLabel: cur.gradeLabel,
+      ownGrade: profile.grade,
+      skip: skip
+        ? {
+            id: skip.id,
+            label: skip.label,
+            gradeLabel: skip.gradeLabel,
+            best: skipBest,
+            passed: skipPassed,
+            filledByStages,
+            tries: skipRuns.length,
+            hasSession: skipSession != null && skipSession.currentIndex > 0,
+          }
+        : null,
+    }
   }, [profileId, browseGrade])
 
   // 戻ってきたとき、直前に見ていたテストの位置をそのまま表示する（2026-08-14 第31回）
@@ -106,6 +153,59 @@ export function TestsHub() {
       <div className="map-scroll" ref={scrollRef}>
         <GradeSelector ownGrade={data.ownGrade} effectiveGrade={data.grade} />
         <p className="tile-sub map-note">1つの テストは さいだい20問。もんだいは まいかい ランダムに でるよ</p>
+        {/* レベルの数え方が変わったことのおしらせ（第63回）。前の記録も消さずに残す */}
+        {data.bestLabel && data.bestLabel !== data.levelLabel && (
+          <p className="tile-sub map-note">
+            いまの レベルは <b>{data.levelLabel ?? 'まだなし'}</b>。
+            これまでの さいこう記録は <b>{data.bestLabel}</b> だよ（きろくは のこしてあるよ）
+          </p>
+        )}
+        {/* 飛び級テスト（第63回）。1年生から順に積まなくても、ここに合格すれば先へ進める */}
+        {data.skip && (
+          <Card className={`termtest-card skiptest-card ${data.skip.passed || data.skip.filledByStages ? 'termtest-card-perfect' : ''}`}>
+            <div className="termtest-head">
+              <span className="termtest-title">
+                {(data.skip.passed || data.skip.filledByStages) && <span className="crown">🎖️</span>}
+                {data.skip.label}
+              </span>
+              <span className={`stage-clear ${data.skip.passed || data.skip.filledByStages ? '' : 'stage-clear-zero'}`}>
+                {data.skip.passed || data.skip.filledByStages ? 'みとめずみ' : 'みとめ まえ'}
+              </span>
+            </div>
+            {data.skip.filledByStages && !data.skip.passed ? (
+              <p className="termtest-status termtest-status-perfect">
+                この学年は 5もんテストで ぜんぶ 100点。もう みとめずみだよ！
+              </p>
+            ) : data.skip.passed ? (
+              <p className="termtest-status termtest-status-perfect">
+                ごうかく！ この学年は とばして 先に すすめるよ
+              </p>
+            ) : (
+              <>
+                <p className="tile-sub">
+                  {data.skip.gradeLabel}の 漢字から <b>ランダムに{GAME_CONFIG.skipTest.questionCount}問</b>。
+                  <b>ぜんぶ せいかい</b>で ごうかく。何回でも うけられるよ
+                </p>
+                <p className="tile-sub">
+                  ごうかくすると、この学年を <b>1つずつ やらなくても</b> レベルが 先に すすむよ
+                </p>
+                {data.skip.best && (
+                  <p className="termtest-status">
+                    さいこう {data.skip.best.correct}/{data.skip.best.total}問（{data.skip.tries}回 ちょうせん）　—　
+                    <b>ごうかくまで あと{data.skip.best.total - data.skip.best.correct}問！</b>
+                  </p>
+                )}
+                {data.skip.hasSession && <p className="stage-resume">とちゅうの きろくあり（つづきから できるよ）</p>}
+              </>
+            )}
+            <Button
+              variant={data.skip.passed || data.skip.filledByStages ? 'secondary' : 'accent'}
+              onClick={() => navigate({ name: 'skipTest', skipId: data.skip!.id })}
+            >
+              {data.skip.passed || data.skip.filledByStages ? 'もういちど ためす' : 'とびきゅうに ちょうせん！'}
+            </Button>
+          </Card>
+        )}
         {data.entries.map((e) => (
           <Card
             key={e.id}

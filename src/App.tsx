@@ -13,7 +13,7 @@ import { Tutorial } from './screens/Tutorial'
 import { StageMap } from './screens/StageMap'
 import { TestsHub } from './screens/TestsHub'
 import { LearnFlow } from './screens/LearnFlow'
-import { StageTestScreen, TermTestScreen } from './screens/Tests'
+import { SkipTestScreen, StageTestScreen, TermTestScreen } from './screens/Tests'
 import { Review } from './screens/Review'
 import { UnknownList } from './screens/UnknownList'
 import { Gacha } from './screens/Gacha'
@@ -48,6 +48,8 @@ function RouteView({ route }: { route: Route }) {
       return <StageTestScreen stageId={route.stageId} />
     case 'termTest':
       return <TermTestScreen termId={route.termId} />
+    case 'skipTest':
+      return <SkipTestScreen skipId={route.skipId} />
     case 'review':
       return <Review source={route.source} chars={route.chars} />
     case 'unknownList':
@@ -86,7 +88,7 @@ export default function App() {
 
   // BGMのシーン切替: 学習・テスト系の画面では練習用の曲、それ以外はホーム用の曲
   useEffect(() => {
-    const practiceScreens = ['learn', 'stageTest', 'termTest', 'review', 'pencilDiag', 'judgeDebug']
+    const practiceScreens = ['learn', 'stageTest', 'termTest', 'skipTest', 'review', 'pencilDiag', 'judgeDebug']
     setBgmScene(practiceScreens.includes(route.name) ? 'practice' : 'home')
   }, [route])
 

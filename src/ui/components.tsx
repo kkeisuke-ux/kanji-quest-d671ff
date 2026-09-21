@@ -1,7 +1,13 @@
 // 共通UIコンポーネント。
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { navigate, useAppState, type Route } from '../state/store'
-import { perfectStageIds, perfectTermTestIds, stageClearLevelLabel } from '../data/curriculum'
+import {
+  extraClearedTermCount,
+  passedSkipGrades,
+  perfectStageIds,
+  perfectTermTestIds,
+  stageClearLevelLabel,
+} from '../data/curriculum'
 import { getSpecies } from '../data/species'
 import { CharacterSprite } from '../game/sprites'
 import { useAsyncData } from '../state/hooks'
@@ -21,12 +27,17 @@ export function StatusChips() {
     const results = await listTestResults(profileId)
     const termPerfectCount = perfectTermTestIds(results).size
     // 到達レベル（5問テスト100点が全部そろっている いちばん上の学年学期。第44回で復活）
-    const levelLabel = stageClearLevelLabel(perfectStageIds(results))
+    // レベルは下の学年から積み上がったところまで（第63回）。飛び級テスト合格ぶんも積み上げに数える
+    const perfect = perfectStageIds(results)
+    const skipped = passedSkipGrades(results)
+    const levelLabel = stageClearLevelLabel(perfect, skipped)
+    const extraCleared = extraClearedTermCount(perfect, skipped)
     return {
       coins: p.coins,
       stars: p.stars,
       termPerfectCount,
       levelLabel,
+      extraCleared,
       buddy: buddy && getSpecies(buddy.speciesId) ? { speciesId: buddy.speciesId, stage: buddy.stage, level: buddy.level } : null,
     }
   }, [profileId])
@@ -65,8 +76,14 @@ export function StatusChips() {
       <RankChip perfectCount={data.termPerfectCount} onClick={() => setShowRanks(true)} />
       <RankListModal open={showRanks} perfectCount={data.termPerfectCount} onClose={() => setShowRanks(false)} />
       {data.levelLabel && (
-        <span className="badge level-chip" title="5もんテスト100点が ぜんぶ そろっている ところまでのレベル">
+        <span className="badge level-chip" title="下の学年から じゅんばんに そろったところまでが レベル。とびきゅうテストに ごうかくすると 先に すすむよ">
           Lv {data.levelLabel}
+        </span>
+      )}
+      {/* 先の学年を先に クリアしているぶん（レベルには まだ入らない。第63回） */}
+      {data.extraCleared > 0 && (
+        <span className="badge level-chip level-chip-extra" title="レベルより 先の 学期を クリアしたかず。とびきゅうテストに ごうかくすると レベルに 入るよ">
+          ほかに {data.extraCleared}
         </span>
       )}
       <CoinBadge coins={data.coins} />

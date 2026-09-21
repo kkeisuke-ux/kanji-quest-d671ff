@@ -2432,6 +2432,23 @@ body {
   white-space: nowrap;
 }
 
+/* 先の学年を先にクリアしているぶんのチップ（第63回） */
+.level-chip-extra {
+  background: #f3eeff;
+  color: #5b3f9e;
+  border-color: #ddd0f7;
+}
+
+/* 飛び級テストのカード（第63回）。ふつうのまとめテストと見分けがつくように */
+.skiptest-card {
+  border: 2px solid #f0c987;
+  background: linear-gradient(135deg, #fffaf0, #fdf0dc);
+}
+
+.skiptest-card.termtest-card-perfect {
+  border-color: #e2b45c;
+}
+
 /* ---------- ステータス常設表示 ---------- */
 .status-chips {
   display: inline-flex;
