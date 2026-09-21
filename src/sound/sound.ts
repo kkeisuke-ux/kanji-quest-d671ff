@@ -13,6 +13,8 @@ let ctx: AudioContext | null = null
 let out: BiquadFilterNode | null = null
 let convolver: ConvolverNode | null = null
 let reverbIn: GainNode | null = null
+/** アプリが裏に回っている（ホーム・画面ロック・アプリ切り替え）間はtrue。第64回 */
+let backgrounded = false
 
 function makeImpulse(c: AudioContext): AudioBuffer {
   const len = Math.floor(c.sampleRate * 0.9)
@@ -44,7 +46,9 @@ function ac(): AudioContext | null {
     reverbIn.connect(convolver)
     convolver.connect(out)
   }
-  if (ctx.state === 'suspended') void ctx.resume()
+  // 裏に回っている間は起こさない（第64回）。iOSは復帰時に 'interrupted' になることがあるので
+  // running 以外はまとめて起こす
+  if (!backgrounded && ctx.state !== 'running' && ctx.state !== 'closed') void ctx.resume()
   return ctx
 }
 
@@ -103,7 +107,7 @@ function soft(c: AudioContext, at: number, freq: number, dur: number, gain: numb
 }
 
 function seEnabled(): boolean {
-  return getAppFlags().seOn
+  return getAppFlags().seOn && !backgrounded
 }
 
 const N = (semi: number, base = 523.25) => base * Math.pow(2, semi / 12) // C5基準
@@ -299,6 +303,7 @@ function scheduleBgm() {
 }
 
 export function startBgm() {
+  if (backgrounded) return // 裏に回っている間は鳴らし始めない
   const c = ac()
   if (!c) return
   if (bgmTimer != null && playingScene === currentScene) return
@@ -366,6 +371,8 @@ export async function setBgm(on: boolean): Promise<void> {
  */
 export function initSoundOnGesture() {
   const handler = () => {
+    // 触れている＝前面にいる。復帰の合図（focus等）を取りこぼしても、ここで必ず戻る
+    if (!document.hidden) backgrounded = false
     const c = ac()
     if (c) {
       try {
@@ -382,4 +389,43 @@ export function initSoundOnGesture() {
   for (const type of ['pointerdown', 'pointerup', 'click', 'touchend'] as const) {
     window.addEventListener(type, handler, { passive: true })
   }
+}
+
+// ---------------- アプリを閉じたら音を止める（第64回） ----------------
+// iOSのホーム画面アプリは、音が鳴っている間は裏に回ってもページが止められない。
+// BGMのタイマーもAudioContextも動き続けるため、ホームに戻る・画面ロック・
+// アプリ切り替え画面から消す、のどれをしても音楽が鳴りっぱなしになっていた。
+// 見えなくなった時点でBGMを止めてAudioContextを眠らせ、戻ったら再開する。
+function enterBackground() {
+  if (backgrounded) return
+  backgrounded = true
+  stopBgm()
+  if (ctx && ctx.state !== 'closed') void ctx.suspend().catch(() => undefined)
+}
+
+function leaveBackground() {
+  if (!backgrounded || document.hidden) return
+  backgrounded = false
+  // BGMがオンなら鳴らし直す（ac()がAudioContextを起こす）。起こせなかった場合も
+  // 次のタップでinitSoundOnGestureのハンドラが再試行する
+  syncBgm()
+}
+
+/** 裏に回ったら音を止め、前面に戻ったら再開する */
+export function initBackgroundMute() {
+  if (typeof document === 'undefined') return
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) enterBackground()
+    else leaveBackground()
+  })
+  window.addEventListener('pagehide', enterBackground)
+  window.addEventListener('pageshow', leaveBackground)
+  // アプリ切り替え画面では visibilitychange が来ないまま終了させられることがあるため、
+  // ウィンドウがフォーカスを失った時点でも止める
+  window.addEventListener('blur', (e) => {
+    if (e.target === window) enterBackground()
+  })
+  window.addEventListener('focus', (e) => {
+    if (e.target === window) leaveBackground()
+  })
 }

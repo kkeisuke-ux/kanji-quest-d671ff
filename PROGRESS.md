@@ -1,5 +1,29 @@
 # かんじクエスト PROGRESS
 
+## 2026-09-22 第64回（アプリを閉じても音楽が鳴りつづける不具合）※えいごクエスト第41回と同じ
+
+要望: 「アプリを閉じても、バックグラウンドを閉じても、電源をオフにしても音楽が鳴っている」
+
+### 原因
+画面が裏に回ったときの処理が一つも無かった。iOSのホーム画面アプリは、音が鳴っている間は
+裏に回ってもページが止められないため、BGMの予約タイマー（setInterval）とAudioContextが
+動き続け、ホームに戻る・画面ロック・アプリ切り替えのどれでも鳴りっぱなしになっていた。
+
+### 修正（`src/sound/sound.ts` の `initBackgroundMute`、`src/main.tsx` から起動）
+- 裏に回ったら（`visibilitychange` hidden／`pagehide`／ウィンドウの `blur`）BGMを止めて
+  AudioContextを `suspend()`。`blur` はアプリ切り替え画面から直接消されたとき用
+  （visibilitychange が来ないまま終了させられることがあるため）
+- 前面に戻ったら（visible／`pageshow`／`focus`）BGMがオンなら再開
+- 裏に回っている間は `ac()` がAudioContextを起こさず、効果音も `startBgm()` も鳴らさない
+- 復帰の合図を取りこぼしても、次のタップで必ず前面扱いに戻る（initSoundOnGestureのハンドラ）
+- iOSは復帰時に `interrupted` になることがあるため、resume条件を `suspended` のみ →
+  `running` 以外すべてに広げた
+
+### 検証（Playwright・devサーバー）
+document.hidden を差し替えて hidden→visible、blur→focus、pagehide→pageshow、
+blur後にfocusが来ない→タップ、の4系統を確認。裏に回すと AudioContext=suspended・
+オシレータ生成0（BGM停止）、戻すと running・BGM再開。実機iPadでの確認は未実施。
+
 ## 2026-09-06 第63回（レベルは積み上げ式へ・飛び級テスト・れんぞくボーナス大幅増）
 
 要望: 「マスターの5問テストに合格しただけでレベルがマスターになってしまう。本当は4年生
